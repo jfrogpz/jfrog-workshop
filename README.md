@@ -41,11 +41,6 @@ npm -v
 
 先登入你的 JFrog Platform 實例並產生 Access Token。
 
-官方參考文件：
-
-- Access Tokens：`https://docs.jfrog.com/administration/docs/access-tokens`
-- JFrog CLI Configuration：`https://docs.jfrog.com/integrations/docs/configuring-the-cli`
-
 在 JFrog Platform UI 中產生 Access Token：
 
 1. 開啟 Access Token 頁面：`https://<your-jfrog-domain>/ui/admin/configuration/security/access_tokens`
@@ -65,6 +60,7 @@ $env:JFROG_URL = "https://<your-jfrog-domain>"
 $env:JFROG_ACCESS_TOKEN = "<your-access-token>"
 
 jf c add Artifactory --url=$env:JFROG_URL --access-token=$env:JFROG_ACCESS_TOKEN --interactive=false
+jf c use Artifactory
 ```
 
 macOS / Linux：
@@ -74,12 +70,13 @@ JFROG_URL="https://<your-jfrog-domain>"
 JFROG_ACCESS_TOKEN="<your-access-token>"
 
 jf c add Artifactory --url="$JFROG_URL" --access-token="$JFROG_ACCESS_TOKEN" --interactive=false
+jf c use Artifactory
 ```
 
 驗證設定：
 
 ```bash
-jf c use Artifactory
+
 jf c show
 jf rt ping
 ```
