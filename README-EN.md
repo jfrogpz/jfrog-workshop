@@ -135,7 +135,6 @@ The scripts create these npm repositories:
 - Resolve repository: `<student-id>-npm-virtual` (virtual)
 - Remote repository: `<student-id>-npm-remote` (remote, pointing to npmjs)
 - Deploy repository: `<student-id>-npm-dev-local` (local)
-- QA repository: `<student-id>-npm-qa-local` (local)
 - Prod repository: `<student-id>-npm-prod-local` (local)
 
 To clean up one student’s repositories, run the delete script with the same `STUDENT_ID`:

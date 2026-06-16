@@ -132,7 +132,6 @@ chmod +x ./create-repo.sh
 - Resolve repository：`<student-id>-npm-virtual`（virtual）
 - Remote repository：`<student-id>-npm-remote`（remote，指向 npmjs）
 - Deploy repository：`<student-id>-npm-dev-local`（local）
-- QA repository：`<student-id>-npm-qa-local`（local）
 - Prod repository：`<student-id>-npm-prod-local`（local）
 
 如需清理某位學員的 repository，使用相同的 `STUDENT_ID` 執行刪除腳本：
