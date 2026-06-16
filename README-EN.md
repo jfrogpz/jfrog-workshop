@@ -402,6 +402,7 @@ $env:BUILD_NAME = "$($env:STUDENT_ID)-npm-sample"
 $env:BUILD_NUMBER = "2"
 
 jf npm install --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
+jf npm publish --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
 jf rt build-add-git $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
@@ -419,6 +420,7 @@ BUILD_NAME="${STUDENT_ID}-npm-sample"
 BUILD_NUMBER=2
 
 jf npm install --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
+jf npm publish --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
 jf rt build-add-git "$BUILD_NAME" "$BUILD_NUMBER"
 jf rt build-collect-env "$BUILD_NAME" "$BUILD_NUMBER"
 jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
@@ -520,6 +522,7 @@ $env:BUILD_NAME = "$($env:STUDENT_ID)-npm-sample"
 $env:BUILD_NUMBER = "3"
 
 jf npm install --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
+jf npm publish --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
 jf rt build-add-git $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
@@ -538,6 +541,7 @@ BUILD_NAME="${STUDENT_ID}-npm-sample"
 BUILD_NUMBER=3
 
 jf npm install --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
+jf npm publish --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
 jf rt build-add-git "$BUILD_NAME" "$BUILD_NUMBER"
 jf rt build-collect-env "$BUILD_NAME" "$BUILD_NUMBER"
 jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
