@@ -134,23 +134,11 @@ chmod +x ./create-repo.sh
 - Deploy repository：`<student-id>-npm-dev-local`（local）
 - Prod repository：`<student-id>-npm-prod-local`（local）
 
-如需清理某位學員的 repository，使用相同的 `STUDENT_ID` 執行刪除腳本：
+在 Artifactory 里访问：https://<your-jfrog-domain>/ui/admin/repositories， 查看创建的仓库。
+选择"All Repositories", 在右侧搜索栏里搜索你的 student-id 
+![alt text](image-1.png)
 
-Windows PowerShell：
 
-```powershell
-cd ~/jfrog-workshop/automation
-$env:STUDENT_ID = "labuser-t4-s3"
-.\delete-repo.ps1 -StudentId $env:STUDENT_ID
-```
-
-macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/automation
-export STUDENT_ID="labuser-t4-s3"
-./delete-repo.sh "$STUDENT_ID" all
-```
 
 ---
 
@@ -255,7 +243,7 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 在 UI 中驗證：
 
 - Artifactory -> Builds -> `<student-id>-npm-sample` -> `#1`
-
+![alt text](ScreenShot_2026-06-17_170942_663.png)
 ---
 
 ## 5. Curation 示範：阻擋 `axios@1.7.2`
@@ -267,11 +255,9 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 - 進入 Administration -> Curation -> Remote Repositories，或依你的 UI 版本進入類似頁面。
 - 找到 `<student-id>-npm-remote`，確認 Curation 已啟用。
 
-示例：
-
-![Enable Curation Remote Repository](./workshop/images/current-curation-remote.svg)
-
-不同 JFrog Platform 版本的 UI 標籤可能略有差異，請以你的實例畫面為準。
+- 创建 Curation Policy 来阻断 axios@1.7.2
+- 配置 Condition
+  ![alt text](ScreenShot_2026-06-16_173844_753.png)
 
 ### 5.2 將範例專案切換到被阻擋版本
 
@@ -554,3 +540,24 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 
 - Artifactory -> Builds -> `<student-id>-npm-sample` -> `#3`
 - Build-info 中的 dependencies 應顯示已使用 `axios@1.16.1`。
+
+
+--------
+附录：
+如需清理某位學員的 repository，使用相同的 `STUDENT_ID` 執行刪除腳本：
+
+Windows PowerShell：
+
+```powershell
+cd ~/jfrog-workshop/automation
+$env:STUDENT_ID = "labuser-t4-s3"
+.\delete-repo.ps1 -StudentId $env:STUDENT_ID
+```
+
+macOS / Linux：
+
+```bash
+cd ~/jfrog-workshop/automation
+export STUDENT_ID="labuser-t4-s3"
+./delete-repo.sh "$STUDENT_ID" all
+```
