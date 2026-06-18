@@ -53,7 +53,7 @@ npm -v
 
 使用一條命令設定 JFrog CLI。Server ID 固定為 `Artifactory`。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 $env:JFROG_URL = "https://<your-jfrog-domain>"
@@ -63,7 +63,7 @@ jf c add Artifactory --url=$env:JFROG_URL --access-token=$env:JFROG_ACCESS_TOKEN
 jf c use Artifactory
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 JFROG_URL="https://<your-jfrog-domain>"
@@ -103,7 +103,7 @@ cd jfrog-workshop
 
 範例：如果你的 user id 是 `labuser-t4-s3`，請將 `STUDENT_ID` 設為 `labuser-t4-s3`，然後執行下面的建立腳本。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/automation
@@ -118,7 +118,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\create-repo.ps1 -StudentId $env:STUDENT_ID
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/automation
@@ -134,9 +134,10 @@ chmod +x ./create-repo.sh
 - Deploy repository：`<student-id>-npm-dev-local`（local）
 - Prod repository：`<student-id>-npm-prod-local`（local）
 
-在 Artifactory 里访问：https://<your-jfrog-domain>/ui/admin/repositories， 查看创建的仓库。
-选择"All Repositories", 在右侧搜索栏里搜索你的 student-id 
-![alt text](image-1.png)
+在 Artifactory 中開啟：`https://<your-jfrog-domain>/ui/admin/repositories`，查看剛建立的倉庫。
+選擇「All Repositories」，在右側搜尋欄輸入你的 student-id 進行搜尋。
+
+![建立的倉庫列表](./workshop/images/repos-created.png)
 
 
 
@@ -148,7 +149,7 @@ chmod +x ./create-repo.sh
 
 進入範例專案目錄。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -156,7 +157,7 @@ $env:STUDENT_ID = "labuser-t4-s3"
 Get-Content .\package.json
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -168,7 +169,7 @@ cat ./package.json
 
 設定 npm 解析與部署：
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 jf npm-config `
@@ -179,7 +180,7 @@ jf npm-config `
   --global=false
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 jf npm-config \
@@ -192,7 +193,7 @@ jf npm-config \
 
 清理本機安裝結果、`package-lock.json` 與 npm 快取，確保依賴重新透過 JFrog Artifactory 解析。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 Remove-Item -Recurse -Force node_modules, package-lock.json -ErrorAction SilentlyContinue
@@ -202,7 +203,7 @@ Test-Path .\package-lock.json
 
 `Test-Path .\package-lock.json` 應回傳 `False`，表示 lock 檔案已刪除。
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 rm -rf node_modules package-lock.json
@@ -212,7 +213,7 @@ test ! -f ./package-lock.json && echo "package-lock.json removed"
 
 安裝、發布套件並發布 build-info：
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 $env:BUILD_NAME = "$($env:STUDENT_ID)-npm-sample"
@@ -226,7 +227,7 @@ jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 BUILD_NAME="${STUDENT_ID}-npm-sample"
@@ -243,7 +244,9 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 在 UI 中驗證：
 
 - Artifactory -> Builds -> `<student-id>-npm-sample` -> `#1`
-![alt text](ScreenShot_2026-06-17_170942_663.png)
+
+![Build #1 build-info](./workshop/images/build-info-1.png)
+
 ---
 
 ## 5. Curation 示範：阻擋 `axios@1.7.2`
@@ -255,15 +258,16 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 - 進入 Administration -> Curation -> Remote Repositories，或依你的 UI 版本進入類似頁面。
 - 找到 `<student-id>-npm-remote`，確認 Curation 已啟用。
 
-- 创建 Curation Policy 来阻断 axios@1.7.2
-- 配置 Condition
-  ![alt text](ScreenShot_2026-06-16_173844_753.png)
+- 建立 Curation Policy 來阻斷 axios@1.7.2
+- 設定 Condition
+
+![設定 Curation Condition](./workshop/images/curation-condition-config.png)
 
 ### 5.2 將範例專案切換到被阻擋版本
 
 為了觸發 Curation 阻擋，先直接修改 `~/jfrog-workshop/npm-sample/package.json`，將範例專案的 `axios` 依賴切換到本 Lab 指定的模擬風險版本。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -271,11 +275,10 @@ notepad .\package.json
 Get-Content .\package.json
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
-nano package.json
 cat package.json
 ```
 
@@ -291,7 +294,7 @@ cat package.json
 
 接著在重新安裝前清理專案。必須刪除 `package-lock.json`；否則 npm 可能判斷依賴樹已滿足，導致 Curation 阻擋效果不易觀察。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -302,7 +305,7 @@ Test-Path .\package-lock.json
 
 `Test-Path .\package-lock.json` 應回傳 `False`。
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -355,11 +358,6 @@ test ! -f ./package-lock.json && echo "package-lock.json removed"
 
 如果 `axios@1.7.2` 在建立 Curation policy 前已被下載，Artifactory 可能已將它快取到 remote cache repository。重新安裝前需先刪除該快取套件。
 
-官方參考文件：
-
-- Remote Repositories：`https://docs.jfrog.com/artifactory/docs/remote-repositories`
-- Managing Artifacts：`https://docs.jfrog.com/artifactory/docs/managing-artifacts`
-
 在 JFrog UI 中：
 
 1. 進入 Artifactory -> Artifacts。
@@ -374,7 +372,7 @@ test ! -f ./package-lock.json && echo "package-lock.json removed"
 
 ### 5.5 重新執行 Install 並觀察阻擋
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -392,7 +390,7 @@ jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -465,7 +463,7 @@ Curation audit event 示例：
 
 接著直接修改 `package.json`，將專案修復到允許版本並更新應用版本號。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -475,13 +473,12 @@ notepad .\package.json
 Get-Content .\package.json
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
 export STUDENT_ID="labuser-t4-s3"
 
-nano package.json
 cat package.json
 ```
 
@@ -498,7 +495,7 @@ cat package.json
 
 清理本機 npm 狀態後重新構建並上傳 build-info。
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -517,7 +514,7 @@ jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -546,7 +543,7 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 附录：
 如需清理某位學員的 repository，使用相同的 `STUDENT_ID` 執行刪除腳本：
 
-Windows PowerShell：
+🪟 Windows PowerShell：
 
 ```powershell
 cd ~/jfrog-workshop/automation
@@ -554,7 +551,7 @@ $env:STUDENT_ID = "labuser-t4-s3"
 .\delete-repo.ps1 -StudentId $env:STUDENT_ID
 ```
 
-macOS / Linux：
+🐧 macOS / Linux：
 
 ```bash
 cd ~/jfrog-workshop/automation

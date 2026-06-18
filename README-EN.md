@@ -59,7 +59,7 @@ Generate an Access Token in the JFrog Platform UI:
 
 Configure JFrog CLI with one command. The Server ID is fixed as `Artifactory`.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 $env:JFROG_URL = "https://<your-jfrog-domain>"
@@ -68,7 +68,7 @@ $env:JFROG_ACCESS_TOKEN = "<your-access-token>"
 jf c add Artifactory --url=$env:JFROG_URL --access-token=$env:JFROG_ACCESS_TOKEN --interactive=false
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 JFROG_URL="https://<your-jfrog-domain>"
@@ -107,7 +107,7 @@ Each student should use their own user id (login account) as `STUDENT_ID`. This 
 
 Example: if your user id is `labuser-t4-s3`, set `STUDENT_ID` to `labuser-t4-s3`, then run the creation script below.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/automation
@@ -122,7 +122,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\create-repo.ps1 -StudentId $env:STUDENT_ID
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/automation
@@ -137,9 +137,13 @@ The scripts create these npm repositories:
 - Deploy repository: `<student-id>-npm-dev-local` (local)
 - Prod repository: `<student-id>-npm-prod-local` (local)
 
+In Artifactory, open `https://<your-jfrog-domain>/ui/admin/repositories` to view the repositories you just created. Select **All Repositories** and search for your student-id in the search box on the right.
+
+![Created repositories](./workshop/images/repos-created.png)
+
 To clean up one student’s repositories, run the delete script with the same `STUDENT_ID`:
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/automation
@@ -147,7 +151,7 @@ $env:STUDENT_ID = "labuser-t4-s3"
 .\delete-repo.ps1 -StudentId $env:STUDENT_ID
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/automation
@@ -163,7 +167,7 @@ This workshop **treats `axios@1.7.2` as a simulated malicious package version**.
 
 Enter the sample project directory.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -171,7 +175,7 @@ $env:STUDENT_ID = "labuser-t4-s3"
 Get-Content .\package.json
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -183,7 +187,7 @@ All `npm` and `jf npm ...` commands must be executed from the `npm-sample` direc
 
 Configure npm resolution and deployment:
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 jf npm-config `
@@ -194,7 +198,7 @@ jf npm-config `
   --global=false
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 jf npm-config \
@@ -207,7 +211,7 @@ jf npm-config \
 
 Clean the local install output, `package-lock.json`, and npm cache so dependencies are resolved through JFrog Artifactory again.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 Remove-Item -Recurse -Force node_modules, package-lock.json -ErrorAction SilentlyContinue
@@ -217,7 +221,7 @@ Test-Path .\package-lock.json
 
 `Test-Path .\package-lock.json` should return `False`, which means the lock file has been removed.
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 rm -rf node_modules package-lock.json
@@ -227,7 +231,7 @@ test ! -f ./package-lock.json && echo "package-lock.json removed"
 
 Install, publish, and publish build-info:
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 $env:BUILD_NAME = "$($env:STUDENT_ID)-npm-sample"
@@ -241,7 +245,7 @@ jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 BUILD_NAME="${STUDENT_ID}-npm-sample"
@@ -258,6 +262,8 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 Verify in the UI:
 - Artifactory -> Builds -> `<student-id>-npm-sample` -> `#1`
 
+![Build #1 build-info](./workshop/images/build-info-1.png)
+
 ---
 
 ## 5. Curation Demo: Block `axios@1.7.2`
@@ -269,17 +275,16 @@ First, confirm that Curation is enabled for the student’s own remote repositor
 - Go to Administration -> Curation -> Remote Repositories, or a similar page depending on your UI version.
 - Find `<student-id>-npm-remote` and ensure Curation is enabled.
 
-Example:
+- Create a Curation Policy to block axios@1.7.2
+- Configure the Condition
 
-![Enable Curation Remote Repository](./workshop/images/current-curation-remote.svg)
-
-UI labels may vary slightly by JFrog Platform version. Use the labels in your own instance as the source of truth.
+![Curation Condition configuration](./workshop/images/curation-condition-config.png)
 
 ### 5.2 Switch The Sample Project To The Blocked Version
 
 To trigger the Curation block, directly edit `~/jfrog-workshop/npm-sample/package.json` and switch the sample project to the simulated risky package version used in this lab.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -287,7 +292,7 @@ notepad .\package.json
 Get-Content .\package.json
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -307,7 +312,7 @@ Confirm that `package.json` contains this content:
 
 Then clean the project before reinstalling. `package-lock.json` must be deleted; otherwise npm may decide the dependency tree is already satisfied and the Curation block may not be observable.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -318,7 +323,7 @@ Test-Path .\package-lock.json
 
 `Test-Path .\package-lock.json` should return `False`.
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -386,7 +391,7 @@ Example:
 
 ### 5.5 Re-run Install And Observe The Block
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -404,7 +409,7 @@ jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -478,7 +483,7 @@ Example:
 
 Then directly edit `package.json` to remediate the project to the approved version and update the package version.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -488,7 +493,7 @@ notepad .\package.json
 Get-Content .\package.json
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
@@ -511,7 +516,7 @@ Confirm that `package.json` contains at least this content:
 
 Clean the local npm state, rebuild, and publish build-info.
 
-Windows PowerShell:
+🪟 Windows PowerShell:
 
 ```powershell
 cd ~/jfrog-workshop/npm-sample
@@ -530,7 +535,7 @@ jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
 jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
 ```
 
-macOS / Linux:
+🐧 macOS / Linux:
 
 ```bash
 cd ~/jfrog-workshop/npm-sample
