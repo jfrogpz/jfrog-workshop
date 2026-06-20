@@ -273,7 +273,7 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 
 ## 5. Curation 示範：阻擋 `axios@1.7.2`
 
-首次 build-info 完成後，進入本工作坊的重點：把專案依賴換成模擬惡意版本 `axios@1.7.2`，用 Curation 在下載源頭把它擋下，最後再換回安全版本重新建置。
+首次 build-info 完成後，進入本工作坊的重點：建立 Curation Policy 和 Condition，用 Curation 在下載源頭把 `axios@1.7.2` 擋下，最後再換回安全版本重新建置。
 
 ### 5.1 啟用 Remote Repository 的 Curation
 

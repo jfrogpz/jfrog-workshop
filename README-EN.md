@@ -274,7 +274,7 @@ Verify in the UI:
 
 ## 5. Curation Demo: Block `axios@1.7.2`
 
-With the first build-info in place, here is the core of the workshop: switch the project dependency to the simulated-malicious `axios@1.7.2`, use Curation to block it at the download source, then switch back to a safe version and rebuild.
+With the first build-info in place, here is the core of the workshop: create a Curation Policy and Condition to block `axios@1.7.2` at the download source, then switch back to a safe version and rebuild.
 
 ### 5.1 Enable Curation For The Remote Repository
 
