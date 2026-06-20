@@ -276,19 +276,20 @@ Verify in the UI:
 
 With the first build-info in place, here is the core of the workshop: create a Curation Policy and Condition to block `axios@1.7.2` at the download source, then switch back to a safe version and rebuild.
 
-### 5.1 Enable Curation For The Remote Repository
-
-First, confirm that Curation is enabled for the student’s own remote repository. Otherwise, the policy will not affect download requests.
-
-- Go to Administration -> Curation -> Remote Repositories, or a similar page depending on your UI version.
-- Find `<student-id>-npm-remote` and ensure Curation is enabled.
-
+### 5.1  Create A Curation Policy To Block axios@1.7.2
+- Step 1
+![Create Curation Policy (step 1)](./workshop/images/curation-policy-step1.png)
+- Step 2
 ![Remote repository with Curation enabled](./workshop/images/curation-remote-enabled.png)
 
-- Create a Curation Policy to block axios@1.7.2
-- Configure the Condition
+- Step 3, create a new Condition
+![New Curation Condition](./workshop/images/curation-condition-new.png)
 
 ![Curation Condition configuration](./workshop/images/curation-condition-config.png)
+
+- Step 4, Click Next
+- Step 5, Select Block and Save Policy
+  ![Select Block and Save Policy](./workshop/images/curation-policy-save.png)
 
 ### 5.2 Switch The Sample Project To The Blocked Version
 
