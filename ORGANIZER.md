@@ -50,6 +50,19 @@ Artifactory Generic 仓库：workshop-events
 - **REST API 完备**：上传、下载、列目录都有标准 API，bash + curl + python3 即可驱动
 - **可视化调试**：组织者可以直接在 Artifactory UI 中查看或修改任何学员的 JSON 文件
 
+### 为什么使用 GitHub Codespace 作为学员环境
+
+Codespace 是本 Workshop 学员侧体验的核心，它解决了以下问题：
+
+| 问题 | Codespace 的解法 |
+|------|----------------|
+| 学员环境各异（Windows/Mac/Linux） | 统一的云端 Linux 环境，开箱即用 |
+| 需要预装 Node.js、JFrog CLI、bash | `.devcontainer` 自动配置，学员无需手动安装任何工具 |
+| 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
+| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本，学员与 AI 对话即可完成全部任务 |
+
+如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP.md](SETUP.md)。
+
 ---
 
 ## 前置要求
@@ -180,7 +193,6 @@ curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
 | 排行榜无学员显示 | 检查 Artifactory 中 `workshop-events/{event_id}/participants/` 目录是否有数据 |
 | 学员任务长时间不更新 | 确认 `refresh-leaderboard.sh` 正在运行；检查 Admin Token 是否有效 |
 | Curation 不阻断 axios@1.7.2 | 确认学员 Curation Policy 已激活，Policy Action 下方开启了 **Enforce policy on cached packages**，且 Apply to 选择了 remote 仓库（不是 virtual） |
-| T5 长时间不更新 | T5 通过 `GET /xray/api/v1/curation/audit/packages` 轮询 Curation 拦截记录验证，需确认学员已执行 `clear-remote-cache.sh` 清除 Artifactory 远程缓存后再次尝试安装 |
 
 ---
 

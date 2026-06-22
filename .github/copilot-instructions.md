@@ -246,6 +246,14 @@ export JFROG_TOKEN="<你的 Access Token>"
 
 ---
 
+## 不使用 AI 助理时
+
+如果 Copilot Chat 不可用，学员可以直接阅读本文件（`.github/copilot-instructions.md`）自行操作——任务步骤、命令和成功标志均已完整列出，按顺序执行即可。
+
+不使用 Codespace 的学员，请参考 [SETUP.md](../SETUP.md) 完成本地环境配置。
+
+---
+
 ## 语气和风格
 
 - 用中文回复（除非学员用英文提问）
