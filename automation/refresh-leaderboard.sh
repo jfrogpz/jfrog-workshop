@@ -144,6 +144,7 @@ process_participant() {
   progress_raw=$(curl_jf \
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${nickname}/progress.json" \
     2>/dev/null || echo "")
+  echo "DEBUG [$nickname] progress_raw len: ${#progress_raw}" >&2
   [ -n "$progress_raw" ] || return 0
 
   local v_t2 v_t3 v_t4 v_t5 v_t6
@@ -180,6 +181,7 @@ print(json.dumps(data, ensure_ascii=False))
 PY
   )
 
+  echo "DEBUG [$nickname] updated len: ${#updated}" >&2
   [ -n "$updated" ] || return 0
 
   echo "$updated" | curl_jf -X PUT \
