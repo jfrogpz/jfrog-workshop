@@ -163,13 +163,23 @@
 **目标**：将 axios 修复为安全版本，重新构建并发布 Build #3。
 
 **引导流程**：
-1. 修改 `package.json`，将 axios 改为安全版本（如 `^1.6.8` 或 `^1.7.7`）：
-   ```json
-   "axios": "^1.6.8"
-   ```
-2. 重新构建（build-number 为 3，跳过被阻断的 2）：
+1. 修改 `package.json`，将 axios 改为安全版本：
    ```bash
+   cd /workspaces/jfrog-workshop/npm-sample
+   sed -i 's/"axios": "1.7.2"/"axios": "1.7.7"/' package.json
+   ```
+   确认修改结果：
+   ```bash
+   grep axios package.json
+   ```
+2. 清除缓存并重新安装（build-number 为 3，跳过被阻断的 2）：
+   ```bash
+   rm -rf node_modules package-lock.json
+   npm cache clean --force
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=3
+   ```
+3. 发布 Build #3：
+   ```bash
    jf rt build-publish <NICKNAME>-npm-sample 3
    ```
 3. 在 JFrog UI 中确认 Build #3 的 axios 依赖为安全版本
