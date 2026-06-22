@@ -282,9 +282,11 @@ try:
     data = json.load(sys.stdin)
     names = [c['uri'].strip('/') for c in data.get('children', []) if c.get('folder')]
     print('\n'.join(names))
-except:
+except Exception as e:
+    import sys; print(f'ERROR: {e}', file=sys.stderr)
     pass
-" 2>/dev/null || echo "")
+" || echo "")
+  echo "DEBUG participants: [$PARTICIPANTS]" >&2
 
   ALL_PROGRESS=""
   if [ -n "$PARTICIPANTS" ]; then
