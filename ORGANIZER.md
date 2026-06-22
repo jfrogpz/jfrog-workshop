@@ -4,6 +4,54 @@
 
 ---
 
+## 架构说明
+
+### 整体设计思路
+
+本 Workshop 不依赖任何外部数据库或后端服务，**以 Artifactory 本身作为唯一的数据存储**，利用 Generic 仓库存放 JSON 文件来追踪赛事配置和学员进展。
+
+```
+Artifactory Generic 仓库：workshop-events
+│
+└── {event_id}/                        # 赛事目录，例如 2026-06-shanghai
+    ├── config.json                    # 赛事配置（任务分值、时间等）
+    └── participants/
+        └── {nickname}/                # 每位学员一个目录
+            ├── profile.json           # 学员信息（昵称、注册时间）
+            └── progress.json          # 学员进展（各任务状态和得分）
+```
+
+### 积分与排行榜工作原理
+
+**学员注册（T1）**：
+- 学员运行 `register.sh`，脚本在 Artifactory 中创建三个 npm 仓库（local / remote / virtual），并在 `workshop-events` 仓库写入初始 `progress.json`（T1 标记为完成，得 10 分）
+
+**任务验证（T2–T6）**：
+- 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒轮询一次
+- 对每位学员，通过 Artifactory REST API 逐一验证各任务是否完成（见下表）
+- 验证通过则将对应任务状态更新为 `done` 并写回学员的 `progress.json`
+
+| 任务 | 验证方式 |
+|------|---------|
+| T1 | `GET /api/repositories/{nickname}-npm-virtual` 返回 200 |
+| T2 | `GET /api/storage/{nickname}-npm-remote` 有子目录（有缓存包） |
+| T3 | `GET /api/build/{nickname}-npm-sample/1` 返回 200 |
+| T4 | `GET /api/curation/policies` 列表中有包含昵称的 Policy |
+| T5 | `GET /api/curation/audit` 中有昵称对应仓库拦截 axios@1.7.2 的记录 |
+| T6 | Build #3 存在且依赖中 axios 版本不是 1.7.2 |
+
+**排行榜渲染**：
+- 所有学员的 `progress.json` 更新完后，按总分降序、同分按最后任务完成时间升序排列，在终端打印 ASCII 排行榜
+- 组织者将此终端窗口投屏，学员实时可见
+
+### 为什么用 Artifactory 存数据
+
+- **零额外依赖**：学员本来就要操作 Artifactory，不需要额外搭建数据库或 API 服务
+- **REST API 完备**：上传、下载、列目录都有标准 API，bash + curl + python3 即可驱动
+- **可视化调试**：组织者可以直接在 Artifactory UI 中查看或修改任何学员的 JSON 文件
+
+---
+
 ## 前置要求
 
 | 项目 | 要求 |
