@@ -7,31 +7,39 @@ usage() {
   cat >&2 <<EOF
 使用前请先设置环境变量：
   export JFROG_TOKEN="your-admin-token"
+  export JFROG_URL="https://mycompany.jfrog.io"
 
-Usage: $0 <EVENT_ID> <EVENT_NAME> <JFROG_URL>
+Usage: $0 <EVENT_ID> <EVENT_NAME>
 
   EVENT_ID    赛事唯一标识，例如 2026-06-shanghai
   EVENT_NAME  赛事展示名称，例如 "JFrog Workshop Shanghai"
-  JFROG_URL   JFrog 实例地址，例如 https://mycompany.jfrog.io
 
 Example:
   export JFROG_TOKEN="your-admin-token"
-  $0 2026-06-shanghai "JFrog Workshop Shanghai" https://mycompany.jfrog.io
+  export JFROG_URL="https://mycompany.jfrog.io"
+  $0 2026-06-shanghai "JFrog Workshop Shanghai"
 EOF
   exit 1
 }
 
-[ $# -ge 3 ] || usage
+[ $# -ge 2 ] || usage
 
 EVENT_ID="$1"
 EVENT_NAME="$2"
-JFROG_URL="${3%/}"
 
 if [ -z "${JFROG_TOKEN:-}" ]; then
   echo "❌ 未设置 JFROG_TOKEN 环境变量，请先运行：" >&2
   echo "   export JFROG_TOKEN=\"your-admin-token\"" >&2
   exit 1
 fi
+
+if [ -z "${JFROG_URL:-}" ]; then
+  echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" >&2
+  echo "   export JFROG_URL=\"https://mycompany.jfrog.io\"" >&2
+  exit 1
+fi
+
+JFROG_URL="${JFROG_URL%/}"
 
 EVENTS_REPO="workshop-events"
 API="${JFROG_URL}/artifactory/api"
@@ -110,9 +118,7 @@ echo ""
 echo "  下一步："
 echo "  1. 运行以下命令启动实时排行榜（投屏此终端窗口）："
 echo ""
-echo "     bash automation/refresh-leaderboard.sh \\"
-echo "       \"${EVENT_ID}\" \\"
-echo "       \"${JFROG_URL}\""
+echo "     bash automation/refresh-leaderboard.sh \"${EVENT_ID}\""
 echo ""
-echo "  2. 将 EVENT_ID（${EVENT_ID}）和 JFROG_URL 告知学员"
+echo "  2. 将 EVENT_ID（${EVENT_ID}）和 JFROG_URL（${JFROG_URL}）告知学员"
 echo ""

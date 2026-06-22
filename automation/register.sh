@@ -9,25 +9,41 @@ EVENTS_REPO="workshop-events"
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 <NICKNAME> <EVENT_ID> <JFROG_URL> <JFROG_TOKEN>
+使用前请先设置环境变量：
+  export JFROG_URL="https://mycompany.jfrog.io"
+  export JFROG_TOKEN="your-access-token"
+
+Usage: $0 <NICKNAME> <EVENT_ID>
 
   NICKNAME    你的昵称（小写字母、数字、连字符，3-20 个字符）
   EVENT_ID    赛事 ID（由讲师提供）
-  JFROG_URL   JFrog 实例地址，例如 https://mycompany.jfrog.io
-  JFROG_TOKEN 你的 Access Token
 
 Example:
-  $0 alex 2025-06-shanghai https://mycompany.jfrog.io \$TOKEN
+  export JFROG_URL="https://mycompany.jfrog.io"
+  export JFROG_TOKEN="your-access-token"
+  $0 alex 2026-06-shanghai
 EOF
   exit 1
 }
 
-[ $# -ge 4 ] || usage
+[ $# -ge 2 ] || usage
 
 NICKNAME="$1"
 EVENT_ID="$2"
-JFROG_URL="${3%/}"
-JFROG_TOKEN="$4"
+
+if [ -z "${JFROG_URL:-}" ]; then
+  echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" >&2
+  echo "   export JFROG_URL=\"https://mycompany.jfrog.io\"" >&2
+  exit 1
+fi
+
+if [ -z "${JFROG_TOKEN:-}" ]; then
+  echo "❌ 未设置 JFROG_TOKEN 环境变量，请先运行：" >&2
+  echo "   export JFROG_TOKEN=\"your-access-token\"" >&2
+  exit 1
+fi
+
+JFROG_URL="${JFROG_URL%/}"
 GITHUB_USER="${GITHUB_USER:-${GITHUB_ACTOR:-unknown}}"
 
 API="${JFROG_URL}/artifactory/api"

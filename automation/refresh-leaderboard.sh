@@ -7,27 +7,34 @@ usage() {
   cat >&2 <<EOF
 使用前请先设置环境变量：
   export JFROG_TOKEN="your-admin-token"
+  export JFROG_URL="https://mycompany.jfrog.io"
 
-Usage: $0 <EVENT_ID> <JFROG_URL>
+Usage: $0 <EVENT_ID>
 
   EVENT_ID    赛事 ID，例如 2026-06-shanghai
-  JFROG_URL   JFrog 实例地址，例如 https://mycompany.jfrog.io
 
 按 Ctrl+C 停止。
 EOF
   exit 1
 }
 
-[ $# -ge 2 ] || usage
+[ $# -ge 1 ] || usage
 
 EVENT_ID="$1"
-JFROG_URL="${2%/}"
 
 if [ -z "${JFROG_TOKEN:-}" ]; then
   echo "❌ 未设置 JFROG_TOKEN 环境变量，请先运行：" >&2
   echo "   export JFROG_TOKEN=\"your-admin-token\"" >&2
   exit 1
 fi
+
+if [ -z "${JFROG_URL:-}" ]; then
+  echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" >&2
+  echo "   export JFROG_URL=\"https://mycompany.jfrog.io\"" >&2
+  exit 1
+fi
+
+JFROG_URL="${JFROG_URL%/}"
 
 EVENTS_REPO="workshop-events"
 API="${JFROG_URL}/artifactory/api"

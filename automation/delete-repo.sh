@@ -8,8 +8,8 @@ REPO_KIND="${2:-all}"
 
 # 可选参数（用于同时清理 workshop-events 中的学员记录）
 EVENT_ID=""
-JFROG_URL=""
-JFROG_TOKEN=""
+JFROG_URL="${JFROG_URL:-}"
+JFROG_TOKEN="${JFROG_TOKEN:-}"
 shift 2 2>/dev/null || true
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -19,6 +19,7 @@ while [ $# -gt 0 ]; do
     *) shift ;;
   esac
 done
+[ -n "$JFROG_URL" ] && JFROG_URL="${JFROG_URL%/}"
 
 normalize_student_id() {
   value="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"

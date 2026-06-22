@@ -24,21 +24,23 @@
 
 打开本 GitHub 代码仓库页面，点击 **Code → Codespaces → New codespace**，等待环境就绪。
 
-也可在本机直接运行脚本（需要已安装 `curl` 和 `python3`）。
-
 ---
 
-## 步骤二：初始化赛事
+## 步骤二：设置环境变量并初始化赛事
 
-运行 `setup-event.sh`，传入赛事信息：
+先在终端中设置环境变量（**本次 Session 只需设置一次**，后续所有脚本都会读取）：
 
 ```bash
 export JFROG_TOKEN="your-admin-token"
+export JFROG_URL="https://yourcompany.jfrog.io"
+```
 
+然后运行初始化脚本：
+
+```bash
 bash automation/setup-event.sh \
   "2026-06-shanghai" \
-  "JFrog Workshop Shanghai 2026" \
-  "https://yourcompany.jfrog.io"
+  "JFrog Workshop Shanghai 2026"
 ```
 
 脚本将：
@@ -53,10 +55,8 @@ bash automation/setup-event.sh \
 在终端中运行以下命令（**Workshop 期间保持运行，将此终端窗口投屏**）：
 
 ```bash
-# JFROG_TOKEN 已在步骤二中设置，无需重复设置
-bash automation/refresh-leaderboard.sh \
-  "2026-06-shanghai" \
-  "https://yourcompany.jfrog.io"
+# JFROG_TOKEN 和 JFROG_URL 已在步骤二中设置，无需重复设置
+bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 ```
 
 脚本每 30 秒自动：
@@ -90,7 +90,7 @@ bash automation/refresh-leaderboard.sh \
 | 信息 | 值 |
 |------|-----|
 | EVENT_ID | `2026-06-shanghai`（你设置的值） |
-| JFROG_URL | `https://yourcompany.jfrog.io` |
+| JFROG_URL | `https://yourcompany.jfrog.io`（即 `$JFROG_URL` 的值） |
 | 获取个人 Token 的方式 | JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate |
 | 开始方式 | 打开 Codespace → 点击右侧 Copilot Chat → 输入"我要开始 workshop，EVENT_ID 是 xxx" |
 
@@ -101,18 +101,16 @@ bash automation/refresh-leaderboard.sh \
 ### 清理单个学员数据
 
 ```bash
-bash automation/delete-repo.sh <nickname> all \
-  --event-id "2026-06-shanghai" \
-  --jfrog-url "https://yourcompany.jfrog.io" \
-  --token "$JFROG_TOKEN"
+# JFROG_TOKEN 和 JFROG_URL 已在步骤二中设置
+bash automation/delete-repo.sh <nickname> all --event-id "2026-06-shanghai"
 ```
 
 ### 批量清理所有学员
 
 ```bash
-# 列出所有已注册学员
+# 列出所有已注册学员（需已设置 JFROG_TOKEN 和 JFROG_URL）
 curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
-  "https://yourcompany.jfrog.io/artifactory/api/storage/workshop-events/2026-06-shanghai/participants" \
+  "${JFROG_URL}/artifactory/api/storage/workshop-events/2026-06-shanghai/participants" \
   | python3 -c "import sys,json; [print(c['uri'].strip('/')) for c in json.load(sys.stdin).get('children',[])]"
 
 # 对每个学员逐一运行 delete-repo.sh

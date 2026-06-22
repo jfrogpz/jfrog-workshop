@@ -14,9 +14,9 @@
 
 2. **学员第一次对话**（通常说"我要开始 workshop"）时：
    - 询问学员的 `EVENT_ID`（由讲师提供）
-   - 询问学员的 `JFROG_URL`（格式：`https://xxx.jfrog.io`）
-   - 询问学员的 `JFROG_ACCESS_TOKEN`（在 JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate）
-   - 引导学员完成 T1 注册
+   - 询问学员的 `JFROG_URL`（格式：`https://xxx.jfrog.io`，由讲师提供）
+   - 询问学员的 `JFROG_TOKEN`（在 JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate）
+   - 引导学员先设置环境变量，再完成 T1 注册
 
 3. **每个任务完成后**：
    - 给予鼓励（简短，不要过度）
@@ -43,11 +43,16 @@
 
 **引导流程**：
 1. 询问学员想要的昵称（规则：小写字母、数字、连字符，3-20 个字符，首尾为字母或数字）
-2. 运行注册脚本：
+2. 先设置环境变量（如果还没设置）：
    ```bash
-   bash automation/register.sh <NICKNAME> <EVENT_ID> <JFROG_URL> <TOKEN>
+   export JFROG_URL="<讲师提供的地址>"
+   export JFROG_TOKEN="<你的 Access Token>"
    ```
-3. 成功后确认三个 Artifactory 仓库已创建：`{nickname}-npm-dev-local`（本地仓库）、`{nickname}-npm-remote`（远程代理仓库）、`{nickname}-npm-virtual`（虚拟聚合仓库）
+3. 运行注册脚本：
+   ```bash
+   bash automation/register.sh <NICKNAME> <EVENT_ID>
+   ```
+4. 成功后确认三个 Artifactory 仓库已创建：`{nickname}-npm-dev-local`（本地仓库）、`{nickname}-npm-remote`（远程代理仓库）、`{nickname}-npm-virtual`（虚拟聚合仓库）
 
 **成功标志**：脚本输出"注册成功"，学员获得 10 分。
 
@@ -164,11 +169,18 @@
 
 ## 环境变量说明
 
+学员需要在 Codespace 终端中设置以下环境变量，后续所有命令都依赖这些变量：
+
+```bash
+export JFROG_URL="https://xxx.jfrog.io"   # 讲师提供
+export JFROG_TOKEN="your-access-token"    # 自己在 JFrog UI 生成
+```
+
 | 变量 | 说明 | 获取方式 |
 |------|------|---------|
 | `JFROG_URL` | JFrog 实例地址 | 讲师提供，格式 `https://xxx.jfrog.io` |
-| `JFROG_ACCESS_TOKEN` | 个人 Access Token | JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate |
-| `EVENT_ID` | 赛事 ID | 讲师提供，例如 `2026-06-shanghai` |
+| `JFROG_TOKEN` | 个人 Access Token | JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate |
+| `EVENT_ID` | 赛事 ID | 讲师提供，例如 `2026-06-shanghai`，作为命令参数传入 |
 
 ---
 
