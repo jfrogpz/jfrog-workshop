@@ -47,6 +47,10 @@ STATUS=$(curl_jf -o /dev/null -w "%{http_code}" "${API}/repositories/${EVENTS_RE
 
 if [ "$STATUS" = "200" ]; then
   echo "    ✅ 仓库已存在，跳过创建"
+  # 确保 archiveBrowsingEnabled 已开启
+  curl_jf -X POST "${API}/repositories/${EVENTS_REPO}" \
+    -H "Content-Type: application/json" \
+    -d '{"archiveBrowsingEnabled": true}' >/dev/null 2>&1 || true
 else
   echo "    创建 Generic 仓库 ${EVENTS_REPO}..."
   curl_jf -X PUT "${API}/repositories/${EVENTS_REPO}" \
@@ -60,11 +64,6 @@ else
       "archiveBrowsingEnabled": true
     }'
   echo "    ✅ 仓库创建成功"
-else
-  # 仓库已存在，确保 archiveBrowsingEnabled 已开启
-  curl_jf -X POST "${API}/repositories/${EVENTS_REPO}" \
-    -H "Content-Type: application/json" \
-    -d '{"archiveBrowsingEnabled": true}' >/dev/null 2>&1 || true
 fi
 
 # 每次运行都确保匿名读权限存在（PUT 幂等，重复调用安全）
