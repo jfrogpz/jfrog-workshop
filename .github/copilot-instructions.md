@@ -123,7 +123,7 @@
    - Package Name：`axios`
    - Package Versions：`1.7.2`
    - 保存 Condition
-4. 开启 **Block from cache**：确保该选项已勾选，否则 Artifactory 中已缓存的版本不会被拦截
+4. Policy Action 选择 **Block**，并在下方开启 **Enforce policy on cached packages**（确保已缓存在 Artifactory 中的版本也会被拦截）
 5. Apply to：选择学员的 Artifactory **远程代理仓库** `{nickname}-npm-remote`（注意：不是 virtual 仓库）
 6. 保存并确认 Policy 状态为 **Enabled**
 
