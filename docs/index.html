@@ -267,8 +267,11 @@
 <script>
   const params = new URLSearchParams(location.search);
   const EVENT_ID = params.get('event') || '';
-  const JFROG_URL = (params.get('jfrog_url') || location.origin).replace(/\/$/, '');
-  const BASE = `${JFROG_URL}/artifactory/workshop-events`;
+  const JFROG_URL = (params.get('jfrog_url') || '').replace(/\/$/, '');
+
+  const BASE = JFROG_URL
+    ? `${JFROG_URL}/artifactory/workshop-events`
+    : null;
 
   let prevRankings = {};
   let endTime = null;
@@ -301,13 +304,11 @@
       </td></tr>`;
       return;
     }
-
     const rows = rankings.map(r => {
       const ts = r.task_status || {};
       const prevPts = (prevRankings[r.nickname] || {}).total_points;
       const changed = prevPts !== undefined && prevPts !== r.total_points;
       const pct = Math.round((r.total_points / 120) * 100);
-
       return `<tr class="${changed ? 'highlight' : ''}">
         <td class="center">${rankBadge(r.rank)}</td>
         <td><span class="nickname">${escHtml(r.nickname)}</span></td>
@@ -326,7 +327,6 @@
         </td>
       </tr>`;
     });
-
     tbody.innerHTML = rows.join('');
     prevRankings = Object.fromEntries(rankings.map(r => [r.nickname, r]));
   }
@@ -349,7 +349,7 @@
   }
 
   async function fetchConfig() {
-    if (!EVENT_ID) return;
+    if (!BASE || !EVENT_ID) return;
     try {
       const res = await fetch(`${BASE}/${EVENT_ID}/config.json?t=${Date.now()}`);
       if (!res.ok) return;
@@ -364,15 +364,15 @@
     const dot = document.getElementById('status-dot');
     const statusText = document.getElementById('status-text');
 
-    if (!EVENT_ID) {
+    if (!BASE || !EVENT_ID) {
       dot.classList.add('error');
-      statusText.textContent = '未配置：请在 URL 中添加 ?event=<ID>';
+      statusText.textContent = '未配置：请在 URL 中添加参数';
       document.getElementById('leaderboard-body').innerHTML = `<tr><td colspan="9">
         <div class="empty-state">
           <div class="icon">⚙️</div>
           <div>请在 URL 中提供参数：</div>
           <div style="margin-top:8px;font-family:monospace;color:var(--blue)">
-            ?event=2025-06-shanghai
+            ?event=2025-06-shanghai&jfrog_url=https://yourcompany.jfrog.io
           </div>
         </div>
       </td></tr>`;
@@ -380,51 +380,18 @@
     }
 
     try {
-      // 1. 列出所有学员
-      const dirRes = await fetch(
-        `${JFROG_URL}/artifactory/api/storage/workshop-events/${EVENT_ID}/participants?t=${Date.now()}`
-      );
-      if (!dirRes.ok) throw new Error(`HTTP ${dirRes.status}`);
-      const dirData = await dirRes.json();
-      const nicknames = (dirData.children || [])
-        .filter(c => c.folder)
-        .map(c => c.uri.replace(/^\//, ''));
+      const res = await fetch(`${BASE}/${EVENT_ID}/leaderboard.json?t=${Date.now()}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
 
-      // 2. 并行拉取所有学员的 progress.json
-      const progressList = await Promise.all(
-        nicknames.map(async nick => {
-          try {
-            const res = await fetch(
-              `${BASE}/${EVENT_ID}/participants/${nick}/progress.json?t=${Date.now()}`
-            );
-            if (!res.ok) return null;
-            return await res.json();
-          } catch {
-            return null;
-          }
-        })
-      );
+      document.getElementById('event-name').textContent = data.event_name || 'JFrog Workshop';
+      document.getElementById('event-id').textContent = `赛事 ID：${data.event_id || EVENT_ID}`;
+      document.getElementById('last-updated').textContent =
+        data.updated_at ? new Date(data.updated_at).toLocaleTimeString('zh-CN') : '—';
+      document.getElementById('participant-count').textContent =
+        (data.rankings || []).length + ' 人';
 
-      // 3. 汇总排序
-      const valid = progressList.filter(Boolean);
-      valid.sort((a, b) => {
-        if (b.total_points !== a.total_points) return b.total_points - a.total_points;
-        return (a.registered_at || '') < (b.registered_at || '') ? -1 : 1;
-      });
-
-      const rankings = valid.map((p, i) => ({
-        rank: i + 1,
-        nickname: p.nickname,
-        total_points: p.total_points || 0,
-        task_status: Object.fromEntries(
-          Object.entries(p.tasks || {}).map(([tid, t]) => [tid, t.status])
-        ),
-      }));
-
-      document.getElementById('participant-count').textContent = rankings.length + ' 人';
-      document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('zh-CN');
-      renderTable(rankings);
-
+      renderTable(data.rankings || []);
       dot.classList.remove('error');
       statusText.textContent = '实时更新中';
 

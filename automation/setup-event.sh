@@ -47,10 +47,6 @@ STATUS=$(curl_jf -o /dev/null -w "%{http_code}" "${API}/repositories/${EVENTS_RE
 
 if [ "$STATUS" = "200" ]; then
   echo "    ✅ 仓库已存在，跳过创建"
-  # 确保 archiveBrowsingEnabled 已开启
-  curl_jf -X POST "${API}/repositories/${EVENTS_REPO}" \
-    -H "Content-Type: application/json" \
-    -d '{"archiveBrowsingEnabled": true}' >/dev/null 2>&1 || true
 else
   echo "    创建 Generic 仓库 ${EVENTS_REPO}..."
   curl_jf -X PUT "${API}/repositories/${EVENTS_REPO}" \
@@ -60,24 +56,10 @@ else
       "packageType": "generic",
       "description": "JFrog Workshop 赛事数据存储",
       "repoLayoutRef": "simple-default",
-      "xrayIndex": false,
-      "archiveBrowsingEnabled": true
+      "xrayIndex": false
     }'
   echo "    ✅ 仓库创建成功"
 fi
-
-# 每次运行都确保匿名读权限存在（PUT 幂等，重复调用安全）
-echo "    配置匿名读权限..."
-curl_jf -X PUT "${API}/security/permissions/workshop-events-read" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"name\": \"workshop-events-read\",
-    \"repositories\": [\"${EVENTS_REPO}\"],
-    \"principals\": {
-      \"users\": { \"anonymous\": [\"r\"] }
-    }
-  }" && echo "    ✅ 匿名读权限已配置" \
-  || echo "    ⚠️  匿名读权限配置失败，请手动在 UI 中设置（Security → Permissions）"
 
 # ── 步骤 2：生成并上传 config.json ─────────────────────────────────────────
 echo ""
@@ -111,34 +93,39 @@ echo "$CONFIG_JSON" | curl_jf -X PUT \
   -T -
 echo "    ✅ config.json 已上传"
 
-# ── 步骤 3：上传排行榜页面 index.html ─────────────────────────────────────
+# ── 步骤 3：初始化空 leaderboard.json ─────────────────────────────────────
 echo ""
-echo ">>> 上传排行榜页面..."
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-INDEX_HTML="${SCRIPT_DIR}/../docs/index.html"
+echo ">>> 初始化 leaderboard.json..."
 
-if [ -f "$INDEX_HTML" ]; then
-  curl_jf -X PUT \
-    "${JFROG_URL}/artifactory/${EVENTS_REPO}/index.html" \
-    -H "Content-Type: text/html" \
-    -T "$INDEX_HTML" >/dev/null
-  echo "    ✅ index.html 已上传"
-else
-  echo "    ⚠️  未找到 docs/index.html，跳过上传"
-fi
+LEADERBOARD_JSON=$(cat <<JSON
+{
+  "event_id": "${EVENT_ID}",
+  "event_name": "${EVENT_NAME}",
+  "updated_at": "${START_TIME}",
+  "rankings": []
+}
+JSON
+)
+
+echo "$LEADERBOARD_JSON" | curl_jf -X PUT \
+  "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/leaderboard.json" \
+  -H "Content-Type: application/json" \
+  -T -
+echo "    ✅ leaderboard.json 已上传"
 
 # ── 完成 ────────────────────────────────────────────────────────────────────
-DASHBOARD_URL="${JFROG_URL}/artifactory/${EVENTS_REPO}/index.html?event=${EVENT_ID}"
+LEADERBOARD_URL="${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/leaderboard.json"
 
 echo ""
 echo "=========================================="
 echo "  ✅ 赛事初始化完成！"
 echo "=========================================="
 echo ""
-echo "  排行榜地址（直接投屏给学员）："
-echo "  ${DASHBOARD_URL}"
-echo ""
 echo "  下一步："
-echo "  1. 将上方排行榜 URL 投屏给学员"
-echo "  2. 学员打开 Codespace，通过 Copilot Chat 开始 workshop"
+echo "  1. 运行 refresh-leaderboard.sh 开始实时刷新进度"
+echo "  2. 在浏览器中登录 JFrog，然后打开排行榜页面（GitHub Pages）"
+echo "  3. 将排行榜 URL 投屏给学员"
+echo ""
+echo "  leaderboard.json 地址："
+echo "  ${LEADERBOARD_URL}"
 echo ""
