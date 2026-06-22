@@ -89,10 +89,13 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 | 信息 | 值 |
 |------|-----|
-| EVENT_ID | `2026-06-shanghai`（你设置的值） |
 | JFROG_URL | `https://yourcompany.jfrog.io`（即 `$JFROG_URL` 的值） |
-| 获取个人 Token 的方式 | JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate |
+| 管理员账号 | JFrog 管理员用户名（学员用此账号登录 JFrog UI） |
+| 管理员密码 | JFrog 管理员密码 |
+| EVENT_ID | `2026-06-shanghai`（你设置的值） |
 | 开始方式 | 打开 Codespace → 点击右侧 Copilot Chat → 输入"我要开始 workshop，EVENT_ID 是 xxx" |
+
+> **说明**：所有学员共用同一个管理员账号登录 JFrog UI，登录后各自在 **Edit Profile → Access Tokens** 生成自己的 Token。各自的 Token 互相独立，不会冲突。Workshop 结束后建议修改管理员密码。
 
 ---
 

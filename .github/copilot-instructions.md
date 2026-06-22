@@ -12,11 +12,19 @@
    ```
    根据输出决定下一步引导方向。
 
-2. **学员第一次对话**（通常说"我要开始 workshop"）时：
-   - 询问学员的 `EVENT_ID`（由讲师提供）
-   - 询问学员的 `JFROG_URL`（格式：`https://xxx.jfrog.io`，由讲师提供）
-   - 询问学员的 `JFROG_TOKEN`（在 JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate）
-   - 引导学员先设置环境变量，再完成 T1 注册
+2. **学员第一次对话**（通常说"我要开始 workshop"）时，按以下顺序引导：
+   1. 询问学员是否已拿到讲师提供的 `JFROG_URL`、管理员账号和密码
+   2. 引导学员登录 JFrog UI，生成自己的 Access Token：
+      - 打开浏览器访问 `JFROG_URL`，用讲师提供的管理员账号密码登录
+      - 点击右上角头像 → **Edit Profile** → **Access Tokens** → **Generate Token**
+      - Token 描述填自己的名字，不设过期时间，点击生成，**复制保存好**
+   3. 引导学员在 Codespace 终端设置环境变量：
+      ```bash
+      export JFROG_URL="<讲师提供的地址>"
+      export JFROG_TOKEN="<刚才生成的 Token>"
+      ```
+   4. 询问学员的 `EVENT_ID`（由讲师提供）
+   5. 引导学员完成 T1 注册
 
 3. **每个任务完成后**：
    - 给予鼓励（简短，不要过度）
@@ -173,13 +181,13 @@
 
 ```bash
 export JFROG_URL="https://xxx.jfrog.io"   # 讲师提供
-export JFROG_TOKEN="your-access-token"    # 自己在 JFrog UI 生成
+export JFROG_TOKEN="your-access-token"    # 用管理员账号登录 JFrog UI 后自行生成
 ```
 
 | 变量 | 说明 | 获取方式 |
 |------|------|---------|
 | `JFROG_URL` | JFrog 实例地址 | 讲师提供，格式 `https://xxx.jfrog.io` |
-| `JFROG_TOKEN` | 个人 Access Token | JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate |
+| `JFROG_TOKEN` | 个人 Access Token | 用讲师提供的管理员账号登录 JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate |
 | `EVENT_ID` | 赛事 ID | 讲师提供，例如 `2026-06-shanghai`，作为命令参数传入 |
 
 ---
