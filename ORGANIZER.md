@@ -185,10 +185,10 @@ curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
 
 ---
 
----
-
 ## 赛事配置自定义
 
-在 Artifactory UI 中直接编辑 `workshop-events/{event_id}/config.json` 可以：
-- 调整各任务的分值
-- 修改赛事结束时间
+如需调整各任务分值，修改 `automation/setup-event.sh` 中的 `tasks` 数组，然后重新运行初始化脚本即可覆盖 `config.json`：
+
+```bash
+bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
+```
