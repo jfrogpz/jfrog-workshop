@@ -74,10 +74,14 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/alexwang66/jfrog-workshop)
 
 > ⏱️ Codespace 首次启动约需 1-2 分钟，请耐心等待。
+>
+> 💻 **如果无法使用 Codespace**，请参阅 [SETUP.md](./SETUP.md) 在本地机器上配置所需环境。
 
 ### 第二步：打开 AI 助理
 
 Codespace 启动完成后，点击窗口**右侧**的 **GitHub Copilot Chat** 图标（💬）打开对话面板。
+
+> 🤖 **如果 Copilot Chat 不可用**，可以直接阅读 [.github/copilot-instructions.md](.github/copilot-instructions.md)，其中包含所有任务的完整步骤和命令，按顺序执行即可。
 
 ### 第三步：开始 Workshop
 

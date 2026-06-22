@@ -8,18 +8,31 @@
 
 ### 整体设计思路
 
-本 Workshop 不依赖任何外部数据库或后端服务，**以 Artifactory 本身作为唯一的数据存储**，利用 Generic 仓库存放 JSON 文件来追踪赛事配置和学员进展。
+本 Workshop 围绕三个核心设计原则：
 
-```
-Artifactory Generic 仓库：workshop-events
-│
-└── {event_id}/                        # 赛事目录，例如 2026-06-shanghai
-    ├── config.json                    # 赛事配置（任务分值、时间等）
-    └── participants/
-        └── {nickname}/                # 每位学员一个目录
-            ├── profile.json           # 学员信息（昵称、注册时间）
-            └── progress.json          # 学员进展（各任务状态和得分）
-```
+**1. 基于 GitHub Codespace 统一学员环境，提供开箱即用的体验**
+学员无需在本机安装任何工具，点击链接即可获得预配置好 Node.js、JFrog CLI 和示例项目的云端环境，消除环境差异带来的干扰，让所有学员从同一起点出发。
+
+**2. 利用 AI 助理（GitHub Copilot Chat）引导学员完成任务**
+Copilot Chat 内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本。学员通过与 AI 对话完成全部操作，降低上手门槛，同时体验 AI 辅助开发的工作方式。
+
+**3. 采用竞赛制，利用 Artifactory 实时监控进展，增加紧张感和乐趣**
+不依赖任何外部数据库——以 Artifactory Generic 仓库作为唯一数据存储，组织者脚本每 30 秒通过 REST API 轮询验证所有学员的任务完成情况，实时更新终端排行榜并投屏，营造竞赛氛围。
+
+---
+
+### 为什么使用 GitHub Codespace 作为学员环境
+
+| 问题 | Codespace 的解法 |
+|------|----------------|
+| 学员环境各异（Windows/Mac/Linux） | 统一的云端 Linux 环境，开箱即用 |
+| 需要预装 Node.js、JFrog CLI、bash | `.devcontainer` 自动配置，学员无需手动安装任何工具 |
+| 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
+| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本 |
+
+如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP.md](SETUP.md)。
+
+---
 
 ### 积分与排行榜工作原理
 
@@ -36,7 +49,7 @@ Artifactory Generic 仓库：workshop-events
 | T1 | `GET /api/repositories/{nickname}-npm-virtual` 返回 200 |
 | T2 | `GET /api/storage/{nickname}-npm-remote` 有子目录（有缓存包） |
 | T3 | `GET /api/build/{nickname}-npm-sample/1` 返回 200 |
-| T4 | `GET /api/curation/policies` 列表中有包含昵称的 Policy |
+| T4 | `GET /xray/api/v1/curation/policies` 列表中有包含昵称的 Policy |
 | T5 | `GET /xray/api/v1/curation/audit/packages` 中有昵称对应仓库 blocked axios@1.7.2 的记录 |
 | T6 | Build #3 存在且依赖中 axios 版本不是 1.7.2 |
 
@@ -44,24 +57,24 @@ Artifactory Generic 仓库：workshop-events
 - 所有学员的 `progress.json` 更新完后，按总分降序、同分按最后任务完成时间升序排列，在终端打印 ASCII 排行榜
 - 组织者将此终端窗口投屏，学员实时可见
 
+---
+
 ### 为什么用 Artifactory 存数据
 
 - **零额外依赖**：学员本来就要操作 Artifactory，不需要额外搭建数据库或 API 服务
 - **REST API 完备**：上传、下载、列目录都有标准 API，bash + curl + python3 即可驱动
 - **可视化调试**：组织者可以直接在 Artifactory UI 中查看或修改任何学员的 JSON 文件
 
-### 为什么使用 GitHub Codespace 作为学员环境
-
-Codespace 是本 Workshop 学员侧体验的核心，它解决了以下问题：
-
-| 问题 | Codespace 的解法 |
-|------|----------------|
-| 学员环境各异（Windows/Mac/Linux） | 统一的云端 Linux 环境，开箱即用 |
-| 需要预装 Node.js、JFrog CLI、bash | `.devcontainer` 自动配置，学员无需手动安装任何工具 |
-| 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
-| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本，学员与 AI 对话即可完成全部任务 |
-
-如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP.md](SETUP.md)。
+```
+Artifactory Generic 仓库：workshop-events
+│
+└── {event_id}/                        # 赛事目录，例如 2026-06-shanghai
+    ├── config.json                    # 赛事配置（任务分值、时间等）
+    └── participants/
+        └── {nickname}/                # 每位学员一个目录
+            ├── profile.json           # 学员信息（昵称、注册时间）
+            └── progress.json          # 学员进展（各任务状态和得分）
+```
 
 ---
 
