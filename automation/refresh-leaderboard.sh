@@ -157,10 +157,11 @@ process_participant() {
   local updated
   updated=$(VERIFY_T2="$v_t2" VERIFY_T3="$v_t3" VERIFY_T4="$v_t4" \
     VERIFY_T5="$v_t5" VERIFY_T6="$v_t6" \
-    echo "$progress_raw" | python3 - "$now" <<'PY'
+    PROGRESS_JSON="$progress_raw" \
+    python3 - "$now" <<'PY'
 import sys, json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ['PROGRESS_JSON'])
 now = sys.argv[1]
 task_points = {"T1": 10, "T2": 20, "T3": 20, "T4": 10, "T5": 20, "T6": 20}
 tasks = data.get("tasks", {})
@@ -178,6 +179,8 @@ data["total_points"] = sum(t.get("points", 0) for t in tasks.values())
 print(json.dumps(data, ensure_ascii=False))
 PY
   )
+
+  [ -n "$updated" ] || return 0
 
   echo "$updated" | curl_jf -X PUT \
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${nickname}/progress.json" \
