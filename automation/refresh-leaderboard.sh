@@ -70,20 +70,38 @@ verify_task() {
       [ "$s" = "200" ]
       ;;
     T4)
-      # TODO: 需实测 /api/curation/policies 的响应格式并验证过滤逻辑是否正确
-      local found
-      found=$(curl_jf "${API}/curation/policies" 2>/dev/null \
-        | python3 -c "
+      local found="no"
+      local offset=0
+      local page_size=50
+      while true; do
+        local page
+        page=$(curl_jf "${JFROG_URL}/xray/api/v1/curation/policies?num_of_rows=${page_size}&offset=${offset}" 2>/dev/null || echo "")
+        local result
+        result=$(echo "$page" | python3 -c "
 import sys, json
 try:
-    policies = json.load(sys.stdin)
+    data = json.load(sys.stdin)
     nick = '${nickname}'
-    found = any(nick.lower() in (p.get('name','') + p.get('description','')).lower()
-                for p in (policies if isinstance(policies, list) else []))
+    policies = data.get('data', [])
+    found = any(nick.lower() in p.get('name','').lower() for p in policies)
+    total = data.get('meta', {}).get('total_count', 0)
+    returned = data.get('meta', {}).get('result_count', 0)
     print('yes' if found else 'no')
+    print(total)
+    print(returned)
 except:
     print('no')
-" 2>/dev/null || echo "no")
+    print(0)
+    print(0)
+" 2>/dev/null || echo -e "no\n0\n0")
+        local page_found total_count result_count
+        page_found=$(echo "$result" | sed -n '1p')
+        total_count=$(echo "$result" | sed -n '2p')
+        result_count=$(echo "$result" | sed -n '3p')
+        if [ "$page_found" = "yes" ]; then found="yes"; break; fi
+        offset=$((offset + page_size))
+        [ "$offset" -lt "${total_count:-0}" ] || break
+      done
       [ "$found" = "yes" ]
       ;;
     T5)
