@@ -4,65 +4,6 @@
 
 ---
 
-## 架构说明
-
-### 为什么使用 GitHub Codespace 作为学员环境
-
-| 问题 | Codespace 的解法 |
-|------|----------------|
-| 学员环境各异（Windows/Mac/Linux） | 统一的云端 Linux 环境，开箱即用 |
-| 需要预装 Node.js、JFrog CLI、bash | `.devcontainer` 自动配置，学员无需手动安装任何工具 |
-| 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
-| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本 |
-
-如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP.md](SETUP.md)。
-
----
-
-### 积分与排行榜工作原理
-
-**学员注册（T1）**：
-- 学员运行 `register.sh`，脚本在 Artifactory 中创建三个 npm 仓库（local / remote / virtual），并在 `workshop-events` 仓库写入初始 `progress.json`（T1 标记为完成，得 10 分）
-
-**任务验证（T2–T6）**：
-- 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒轮询一次
-- 对每位学员，通过 Artifactory REST API 逐一验证各任务是否完成（见下表）
-- 验证通过则将对应任务状态更新为 `done` 并写回学员的 `progress.json`
-
-| 任务 | 验证方式 |
-|------|---------|
-| T1 | `GET /api/repositories/{nickname}-npm-virtual` 返回 200 |
-| T2 | `GET /api/storage/{nickname}-npm-remote` 有子目录（有缓存包） |
-| T3 | `GET /api/build/{nickname}-npm-sample/1` 返回 200 |
-| T4 | `GET /xray/api/v1/curation/policies` 列表中有包含昵称的 Policy |
-| T5 | `GET /xray/api/v1/curation/audit/packages` 中有昵称对应仓库 blocked axios@1.7.2 的记录 |
-| T6 | Build #3 存在且依赖中 axios 版本不是 1.7.2 |
-
-**排行榜渲染**：
-- 所有学员的 `progress.json` 更新完后，按总分降序、同分按最后任务完成时间升序排列，在终端打印 ASCII 排行榜
-- 组织者将此终端窗口投屏，学员实时可见
-
----
-
-### 为什么用 Artifactory 存数据
-
-- **零额外依赖**：学员本来就要操作 Artifactory，不需要额外搭建数据库或 API 服务
-- **REST API 完备**：上传、下载、列目录都有标准 API，bash + curl + python3 即可驱动
-- **可视化调试**：组织者可以直接在 Artifactory UI 中查看或修改任何学员的 JSON 文件
-
-```
-Artifactory Generic 仓库：workshop-events
-│
-└── {event_id}/                        # 赛事目录，例如 2026-06-shanghai
-    ├── config.json                    # 赛事配置（任务分值、时间等）
-    └── participants/
-        └── {nickname}/                # 每位学员一个目录
-            ├── profile.json           # 学员信息（昵称、注册时间）
-            └── progress.json          # 学员进展（各任务状态和得分）
-```
-
----
-
 ## 前置要求
 
 | 项目 | 要求 |
@@ -70,12 +11,6 @@ Artifactory Generic 仓库：workshop-events
 | JFrog 实例 | JFrog Cloud（SaaS），域名格式 `xxx.jfrog.io` |
 | Admin Token | 具有创建 Artifactory 仓库、管理权限、读取 build-info 的 Access Token |
 | 学员人数 | 无硬性限制，建议 ≤ 50 人（Codespace 并发） |
-
-### 提前准备
-
-1. **确认 Curation 已启用**：登录 JFrog UI → Curation，确认功能已开启且支持 npm
-2. **确认 axios@1.7.2 会被 Curation 识别为风险包**：在 JFrog UI → Curation 中搜索 axios@1.7.2，确认该版本有恶意标记（不需要提前创建 Policy，学员会在 T4 自己创建）
-3. **获取 Admin Access Token**：JFrog UI → 右上角头像 → Edit Profile → Access Tokens → Generate（建议有效期不短于 workshop 时长）
 
 ---
 
@@ -158,6 +93,15 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 ---
 
+## 赛前飞行检查
+
+在正式开始前确认以下事项：
+
+1. **确认 Curation 已启用**：登录 JFrog UI → Curation，确认功能已开启且支持 npm
+2. **提前走通全流程**：使用测试环境模拟学员完成 T1–T6 的全部操作，确认每个任务的验证逻辑正常工作，避免 Workshop 当天出现意外
+
+---
+
 ## 赛后清理
 
 ### 清理单个学员数据
@@ -200,4 +144,64 @@ curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
 
 ```bash
 bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
+```
+
+---
+
+## 架构说明
+
+### 为什么使用 GitHub Codespace 作为学员环境
+
+| 问题 | Codespace 的解法 |
+|------|----------------|
+| 学员环境各异（Windows/Mac/Linux） | 统一的云端 Linux 环境，开箱即用 |
+| 需要预装 Node.js、JFrog CLI、bash | `.devcontainer` 自动配置，学员无需手动安装任何工具 |
+| 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
+| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本 |
+
+如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP.md](SETUP.md)。
+
+---
+
+### 积分与排行榜工作原理
+
+**学员注册（T1）**：
+- 学员运行 `register.sh`，脚本在 Artifactory 中创建三个 npm 仓库（local / remote / virtual），并在 `workshop-events` 仓库写入初始 `progress.json`（T1 标记为完成，得 10 分）
+- 注册成功后，脚本在学员本地写入 `~/.workshop-profile`，保存昵称、赛事 ID、JFrog 地址和 Token，后续脚本（`check-progress.sh`、`clear-remote-cache.sh` 等）均从此文件读取，无需重复输入
+
+**任务验证（T2–T6）**：
+- 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒轮询一次
+- 对每位学员，通过 Artifactory REST API 逐一验证各任务是否完成（见下表）
+- 验证通过则将对应任务状态更新为 `done` 并写回学员的 `progress.json`
+
+| 任务 | 验证方式 |
+|------|---------|
+| T1 | `GET /api/repositories/{nickname}-npm-virtual` 返回 200 |
+| T2 | `GET /api/storage/{nickname}-npm-remote` 有子目录（有缓存包） |
+| T3 | `GET /api/build/{nickname}-npm-sample/1` 返回 200 |
+| T4 | `GET /xray/api/v1/curation/policies` 列表中有包含昵称的 Policy |
+| T5 | `GET /xray/api/v1/curation/audit/packages` 中有昵称对应仓库 blocked axios@1.7.2 的记录 |
+| T6 | Build #3 存在且依赖中 axios 版本不是 1.7.2 |
+
+**排行榜渲染**：
+- 所有学员的 `progress.json` 更新完后，按总分降序、同分按最后任务完成时间升序排列，在终端打印 ASCII 排行榜
+- 组织者将此终端窗口投屏，学员实时可见
+
+---
+
+### 为什么用 Artifactory 存数据
+
+- **零额外依赖**：学员本来就要操作 Artifactory，不需要额外搭建数据库或 API 服务
+- **REST API 完备**：上传、下载、列目录都有标准 API，bash + curl + python3 即可驱动
+- **可视化调试**：组织者可以直接在 Artifactory UI 中查看或修改任何学员的 JSON 文件
+
+```
+Artifactory Generic 仓库：workshop-events
+│
+└── {event_id}/                        # 赛事目录，例如 2026-06-shanghai
+    ├── config.json                    # 赛事配置（任务分值、时间等）
+    └── participants/
+        └── {nickname}/                # 每位学员一个目录
+            ├── profile.json           # 学员信息（昵称、注册时间）
+            └── progress.json          # 学员进展（各任务状态和得分）
 ```

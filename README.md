@@ -1,12 +1,10 @@
 # NPM 供应链安全 Workshop
 
-> 竞赛式 · AI 助理引导 · 实时排行榜
-
 本 Workshop 有三个特点：
 
 - **开箱即用**：基于 GitHub Codespace，无需在本机安装任何工具，点击即可进入统一的云端开发环境
-- **AI 引导**：内置 GitHub Copilot Chat，全程由 AI 助理提供操作指引，无需提前了解 JFrog 工具链
-- **竞赛制**：完成任务实时得分，讲师投屏显示排行榜，先完成先上榜
+- **AI 助理引导**：内置 GitHub Copilot Chat，全程由 AI 助理提供操作指引，无需提前了解 JFrog 工具链
+- **竞赛制，有乐趣**：完成任务实时得分，讲师投屏显示排行榜
 
 ---
 
@@ -14,10 +12,11 @@
 
 近年来，供应链攻击已成为开发者面临的最隐蔽威胁之一：
 
-- **event-stream（2018）**：攻击者通过接手维护权，在包中植入窃取比特币钱包的代码，影响数百万下载量
 - **ua-parser-js（2021）**：npm 账号被劫持，三个版本被植入挖矿程序和密码窃取器，短时间内波及全球
-- **colors.js / faker.js（2022）**：作者故意破坏自己的包，数千个依赖该包的项目立刻崩溃
 - **PyTorch（2022）**：恶意包通过依赖混淆攻击（dependency confusion）入侵，窃取敏感数据
+- **polyfill.io（2024）**：cdn.polyfill.io 域名被收购后，CDN 开始向超过 10 万个网站推送恶意脚本，受影响站点毫不知情
+- **lottie-player（2024）**：npm 包维护者账号被劫持，恶意版本自动推送给所有依赖方，植入加密钱包窃取器
+- **tj-actions/changed-files（2025）**：广泛使用的 GitHub Actions 组件被植入后门，导致大量 CI/CD 流水线泄露密钥
 
 这些攻击的共同点：**开发者在不知情的情况下将恶意代码引入了生产环境**。
 
@@ -80,6 +79,8 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/alexwang66/jfrog-workshop)
 
 > ⏱️ Codespace 首次启动约需 1-2 分钟，请耐心等待。
+>
+> 🆓 GitHub 个人账号每月可免费使用 60 小时 Codespace，本 Workshop 约占用 1 小时。
 >
 > 💻 **如果无法使用 Codespace**，请参阅 [SETUP.md](./SETUP.md) 在本地机器上配置所需环境。
 
