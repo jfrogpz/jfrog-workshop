@@ -6,21 +6,6 @@
 
 ## 架构说明
 
-### 整体设计思路
-
-本 Workshop 围绕三个核心设计原则：
-
-**1. 基于 GitHub Codespace 统一学员环境，提供开箱即用的体验**
-学员无需在本机安装任何工具，点击链接即可获得预配置好 Node.js、JFrog CLI 和示例项目的云端环境，消除环境差异带来的干扰，让所有学员从同一起点出发。
-
-**2. 利用 AI 助理（GitHub Copilot Chat）引导学员完成任务**
-Copilot Chat 内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本。学员通过与 AI 对话完成全部操作，降低上手门槛，同时体验 AI 辅助开发的工作方式。
-
-**3. 采用竞赛制，利用 Artifactory 实时监控进展，增加紧张感和乐趣**
-不依赖任何外部数据库——以 Artifactory Generic 仓库作为唯一数据存储，组织者脚本每 30 秒通过 REST API 轮询验证所有学员的任务完成情况，实时更新终端排行榜并投屏，营造竞赛氛围。
-
----
-
 ### 为什么使用 GitHub Codespace 作为学员环境
 
 | 问题 | Codespace 的解法 |
