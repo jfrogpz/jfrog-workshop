@@ -135,6 +135,7 @@
    ```bash
    cd /workspaces/jfrog-workshop/npm-sample
    rm -rf node_modules package-lock.json
+   npm cache clean --force
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=2
    ```
 3. 观察错误信息，确认 Curation 阻断了 axios@1.7.2
