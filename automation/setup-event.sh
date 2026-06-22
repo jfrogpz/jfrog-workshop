@@ -5,25 +5,33 @@ set -eu
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 <EVENT_ID> <EVENT_NAME> <JFROG_URL> <JFROG_TOKEN>
+使用前请先设置环境变量：
+  export JFROG_TOKEN="your-admin-token"
+
+Usage: $0 <EVENT_ID> <EVENT_NAME> <JFROG_URL>
 
   EVENT_ID    赛事唯一标识，例如 2026-06-shanghai
   EVENT_NAME  赛事展示名称，例如 "JFrog Workshop Shanghai"
   JFROG_URL   JFrog 实例地址，例如 https://mycompany.jfrog.io
-  JFROG_TOKEN 管理员 Access Token
 
 Example:
-  $0 2026-06-shanghai "JFrog Workshop Shanghai" https://mycompany.jfrog.io \$TOKEN
+  export JFROG_TOKEN="your-admin-token"
+  $0 2026-06-shanghai "JFrog Workshop Shanghai" https://mycompany.jfrog.io
 EOF
   exit 1
 }
 
-[ $# -ge 4 ] || usage
+[ $# -ge 3 ] || usage
 
 EVENT_ID="$1"
 EVENT_NAME="$2"
 JFROG_URL="${3%/}"
-JFROG_TOKEN="$4"
+
+if [ -z "${JFROG_TOKEN:-}" ]; then
+  echo "❌ 未设置 JFROG_TOKEN 环境变量，请先运行：" >&2
+  echo "   export JFROG_TOKEN=\"your-admin-token\"" >&2
+  exit 1
+fi
 
 EVENTS_REPO="workshop-events"
 API="${JFROG_URL}/artifactory/api"
@@ -104,8 +112,7 @@ echo "  1. 运行以下命令启动实时排行榜（投屏此终端窗口）：
 echo ""
 echo "     bash automation/refresh-leaderboard.sh \\"
 echo "       \"${EVENT_ID}\" \\"
-echo "       \"${JFROG_URL}\" \\"
-echo "       \"\$JFROG_TOKEN\""
+echo "       \"${JFROG_URL}\""
 echo ""
 echo "  2. 将 EVENT_ID（${EVENT_ID}）和 JFROG_URL 告知学员"
 echo ""

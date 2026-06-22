@@ -33,11 +33,12 @@
 运行 `setup-event.sh`，传入赛事信息：
 
 ```bash
+export JFROG_TOKEN="your-admin-token"
+
 bash automation/setup-event.sh \
   "2026-06-shanghai" \
   "JFrog Workshop Shanghai 2026" \
-  "https://yourcompany.jfrog.io" \
-  "$JFROG_ADMIN_TOKEN"
+  "https://yourcompany.jfrog.io"
 ```
 
 脚本将：
@@ -52,10 +53,10 @@ bash automation/setup-event.sh \
 在终端中运行以下命令（**Workshop 期间保持运行，将此终端窗口投屏**）：
 
 ```bash
+# JFROG_TOKEN 已在步骤二中设置，无需重复设置
 bash automation/refresh-leaderboard.sh \
   "2026-06-shanghai" \
-  "https://yourcompany.jfrog.io" \
-  "$JFROG_ADMIN_TOKEN"
+  "https://yourcompany.jfrog.io"
 ```
 
 脚本每 30 秒自动：
@@ -103,14 +104,14 @@ bash automation/refresh-leaderboard.sh \
 bash automation/delete-repo.sh <nickname> all \
   --event-id "2026-06-shanghai" \
   --jfrog-url "https://yourcompany.jfrog.io" \
-  --token "$JFROG_ADMIN_TOKEN"
+  --token "$JFROG_TOKEN"
 ```
 
 ### 批量清理所有学员
 
 ```bash
 # 列出所有已注册学员
-curl -s -H "Authorization: Bearer $JFROG_ADMIN_TOKEN" \
+curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
   "https://yourcompany.jfrog.io/artifactory/api/storage/workshop-events/2026-06-shanghai/participants" \
   | python3 -c "import sys,json; [print(c['uri'].strip('/')) for c in json.load(sys.stdin).get('children',[])]"
 
