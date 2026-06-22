@@ -137,6 +137,16 @@ curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
 
 ---
 
+## ⚠️ 待测试事项（TODO）
+
+以下功能尚未经过完整测试，正式使用前需要验证：
+
+1. **T4 验证逻辑**：`refresh-leaderboard.sh` 通过 `GET /api/curation/policies` 检查是否存在包含学员昵称的 Curation Policy。需实测该 API 的响应格式，确认字段名（`name`、`description`）及过滤逻辑正确。
+
+2. **T5 验证逻辑**：`refresh-leaderboard.sh` 通过 `GET /api/curation/audit` 检查是否有 axios@1.7.2 被阻断的记录。需实测该 API 的响应格式，确认 `repo`、`version`、`package` 字段名正确。
+
+---
+
 ## 赛事配置自定义
 
 在 Artifactory UI 中直接编辑 `workshop-events/{event_id}/config.json` 可以：
