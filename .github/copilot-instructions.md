@@ -130,15 +130,14 @@
 **目标**：尝试安装模拟的恶意包 `axios@1.7.2`，验证 Curation 策略生效。
 
 **引导流程**：
-1. 修改 `npm-sample/package.json`，将 axios 版本改为 `1.7.2`：
-   ```json
-   "axios": "1.7.2"
-   ```
-2. 尝试安装（预期会被 Curation 阻断）：
+1. `package.json` 中 axios 版本已经是 `1.7.2`，无需修改
+2. 清除本地缓存并重新安装，强制从 Artifactory 拉包（让 Curation 有机会拦截）：
    ```bash
+   cd /workspaces/jfrog-workshop/npm-sample
+   rm -rf node_modules package-lock.json
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=2
    ```
-3. 观察错误信息，记录阻断原因
+3. 观察错误信息，确认 Curation 阻断了 axios@1.7.2
 
 **成功标志**：Curation audit log 中有 axios@1.7.2 被 block 的记录。
 
