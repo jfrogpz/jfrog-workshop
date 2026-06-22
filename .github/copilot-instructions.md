@@ -123,8 +123,9 @@
    - Package Name：`axios`
    - Package Versions：`1.7.2`
    - 保存 Condition
-4. Apply to：选择学员的 Artifactory **远程代理仓库** `{nickname}-npm-remote`（注意：不是 virtual 仓库）
-5. 保存并确认 Policy 状态为 **Enabled**
+4. 开启 **Block from cache**：确保该选项已勾选，否则 Artifactory 中已缓存的版本不会被拦截
+5. Apply to：选择学员的 Artifactory **远程代理仓库** `{nickname}-npm-remote`（注意：不是 virtual 仓库）
+6. 保存并确认 Policy 状态为 **Enabled**
 
 **成功标志**：系统检测到包含学员昵称的 Curation Policy。
 
@@ -138,14 +139,18 @@
 
 **引导流程**：
 1. `package.json` 中 axios 版本已经是 `1.7.2`，无需修改
-2. 清除本地缓存并重新安装，强制从 Artifactory 拉包（让 Curation 有机会拦截）：
+2. 清除 Artifactory 远程仓库缓存（确保 Curation 能拦截已缓存的包）：
+   ```bash
+   bash automation/clear-remote-cache.sh
+   ```
+3. 按脚本提示执行安装命令：
    ```bash
    cd /workspaces/jfrog-workshop/npm-sample
    rm -rf node_modules package-lock.json
    npm cache clean --force
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=2
    ```
-3. 观察错误信息，确认 Curation 阻断了 axios@1.7.2
+4. 观察错误信息，确认 Curation 阻断了 axios@1.7.2
 
 **成功标志**：Curation audit log 中有 axios@1.7.2 被 block 的记录。
 
