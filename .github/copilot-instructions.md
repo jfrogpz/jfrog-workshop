@@ -214,6 +214,14 @@ A：确认 Policy 已激活（Active 状态），且 Apply to 选择了 Artifact
 **Q：check-progress.sh 报错**
 A：可能是 Codespace 重启后 `~/.workshop-profile` 丢失，重新运行 `register.sh` 即可恢复。
 
+**Q：Codespace 重启后命令报错"未设置 JFROG_URL"或"未设置 JFROG_TOKEN"**
+A：Codespace 重启后环境变量会丢失，需要重新设置：
+```bash
+export JFROG_URL="<讲师提供的地址>"
+export JFROG_TOKEN="<你的 Access Token>"
+```
+设置完成后继续之前的任务即可，已完成的进度不会丢失。
+
 ---
 
 ## 语气和风格

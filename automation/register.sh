@@ -115,21 +115,15 @@ PROF
   fi
 fi
 
-# ── 步骤 4：创建个人 npm 仓库（通过昵称唯一性验证） ────────────────────────
+# ── 步骤 4：创建个人 npm 仓库 ──────────────────────────────────────────────
 echo ""
 echo ">>> 创建个人 npm 仓库（昵称: ${NICKNAME}）..."
-echo "    这将创建三个仓库：${NICKNAME}-npm-dev-local, ${NICKNAME}-npm-remote, ${NICKNAME}-npm-virtual"
+echo "    将创建：${NICKNAME}-npm-dev-local, ${NICKNAME}-npm-remote, ${NICKNAME}-npm-virtual"
 
-# 设置 jf 临时配置（如果还没配置）
-if ! jf config show 2>/dev/null | grep -q "Server ID"; then
-  jf config add workshop --url="${JFROG_URL}" --access-token="${JFROG_TOKEN}" --interactive=false 2>/dev/null || true
-fi
-
-# 调用现有 create-repo.sh
-if STUDENT_ID="$NICKNAME" bash "${SCRIPT_DIR}/create-repo.sh" "$NICKNAME" all; then
-  echo "    ✅ 仓库创建成功"
+if bash "${SCRIPT_DIR}/create-repo.sh" "$NICKNAME"; then
+  echo "    ✅ 仓库就绪"
 else
-  echo "  ❌ 仓库创建失败，昵称 '${NICKNAME}' 可能已被占用，请换一个昵称" >&2
+  echo "  ❌ 仓库创建失败，请检查 JFROG_URL 和 JFROG_TOKEN 是否正确，然后重新运行注册脚本" >&2
   exit 1
 fi
 

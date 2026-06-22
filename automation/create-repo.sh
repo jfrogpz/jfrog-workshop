@@ -1,103 +1,46 @@
-#!/bin/sh
+#!/bin/bash
+# 为学员创建三个 npm Artifactory 仓库：local、remote、virtual
 
 set -eu
 
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-STUDENT_ID="${1:-${STUDENT_ID:-}}"
-REPO_KIND="${2:-all}"
-
-normalize_student_id() {
-  value="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
-  case "$value" in
-    ""|*[!a-z0-9-]*)
-      echo "Invalid student id: $1. Use 3-20 lowercase letters, numbers, and hyphens only. Examples: alex, mary-chen, john2." >&2
-      exit 1
-      ;;
-  esac
-
-  length="$(printf '%s' "$value" | wc -c | tr -d ' ')"
-  if [ "$length" -lt 3 ] || [ "$length" -gt 20 ] || ! printf '%s' "$value" | grep -Eq '^[a-z0-9].*[a-z0-9]$'; then
-    echo "Invalid student id: $1. Use 3-20 lowercase letters, numbers, and hyphens only. Examples: alex, mary-chen, john2." >&2
-    exit 1
-  fi
-
-  printf '%s' "$value"
-}
-
-if [ -z "$STUDENT_ID" ]; then
-  echo "Usage: $0 <student-id> [all|local|remote|virtual]" >&2
-  echo "Example: $0 alex all" >&2
+NICKNAME="${1:-}"
+if [ -z "$NICKNAME" ]; then
+  echo "Usage: $0 <nickname>" >&2
   exit 1
 fi
 
-STUDENT_ID="$(normalize_student_id "$STUDENT_ID")"
+if [ -z "${JFROG_URL:-}" ] || [ -z "${JFROG_TOKEN:-}" ]; then
+  echo "❌ 需要设置 JFROG_URL 和 JFROG_TOKEN 环境变量" >&2
+  exit 1
+fi
 
-build_vars_lines() {
-  python3 - "$1" "$STUDENT_ID" <<'PY'
-import json
-import sys
+JFROG_URL="${JFROG_URL%/}"
+API="${JFROG_URL}/artifactory/api"
 
-with open(sys.argv[1], "r", encoding="utf-8") as f:
-    data = json.load(f)
-
-prefix = sys.argv[2]
-
-def student_repo_name(key):
-    base = key
-    if base.startswith("workshop-"):
-        base = base[len("workshop-"):]
-    return f"{prefix}-{base}"
-
-for item in data:
-    repo_type = item.get("rclass", "")
-    xray_enable = str(item.get("xrayIndex", "false")).lower()
-    parts = [
-        f"repo-name={student_repo_name(item.get('key', ''))}",
-        f"package-type={item.get('packageType', '')}",
-        f"repo-type={repo_type}",
-        f"repo-layout={item.get('repoLayoutRef', '')}",
-        f"xray-enable={xray_enable}",
-    ]
-
-    if repo_type == "remote":
-        parts.append(f"repo-url={item.get('url', '')}")
-    elif repo_type == "virtual":
-        parts.append(f"deploy-repo-name={student_repo_name(item.get('defaultDeploymentRepo', ''))}")
-        parts.append(f"external-remote-repo-name={student_repo_name(item.get('externalDependenciesRemoteRepo', ''))}")
-        repos = ",".join(student_repo_name(repo.strip()) for repo in item.get("repositories", "").split(",") if repo.strip())
-        parts.append(f"repos={repos}")
-
-    print(";".join(parts))
-PY
+curl_jf() {
+  curl -sf -H "Authorization: Bearer ${JFROG_TOKEN}" "$@"
 }
 
-create_repos() {
-  template_file="$1"
-  values_file="$2"
-
-  build_vars_lines "$values_file" | while IFS= read -r vars_string; do
-    [ -n "$vars_string" ] || continue
-    jf rt repo-create "$template_file" --vars "$vars_string"
-  done
+create_repo() {
+  local key="$1"
+  local body="$2"
+  local s
+  s=$(curl_jf -o /dev/null -w "%{http_code}" "${API}/repositories/${key}" 2>/dev/null || echo "000")
+  if [ "$s" = "200" ]; then
+    echo "    已存在，跳过：${key}"
+    return 0
+  fi
+  curl_jf -X PUT "${API}/repositories/${key}" \
+    -H "Content-Type: application/json" \
+    -d "$body" >/dev/null
+  echo "    ✅ 创建成功：${key}"
 }
 
-case "$REPO_KIND" in
-  all)
-    create_repos "$SCRIPT_DIR/local-repo-template.json" "$SCRIPT_DIR/local-repo-values.json"
-    create_repos "$SCRIPT_DIR/remote-repo-template.json" "$SCRIPT_DIR/remote-repo-values.json"
-    create_repos "$SCRIPT_DIR/virtual-repo-template.json" "$SCRIPT_DIR/virtual-repo-values.json"
-    ;;
-  local)
-    create_repos "$SCRIPT_DIR/local-repo-template.json" "$SCRIPT_DIR/local-repo-values.json"
-    ;;
-  remote)
-    create_repos "$SCRIPT_DIR/remote-repo-template.json" "$SCRIPT_DIR/remote-repo-values.json"
-    ;;
-  virtual)
-    create_repos "$SCRIPT_DIR/virtual-repo-template.json" "$SCRIPT_DIR/virtual-repo-values.json"
-    ;;
-  *)
-    echo "Usage: $0 <student-id> [all|local|remote|virtual]" >&2
-    exit 1
-    ;;
-esac
+create_repo "${NICKNAME}-npm-dev-local" \
+  "{\"rclass\":\"local\",\"packageType\":\"npm\",\"repoLayoutRef\":\"npm-default\",\"xrayIndex\":true}"
+
+create_repo "${NICKNAME}-npm-remote" \
+  "{\"rclass\":\"remote\",\"packageType\":\"npm\",\"url\":\"https://registry.npmjs.org\",\"repoLayoutRef\":\"npm-default\",\"xrayIndex\":true}"
+
+create_repo "${NICKNAME}-npm-virtual" \
+  "{\"rclass\":\"virtual\",\"packageType\":\"npm\",\"repoLayoutRef\":\"npm-default\",\"repositories\":[\"${NICKNAME}-npm-dev-local\",\"${NICKNAME}-npm-remote\"],\"defaultDeploymentRepo\":\"${NICKNAME}-npm-dev-local\"}"

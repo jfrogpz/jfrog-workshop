@@ -70,6 +70,7 @@ verify_task() {
       [ "$s" = "200" ]
       ;;
     T4)
+      # TODO: 需实测 /api/curation/policies 的响应格式并验证过滤逻辑是否正确
       local found
       found=$(curl_jf "${API}/curation/policies" 2>/dev/null \
         | python3 -c "
@@ -86,6 +87,7 @@ except:
       [ "$found" = "yes" ]
       ;;
     T5)
+      # TODO: 需实测 /api/curation/audit 的响应格式并验证 repo/version/package 字段名是否正确
       local found
       found=$(curl_jf "${API}/curation/audit" 2>/dev/null \
         | python3 -c "
