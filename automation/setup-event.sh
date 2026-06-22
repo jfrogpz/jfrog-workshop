@@ -111,27 +111,7 @@ echo "$CONFIG_JSON" | curl_jf -X PUT \
   -T -
 echo "    ✅ config.json 已上传"
 
-# ── 步骤 3：初始化空 leaderboard.json ─────────────────────────────────────
-echo ""
-echo ">>> 初始化 leaderboard.json..."
-
-LEADERBOARD_JSON=$(cat <<JSON
-{
-  "event_id": "${EVENT_ID}",
-  "event_name": "${EVENT_NAME}",
-  "updated_at": "${START_TIME}",
-  "rankings": []
-}
-JSON
-)
-
-echo "$LEADERBOARD_JSON" | curl_jf -X PUT \
-  "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/leaderboard.json" \
-  -H "Content-Type: application/json" \
-  -T -
-echo "    ✅ leaderboard.json 已上传"
-
-# ── 步骤 4：上传排行榜页面 index.html ─────────────────────────────────────
+# ── 步骤 3：上传排行榜页面 index.html ─────────────────────────────────────
 echo ""
 echo ">>> 上传排行榜页面..."
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
@@ -148,7 +128,6 @@ else
 fi
 
 # ── 完成 ────────────────────────────────────────────────────────────────────
-LEADERBOARD_URL="${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/leaderboard.json"
 DASHBOARD_URL="${JFROG_URL}/artifactory/${EVENTS_REPO}/index.html?event=${EVENT_ID}"
 
 echo ""
