@@ -220,21 +220,37 @@ def last_completed_at(p):
 
 lines.sort(key=lambda x: (-(x.get('total_points', 0)), last_completed_at(x)))
 
-TASK_NAMES = {
-    "T1": "注册",
-    "T2": "构建",
-    "T3": "发布",
-    "T4": "策略",
-    "T5": "阻断",
-    "T6": "修复",
-}
+def dw(s):
+    """计算字符串终端显示宽度（CJK/emoji 占 2，ASCII 占 1）"""
+    w = 0
+    for c in s:
+        cp = ord(c)
+        if cp > 0x2E7F or (0x1F300 <= cp <= 0x1FAFF):
+            w += 2
+        else:
+            w += 1
+    return w
+
+def ljust(s, width):
+    return s + ' ' * max(0, width - dw(s))
+
+def rjust(s, width):
+    return ' ' * max(0, width - dw(s)) + s
+
+def cjust(s, width):
+    pad = max(0, width - dw(s))
+    return ' ' * (pad // 2) + s + ' ' * (pad - pad // 2)
 
 W = 72
 print("=" * W)
 print(f"  🏆  JFrog Workshop 排行榜   赛事：{event_id}")
 print(f"  🕐  更新时间：{refresh_time}")
 print("=" * W)
-print(f"  {'排名':<4} {'昵称':<22} {'T1':^4}{'T2':^4}{'T3':^4}{'T4':^4}{'T5':^4}{'T6':^4}  {'总分':>6}")
+header = "  " + ljust("排名", 4) + " " + ljust("昵称", 22) + " " + \
+         cjust("T1", 4) + cjust("T2", 4) + cjust("T3", 4) + \
+         cjust("T4", 4) + cjust("T5", 4) + cjust("T6", 4) + \
+         "  " + rjust("总分", 6)
+print(header)
 print("-" * W)
 
 ICONS = {"done": "✅", "in_progress": "⏳", "pending": "⬜"}
@@ -245,12 +261,13 @@ for i, p in enumerate(lines):
     medal = MEDALS.get(rank, f"  {rank} ")
     tasks = p.get("tasks", {})
     icons = "".join(
-        f"{ICONS.get(tasks.get(tid, {}).get('status', 'pending'), '⬜'):^4}"
+        cjust(ICONS.get(tasks.get(tid, {}).get('status', 'pending'), '⬜'), 4)
         for tid in ["T1", "T2", "T3", "T4", "T5", "T6"]
     )
     pts = p.get("total_points", 0)
     nickname = p.get("nickname", "")[:20]
-    print(f"  {medal:<4} {nickname:<22} {icons}  {pts:>5}分")
+    row = "  " + ljust(medal, 4) + " " + ljust(nickname, 22) + " " + icons + "  " + rjust(f"{pts}分", 6)
+    print(row)
 
 print("-" * W)
 print(f"  共 {len(lines)} 名学员参赛")

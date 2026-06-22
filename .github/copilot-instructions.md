@@ -94,11 +94,7 @@
 **目标**：将构建元数据（依赖树、环境信息）发布到 Artifactory，建立可追溯性。
 
 **引导流程**：
-1. 收集环境信息：
-   ```bash
-   jf rt build-collect-env <NICKNAME>-npm-sample 1
-   ```
-2. 发布 build-info 到 Artifactory：
+1. 发布 build-info 到 Artifactory：
    ```bash
    jf rt build-publish <NICKNAME>-npm-sample 1
    ```
@@ -162,8 +158,6 @@
 2. 重新构建（build-number 为 3，跳过被阻断的 2）：
    ```bash
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=3
-   jf npm run build --build-name=<NICKNAME>-npm-sample --build-number=3
-   jf rt build-collect-env <NICKNAME>-npm-sample 3
    jf rt build-publish <NICKNAME>-npm-sample 3
    ```
 3. 在 JFrog UI 中确认 Build #3 的 axios 依赖为安全版本
