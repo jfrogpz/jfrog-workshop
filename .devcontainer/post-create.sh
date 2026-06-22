@@ -7,10 +7,15 @@ echo "  JFrog Workshop 环境初始化"
 echo "=========================================="
 echo ""
 
+# 安装 JFrog CLI
+echo "正在安装 JFrog CLI..."
+curl -fL https://install-cli.jfrog.io | sh
+echo ""
+
 # 验证必要工具
 check_tool() {
   if command -v "$1" >/dev/null 2>&1; then
-    echo "  ✅ $1 $(${2:-$1 --version 2>&1 | head -1})"
+    echo "  ✅ $1 $($1 --version 2>&1 | head -1)"
   else
     echo "  ❌ $1 未找到，请联系讲师" >&2
     exit 1
@@ -18,10 +23,10 @@ check_tool() {
 }
 
 echo "正在检查工具..."
-check_tool jf   "jf --version 2>&1 | head -1"
-check_tool node "node --version 2>&1"
-check_tool npm  "npm --version 2>&1"
-check_tool git  "git --version 2>&1"
+check_tool jf
+check_tool node
+check_tool npm
+check_tool git
 echo ""
 
 # 确保脚本可执行
