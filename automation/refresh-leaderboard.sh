@@ -105,25 +105,43 @@ except:
       [ "$found" = "yes" ]
       ;;
     T5)
-      # TODO: 需实测 /api/curation/audit 的响应格式并验证 repo/version/package 字段名是否正确
-      local found
-      found=$(curl_jf "${API}/curation/audit" 2>/dev/null \
-        | python3 -c "
+      local found="no"
+      local offset=0
+      local page_size=500
+      while true; do
+        local page_result
+        page_result=$(curl_jf \
+          "${JFROG_URL}/xray/api/v1/curation/audit/packages?num_of_rows=${page_size}&offset=${offset}&include_total=true" \
+          2>/dev/null || echo "{}")
+        local page_found total_count result_count
+        page_found=$(echo "$page_result" | python3 -c "
 import sys, json
 try:
     data = json.load(sys.stdin)
-    entries = data if isinstance(data, list) else data.get('results', [])
+    entries = data if isinstance(data, list) else data.get('packages', [])
     nick = '${nickname}'
-    found = any(
-        nick in str(e.get('repo','')) and
-        '1.7.2' in str(e.get('version','')) and
-        'axios' in str(e.get('package',''))
+    f = any(
+        nick in str(e.get('curated_repository_name','')) and
+        '1.7.2' in str(e.get('package_version','')) and
+        'axios' in str(e.get('package_name','')) and
+        e.get('action','') == 'blocked'
         for e in entries
     )
-    print('yes' if found else 'no')
-except:
-    print('no')
-" 2>/dev/null || echo "no")
+    meta = data.get('meta', {}) if isinstance(data, dict) else {}
+    print('found=' + ('yes' if f else 'no'))
+    print('total=' + str(meta.get('total_count', len(entries))))
+    print('count=' + str(len(entries)))
+except Exception as ex:
+    print('found=no'); print('total=0'); print('count=0')
+" 2>/dev/null || printf 'found=no\ntotal=0\ncount=0')
+        local pf pt pc
+        pf=$(echo "$page_found" | grep '^found=' | cut -d= -f2)
+        pt=$(echo "$page_found" | grep '^total=' | cut -d= -f2)
+        pc=$(echo "$page_found" | grep '^count=' | cut -d= -f2)
+        if [ "$pf" = "yes" ]; then found="yes"; break; fi
+        offset=$((offset + page_size))
+        [ "$offset" -lt "${pt:-0}" ] || break
+      done
       [ "$found" = "yes" ]
       ;;
     T6)
@@ -166,13 +184,20 @@ process_participant() {
     2>/dev/null || echo "")
   [ -n "$progress_raw" ] || return 0
 
+  # 读取各任务当前状态，已完成的跳过验证直接标 pass
+  local cur_t2 cur_t3 cur_t4 cur_t5 cur_t6
+  cur_t2=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T2',{}).get('status',''))" 2>/dev/null || echo "")
+  cur_t3=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T3',{}).get('status',''))" 2>/dev/null || echo "")
+  cur_t4=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T4',{}).get('status',''))" 2>/dev/null || echo "")
+  cur_t5=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T5',{}).get('status',''))" 2>/dev/null || echo "")
+  cur_t6=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T6',{}).get('status',''))" 2>/dev/null || echo "")
+
   local v_t2 v_t3 v_t4 v_t5 v_t6
-  v_t2="fail"; v_t3="fail"; v_t4="fail"; v_t5="fail"; v_t6="fail"
-  verify_task "$nickname" T2 2>/dev/null && v_t2="pass" || true
-  verify_task "$nickname" T3 2>/dev/null && v_t3="pass" || true
-  verify_task "$nickname" T4 2>/dev/null && v_t4="pass" || true
-  verify_task "$nickname" T5 2>/dev/null && v_t5="pass" || true
-  verify_task "$nickname" T6 2>/dev/null && v_t6="pass" || true
+  if [ "$cur_t2" = "done" ]; then v_t2="pass"; else v_t2="fail"; verify_task "$nickname" T2 2>/dev/null && v_t2="pass" || true; fi
+  if [ "$cur_t3" = "done" ]; then v_t3="pass"; else v_t3="fail"; verify_task "$nickname" T3 2>/dev/null && v_t3="pass" || true; fi
+  if [ "$cur_t4" = "done" ]; then v_t4="pass"; else v_t4="fail"; verify_task "$nickname" T4 2>/dev/null && v_t4="pass" || true; fi
+  if [ "$cur_t5" = "done" ]; then v_t5="pass"; else v_t5="fail"; verify_task "$nickname" T5 2>/dev/null && v_t5="pass" || true; fi
+  if [ "$cur_t6" = "done" ]; then v_t6="pass"; else v_t6="fail"; verify_task "$nickname" T6 2>/dev/null && v_t6="pass" || true; fi
 
   local updated
   updated=$(VERIFY_T2="$v_t2" VERIFY_T3="$v_t3" VERIFY_T4="$v_t4" \

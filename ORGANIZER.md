@@ -37,7 +37,7 @@ Artifactory Generic 仓库：workshop-events
 | T2 | `GET /api/storage/{nickname}-npm-remote` 有子目录（有缓存包） |
 | T3 | `GET /api/build/{nickname}-npm-sample/1` 返回 200 |
 | T4 | `GET /api/curation/policies` 列表中有包含昵称的 Policy |
-| T5 | `GET /api/curation/audit` 中有昵称对应仓库拦截 axios@1.7.2 的记录 |
+| T5 | `GET /xray/api/v1/curation/audit/packages` 中有昵称对应仓库 blocked axios@1.7.2 的记录 |
 | T6 | Build #3 存在且依赖中 axios 版本不是 1.7.2 |
 
 **排行榜渲染**：
@@ -184,12 +184,6 @@ curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
 | T4 验证始终失败 | Curation Policy API 路径可能因版本而异，检查 `refresh-leaderboard.sh` 中的 API 路径 |
 
 ---
-
-## ⚠️ 待测试事项（TODO）
-
-以下功能尚未经过完整测试，正式使用前需要验证：
-
-1. **T5 验证逻辑**：`refresh-leaderboard.sh` 通过 `GET /xray/api/v1/curation/audit` 检查是否有 axios@1.7.2 被阻断的记录。需实测该 API 的响应格式，确认 `repo`、`version`、`package` 字段名正确。
 
 ---
 
