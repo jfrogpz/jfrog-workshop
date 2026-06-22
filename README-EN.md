@@ -62,7 +62,8 @@ Official references:
 
 Generate an Access Token in the JFrog Platform UI:
 
-1. Open the Access Token page: `https://<your-jfrog-domain>/ui/admin/configuration/security/access_tokens`
+1. From the left navigation, go to: **Administration → User Management → Access Tokens**.
+   > ⚠️ Navigate via the menu — do **not** paste `.../ui/admin/configuration/security/access_tokens` directly into the browser address bar, as it redirects to a 404. If you already hit a 404, clear your browser cache and re-enter via the navigation.
 2. Click **Generate Token**.
 3. In the dialog, **just click Generate** — no extra configuration is needed.
 4. Copy and store the generated token securely.
@@ -110,11 +111,14 @@ With the CLI connected, clone the workshop sample project to your machine.
 
 ```bash
 cd ~
-git clone https://github.com/alexwang66/jfrog-workshop.git
-cd jfrog-workshop
+# If ~/jfrog-workshop already exists (e.g. you cloned it before), skip the clone and just enter it
+git clone https://github.com/alexwang66/jfrog-workshop.git 2>/dev/null || echo "jfrog-workshop already exists, skipping clone"
+cd ~/jfrog-workshop
 ```
 
 > ✅ Checkpoint: the `~/jfrog-workshop` directory exists and contains `npm-sample/` and `automation/`.
+>
+> ℹ️ All later `cd` commands use **absolute paths** (e.g. `cd ~/jfrog-workshop/automation`), so you can copy-paste them from any directory without errors — there is **no** need to manually `cd jfrog-workshop` again.
 
 ---
 
@@ -284,6 +288,9 @@ Verify in the UI:
 With the first build-info in place, here is the core of the workshop: create a Curation Policy and Condition to block `axios@1.7.2` at the download source, then switch back to a safe version and rebuild.
 
 ### 5.1  Create A Curation Policy To Block axios@1.7.2
+
+> ⚠️ When multiple people share the same platform, Policy and Condition names must be unique. Add your own student-id to both the Policy name and the Condition name (e.g. `block-axios-1.7.2-<student-id>`).
+
 - Step 1
 ![Create Curation Policy (step 1)](./workshop/images/curation-policy-step1.png)
 - Step 2
@@ -492,5 +499,8 @@ $env:STUDENT_ID = "labuser-t4-s3"
 ```bash
 cd ~/jfrog-workshop/automation
 export STUDENT_ID="labuser-t4-s3"
+chmod +x ./delete-repo.sh
 ./delete-repo.sh "$STUDENT_ID" all
 ```
+
+> Note: `delete-repo.sh ... all` removes the 3 npm repositories and also deletes this workshop's build-info (`<student-id>-npm-sample`).

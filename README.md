@@ -56,7 +56,8 @@ npm -v
 
 在 JFrog Platform UI 中產生 Access Token：
 
-1. 開啟 Access Token 頁面：`https://<your-jfrog-domain>/ui/admin/configuration/security/access_tokens`
+1. 從左側導覽進入：**Administration → User Management → Access Tokens**。
+   > ⚠️ 請用點擊導覽的方式進入，**不要**直接把 `.../ui/admin/configuration/security/access_tokens` 貼到瀏覽器網址列——這樣會跳轉到 404。若已經遇到 404，請清除瀏覽器快取後重新從導覽進入。
 2. 點擊 **Generate Token**。
 3. 在彈出視窗中**直接點擊 Generate 產生**，不需要任何額外設定。
 4. 複製並妥善保存產生的 token。
@@ -106,11 +107,14 @@ CLI 連上平台後，把工作坊範例專案 clone 到本機。
 
 ```bash
 cd ~
-git clone https://github.com/alexwang66/jfrog-workshop.git
-cd jfrog-workshop
+# 若 ~/jfrog-workshop 已存在（例如先前已 clone 過），可略過 git clone 直接進入
+git clone https://github.com/alexwang66/jfrog-workshop.git 2>/dev/null || echo "jfrog-workshop 已存在，略過 clone"
+cd ~/jfrog-workshop
 ```
 
 > ✅ 檢查點：`~/jfrog-workshop` 目錄已存在，裡面有 `npm-sample/` 與 `automation/`。
+>
+> ℹ️ 後續步驟的 `cd` 指令都使用 **絕對路徑**（如 `cd ~/jfrog-workshop/automation`），所以不論你目前在哪個目錄，直接複製貼上都不會出錯，**不需要**再手動 `cd jfrog-workshop`。
 
 ---
 
@@ -281,6 +285,9 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
 首次 build-info 完成後，進入本工作坊的重點：建立 Curation Policy 和 Condition，用 Curation 在下載源頭把 `axios@1.7.2` 擋下，最後再換回安全版本重新建置。
 
 ### 5.1  建立 Curation Policy 來阻斷 axios@1.7.2
+
+> ⚠️ 多人共用同一個平台時，Policy 與 Condition 的名稱皆不可重複。請在 Policy 名稱與 Condition 名稱都帶上你自己的 student-id（例如 `block-axios-1.7.2-<student-id>`）。
+
 - Step 1， Platform -> Curation -> Policiies
 ![建立 Curation Policy（步驟一）](./workshop/images/curation-policy-step1.png)
 - Step 2
@@ -292,7 +299,7 @@ jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
   ![新建 Curation Condition](./workshop/images/curation-condition-new.png)
 - 選擇 **Block Specific Package Versions** 範本。
 - 設定：
-  - Condition name：`block-axios-1.7.2`
+  - Condition name：`block-axios-1.7.2-<student-id>`（請帶上你自己的 student-id，避免多人共用平台時名稱衝突）
   - Package type：`npm`
   - Package：`axios`
   - Version：`1.7.2`
@@ -493,8 +500,11 @@ $env:STUDENT_ID = "labuser-t4-s3"
 ```bash
 cd ~/jfrog-workshop/automation
 export STUDENT_ID="labuser-t4-s3"
+chmod +x ./delete-repo.sh
 ./delete-repo.sh "$STUDENT_ID" all
 ```
+
+> 說明：`delete-repo.sh ... all` 除了刪除 3 個 npm 倉庫，也會一併刪除本工作坊的 build-info（`<student-id>-npm-sample`）。
 
 
 官方參考文件：

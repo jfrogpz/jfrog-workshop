@@ -62,11 +62,21 @@ delete_repos() {
   done
 }
 
+delete_build_info() {
+  build_name="${STUDENT_ID}-npm-sample"
+  echo "Deleting build-info: $build_name"
+  # build-discard/retention can't remove a whole build; use the Artifactory build deletion API.
+  jf rt curl -XDELETE "/api/build/${build_name}?deleteAll=1&artifacts=0" \
+    -H "Content-Type: application/json" || \
+    echo "Build-info '$build_name' not found or already deleted; skipping." >&2
+}
+
 case "$REPO_KIND" in
   all)
     delete_repos "$SCRIPT_DIR/virtual-repo-values.json"
     delete_repos "$SCRIPT_DIR/remote-repo-values.json"
     delete_repos "$SCRIPT_DIR/local-repo-values.json"
+    delete_build_info
     ;;
   local)
     delete_repos "$SCRIPT_DIR/local-repo-values.json"
