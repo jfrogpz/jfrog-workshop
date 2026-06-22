@@ -268,10 +268,13 @@
   const params = new URLSearchParams(location.search);
   const EVENT_ID = params.get('event') || '';
   const JFROG_URL = (params.get('jfrog_url') || '').replace(/\/$/, '');
+  const TOKEN = params.get('token') || '';
 
-  const BASE = JFROG_URL
-    ? `${JFROG_URL}/artifactory/workshop-events`
-    : null;
+  const BASE = JFROG_URL ? `${JFROG_URL}/artifactory/workshop-events` : null;
+
+  const fetchOpts = TOKEN
+    ? { headers: { 'Authorization': `Bearer ${TOKEN}` } }
+    : {};
 
   let prevRankings = {};
   let endTime = null;
@@ -351,7 +354,7 @@
   async function fetchConfig() {
     if (!BASE || !EVENT_ID) return;
     try {
-      const res = await fetch(`${BASE}/${EVENT_ID}/config.json?t=${Date.now()}`);
+      const res = await fetch(`${BASE}/${EVENT_ID}/config.json?t=${Date.now()}`, fetchOpts);
       if (!res.ok) return;
       const cfg = await res.json();
       document.getElementById('event-name').textContent = cfg.event_name || 'JFrog Workshop';
@@ -380,7 +383,7 @@
     }
 
     try {
-      const res = await fetch(`${BASE}/${EVENT_ID}/leaderboard.json?t=${Date.now()}`);
+      const res = await fetch(`${BASE}/${EVENT_ID}/leaderboard.json?t=${Date.now()}`, fetchOpts);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 

@@ -3,6 +3,8 @@
 
 set -eu
 
+GITHUB_PAGES_URL="https://jfrogpz.github.io/jfrog-workshop"
+
 usage() {
   cat >&2 <<EOF
 Usage: $0 <EVENT_ID> <EVENT_NAME> <JFROG_URL> <JFROG_TOKEN>
@@ -113,19 +115,39 @@ echo "$LEADERBOARD_JSON" | curl_jf -X PUT \
   -T -
 echo "    ✅ leaderboard.json 已上传"
 
+# ── 步骤 4：创建只读 Access Token 供排行榜使用 ────────────────────────────
+echo ""
+echo ">>> 创建排行榜只读 Token..."
+
+READONLY_TOKEN=$(curl_jf -X POST "${JFROG_URL}/access/api/v1/tokens" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"username\": \"workshop-leaderboard\",
+    \"scope\": \"applied-permissions/user\",
+    \"expires_in\": 86400,
+    \"description\": \"Workshop leaderboard read-only token for ${EVENT_ID}\"
+  }" | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null || echo "")
+
+if [ -z "$READONLY_TOKEN" ]; then
+  echo "    ⚠️  只读 Token 创建失败，将使用 Admin Token 作为备用"
+  READONLY_TOKEN="$JFROG_TOKEN"
+else
+  echo "    ✅ 只读 Token 已创建"
+fi
+
 # ── 完成 ────────────────────────────────────────────────────────────────────
-LEADERBOARD_URL="${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/leaderboard.json"
+DASHBOARD_URL="${GITHUB_PAGES_URL}/?event=${EVENT_ID}&jfrog_url=${JFROG_URL}&token=${READONLY_TOKEN}"
 
 echo ""
 echo "=========================================="
 echo "  ✅ 赛事初始化完成！"
 echo "=========================================="
 echo ""
+echo "  排行榜地址（用浏览器打开后投屏）："
+echo "  ${DASHBOARD_URL}"
+echo ""
 echo "  下一步："
 echo "  1. 运行 refresh-leaderboard.sh 开始实时刷新进度"
-echo "  2. 在浏览器中登录 JFrog，然后打开排行榜页面（GitHub Pages）"
-echo "  3. 将排行榜 URL 投屏给学员"
-echo ""
-echo "  leaderboard.json 地址："
-echo "  ${LEADERBOARD_URL}"
+echo "  2. 用浏览器打开上方排行榜地址并投屏"
+echo "  3. 将 EVENT_ID（${EVENT_ID}）和 JFROG_URL 告知学员"
 echo ""
