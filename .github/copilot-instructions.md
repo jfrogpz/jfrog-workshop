@@ -112,16 +112,23 @@
 
 **引导流程**：
 1. 在 JFrog UI 中：Curation → Policies → New Policy
-2. 配置策略：
+2. 配置策略基本信息：
    - Name：`{nickname}-npm-policy`（包含昵称，便于系统识别）
-   - Package Type：npm
-   - Condition：选择"Malicious Package"
-   - Apply to：选择学员的 Artifactory 远程代理仓库 `{nickname}-npm-remote`（注意：不是 virtual 仓库）
-3. 保存并激活
+   - Policy Action：Block
+3. 创建自定义 Condition：
+   - 点击 **New Condition**（不要选现有的预置条件）
+   - Condition Name：`{nickname}-block-axios-172`
+   - Package Type：**npm**
+   - Condition Type：选择 **Specific Versions**
+   - Package Name：`axios`
+   - Package Versions：`1.7.2`
+   - 保存 Condition
+4. Apply to：选择学员的 Artifactory **远程代理仓库** `{nickname}-npm-remote`（注意：不是 virtual 仓库）
+5. 保存并确认 Policy 状态为 **Enabled**
 
 **成功标志**：系统检测到包含学员昵称的 Curation Policy。
 
-**知识点**：Curation 在依赖下载时拦截，而不是构建后扫描——是更早的防线。
+**知识点**：这里使用"特定版本"条件模拟封锁恶意版本的场景。真实场景中，JFrog Curation 会自动识别已知恶意包，无需手动指定版本。
 
 ---
 
