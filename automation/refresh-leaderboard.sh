@@ -4,7 +4,7 @@
 set -eu
 
 usage() {
-  cat >&2 <<EOF
+  cat > /tmp/leaderboard-debug.log <<EOF
 使用前请先设置环境变量：
   export JFROG_TOKEN="your-admin-token"
   export JFROG_URL="https://mycompany.jfrog.io"
@@ -23,14 +23,14 @@ EOF
 EVENT_ID="$1"
 
 if [ -z "${JFROG_TOKEN:-}" ]; then
-  echo "❌ 未设置 JFROG_TOKEN 环境变量，请先运行：" >&2
-  echo "   export JFROG_TOKEN=\"your-admin-token\"" >&2
+  echo "❌ 未设置 JFROG_TOKEN 环境变量，请先运行：" > /tmp/leaderboard-debug.log
+  echo "   export JFROG_TOKEN=\"your-admin-token\"" > /tmp/leaderboard-debug.log
   exit 1
 fi
 
 if [ -z "${JFROG_URL:-}" ]; then
-  echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" >&2
-  echo "   export JFROG_URL=\"https://mycompany.jfrog.io\"" >&2
+  echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" > /tmp/leaderboard-debug.log
+  echo "   export JFROG_URL=\"https://mycompany.jfrog.io\"" > /tmp/leaderboard-debug.log
   exit 1
 fi
 
@@ -144,7 +144,7 @@ process_participant() {
   progress_raw=$(curl_jf \
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${nickname}/progress.json" \
     2>/dev/null || echo "")
-  echo "DEBUG [$nickname] progress_raw len: ${#progress_raw}" >&2
+  echo "DEBUG [$nickname] progress_raw len: ${#progress_raw}" > /tmp/leaderboard-debug.log
   [ -n "$progress_raw" ] || return 0
 
   local v_t2 v_t3 v_t4 v_t5 v_t6
@@ -181,7 +181,7 @@ print(json.dumps(data, ensure_ascii=False))
 PY
   )
 
-  echo "DEBUG [$nickname] updated len: ${#updated}" >&2
+  echo "DEBUG [$nickname] updated len: ${#updated}" > /tmp/leaderboard-debug.log
   [ -n "$updated" ] || return 0
 
   echo "$updated" | curl_jf -X PUT \
@@ -288,7 +288,7 @@ except Exception as e:
     import sys; print(f'ERROR: {e}', file=sys.stderr)
     pass
 " || echo "")
-  echo "DEBUG participants: [$PARTICIPANTS]" >&2
+  echo "DEBUG participants: [$PARTICIPANTS]" > /tmp/leaderboard-debug.log
 
   ALL_PROGRESS=""
   if [ -n "$PARTICIPANTS" ]; then
