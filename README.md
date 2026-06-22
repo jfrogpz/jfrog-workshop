@@ -5,7 +5,7 @@
 ## 本工作坊流程
 
 0. **前置需求** — 安裝並驗證 `jf`、`git`、`node`、`npm`
-1. **登入 JFrog** — 產生 Access Token、設定 JFrog CLI
+1. **登入 JFrog** — 找到實驗帳號、登入平台、產生 Access Token、設定 JFrog CLI
 2. **複製工作坊 Repository** — 把範例專案 clone 到本機
 3. **建立工作坊 Repository** — 用腳本建立你專屬的一組 npm 倉庫
 4. **NPM 建置、發布與 Build-Info** — 首次建置並推送 build-info（`#1`）
@@ -52,7 +52,51 @@ npm -v
 
 ## 1. 登入 JFrog
 
-工具就緒後，接著讓 JFrog CLI 連上你的 JFrog Platform 實例：先在 UI 產生 Access Token，再用它設定 CLI。
+工具就緒後，接著登入平台：先用你的**實驗帳號**登入 JFrog Platform UI，再在 UI 產生 Access Token，最後用它設定 JFrog CLI。
+
+### 1.1 找到並登入你的實驗帳號
+
+本次活動每位學員都有一個依**座位**編出來的實驗帳號。
+
+**座位圖：**
+
+![實驗帳號座位圖](workshop/lab-account-seatmap.png)
+
+- 講台屏幕在前方，講師台在右前角。
+- 桌子分兩種：**藍色細桌 = 2 人桌（S1–S2）**；**寬桌 = 4 人桌（S1–S4）**。
+- 每張桌上的小方塊就是座位，上面的數字就是你的**座位號**。
+
+**三步找到你的帳號：**
+
+| 步驟 | 動作 |
+|:---:|---|
+| **1** | 在座位圖上找到你的**桌號** `T1` – `T20` |
+| **2** | 看桌上標牌確認你的**座位號** `S1` / `S2` …（2 人桌只有 S1、S2） |
+| **3** | 組合出帳號：**`labuser-t〈桌號〉-s〈座位號〉`** |
+
+> **範例：** 坐在 **4 號桌、3 號座** → 帳號為 `labuser-t4-s3`。
+
+**登入資訊：**
+
+| 項目 | 內容 |
+|---|---|
+| **平台網址** | `https://<your-jfrog-domain>` |
+| **帳號 Username** | `labuser-t〈桌號〉-s〈座位號〉` |
+| **密碼 Password** | `***REDACTED***`（所有人統一） |
+
+登入步驟：
+
+1. 用瀏覽器打開平台網址 `https://<your-jfrog-domain>`。
+2. 在登入頁輸入你的**帳號**與**統一密碼** `***REDACTED***`（以講師現場公布為準）。
+3. 點擊 **Log In** 進入 JFrog 平台。
+
+> ⚠️ **請勿修改密碼**，以免後續登入或講師協助時對不上。
+>
+> 登不進去？1) 確認帳號全小寫、桌號/座位號沒填錯；2) 確認密碼是 `***REDACTED***`；3) 仍無法登入請**舉手聯絡講師**。
+
+### 1.2 產生 Access Token 並設定 CLI
+
+登入平台後，接著讓 JFrog CLI 連上你的 JFrog Platform 實例：先在 UI 產生 Access Token，再用它設定 CLI。
 
 在 JFrog Platform UI 中產生 Access Token：
 
@@ -61,8 +105,6 @@ npm -v
 3. 在彈出視窗中**直接點擊 Generate 產生**，不需要任何額外設定。
 4. 複製並妥善保存產生的 token。
 5. 將 token 寫入下方終端機的環境變數 `JFROG_ACCESS_TOKEN`，供 JFrog CLI 使用。
-
-> `<your-jfrog-domain>` 為你的 JFrog Platform 網域（例如 `company.jfrog.io`，以講師提供為準）。
 
 使用一條命令設定 JFrog CLI。Server ID 固定為 `Artifactory`。
 
