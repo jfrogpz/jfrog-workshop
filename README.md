@@ -1,554 +1,118 @@
-# NPM + Curation 工作坊指南（客戶版）
+# NPM 供应链安全 Workshop
 
-目標：在客戶本機完成一次 **npm 建置 + 發布 build-info**，並示範 **JFrog Curation 阻擋模擬惡意版本 `axios@1.7.2` 的下載**。
-
-## 本工作坊流程
-
-0. **前置需求** — 安裝並驗證 `jf`、`git`、`node`、`npm`
-1. **登入 JFrog** — 找到實驗帳號、登入平台、產生 Access Token、設定 JFrog CLI
-2. **複製工作坊 Repository** — 把範例專案 clone 到本機
-3. **建立工作坊 Repository** — 用腳本建立你專屬的一組 npm 倉庫
-4. **NPM 建置、發布與 Build-Info** — 首次建置並推送 build-info（`#1`）
-5. **Curation 示範** — 引入模擬惡意版本 `axios@1.7.2`、用 Curation 阻擋、再換回安全版本
+> 竞赛式 · AI 助理引导 · 实时排行榜
 
 ---
 
-## 0. 前置需求
+## 背景：npm 开源组件投毒事件
 
-開始動手前，先確認本機已裝好並能執行以下工具。
+近年来，供应链攻击已成为开发者面临的最隐蔽威胁之一：
 
-- 本機需安裝：
-  - VS Code 或 Cursor（建議，用於開啟專案與執行內建終端機）
-  - JFrog CLI（`jf`）
-  - Git（`git`）
-  - Node.js 20.x LTS，包含 `npm`
+- **event-stream（2018）**：攻击者通过接手维护权，在包中植入窃取比特币钱包的代码，影响数百万下载量
+- **ua-parser-js（2021）**：npm 账号被劫持，三个版本被植入挖矿程序和密码窃取器，短时间内波及全球
+- **colors.js / faker.js（2022）**：作者故意破坏自己的包，数千个依赖该包的项目立刻崩溃
+- **PyTorch（2022）**：恶意包通过依赖混淆攻击（dependency confusion）入侵，窃取敏感数据
 
-### 安裝
+这些攻击的共同点：**开发者在不知情的情况下将恶意代码引入了生产环境**。
 
-- **安裝 JFrog CLI**
-  - 開啟 `https://jfrog.com/getcli/`
-  - 依照作業系統下載並安裝對應套件。
-- **安裝 Node.js 20.x LTS**
-  - 開啟 `https://nodejs.org/`，安裝 **LTS 20.x** 版本。
-  - **Windows 注意事項：** 安裝時建議勾選 “Add to PATH”，安裝完成後重新開啟 PowerShell 或 CMD，再執行 `node -v`。
-  - macOS 搭配 Homebrew 可選用：
-    ```bash
-    brew install node@20
-    brew link --force --overwrite node@20
-    ```
+---
 
-驗證工具：
+## 企业中谁会受影响？JFrog 如何解决？
 
-```bash
-jf --version
-git --version
-node -v
-npm -v
+### 受影响的角色
+
+| 角色 | 痛点 |
+|------|------|
+| **开发者** | 不知道用的包是否安全，修复漏洞时不知道影响范围 |
+| **安全团队** | 无法在包进入构建前拦截，只能事后扫描 |
+| **DevOps / 平台团队** | 缺乏统一的制品管控，难以追溯"谁用了什么版本" |
+
+### JFrog 的解决方案
+
+- **JFrog Artifactory**：统一的制品仓库代理，所有依赖必须经过内部仓库，形成"护城河"
+- **JFrog Curation**：在依赖**下载阶段**自动拦截已知恶意包和高危漏洞——比构建后扫描早一步
+- **JFrog Xray**：深度扫描已有制品和 build-info，提供 CVE 分析、许可证合规检查
+- **Build Info**：记录每次构建的完整依赖树，支持快速溯源和影响范围分析
+
+📖 了解更多：[JFrog Curation 文档](https://jfrog.com/help/r/jfrog-curation) | [JFrog Xray 文档](https://jfrog.com/help/r/jfrog-xray)
+
+---
+
+## 本次 Workshop
+
+### 目标
+通过动手实践，体验从"引入恶意依赖"到"检测 → 阻断 → 修复"的完整供应链安全闭环。
+
+### 时长
+约 60 分钟
+
+### 竞赛规则
+
+| 任务 | 内容 | 分值 |
+|------|------|------|
+| T1 | 注册昵称并创建个人仓库 | 10 分 |
+| T2 | 完成首次 npm build | 20 分 |
+| T3 | 发布 Build #1 build-info | 20 分 |
+| T4 | 创建 Curation Policy | 20 分 |
+| T5 | 触发 Curation 阻断 axios@1.7.2 | 20 分 |
+| T6 | 修复并完成 Build #3 | 30 分 |
+| **合计** | | **120 分** |
+
+完成速度相同时，先完成者排名更高。
+
+### 奖励
+> 由讲师现场宣布 🎁
+
+---
+
+## 快速开始
+
+### 第一步：在 GitHub Codespace 中打开
+
+点击下方按钮，在云端一键启动开发环境（无需在本机安装任何工具）：
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/alexwang66/jfrog-workshop)
+
+> ⏱️ Codespace 首次启动约需 1-2 分钟，请耐心等待。
+
+### 第二步：打开 AI 助理
+
+Codespace 启动完成后：
+1. 点击左侧活动栏的 **GitHub Copilot Chat** 图标（💬）
+2. 如未看到图标，使用快捷键 `Ctrl+Shift+I`（Mac：`Cmd+Shift+I`）
+
+### 第三步：开始 Workshop
+
+在 Copilot Chat 对话框中输入：
+
+```
+我要开始 workshop，EVENT_ID 是 <讲师提供的ID>
 ```
 
-> ✅ 檢查點：四條 `--version` 指令都能印出版本號，代表工具已就緒。
+AI 助理将引导你完成所有任务，包括获取凭据、注册昵称、执行每一步操作。
 
----
-
-## 1. 登入 JFrog
-
-工具就緒後，接著登入平台：先用你的**實驗帳號**登入 JFrog Platform UI，再在 UI 產生 Access Token，最後用它設定 JFrog CLI。
-
-### 1.1 找到並登入你的實驗帳號
-
-本次活動每位學員都有一個依**座位**編出來的實驗帳號。
-
-**座位圖：**
-
-![實驗帳號座位圖](workshop/lab-account-seatmap.png)
-
-- 講台屏幕在前方，講師台在右前角。
-- 桌子分兩種：**藍色細桌 = 2 人桌（S1–S2）**；**寬桌 = 4 人桌（S1–S4）**。
-- 每張桌上的小方塊就是座位，上面的數字就是你的**座位號**。
-
-**三步找到你的帳號：**
-
-| 步驟 | 動作 |
-|:---:|---|
-| **1** | 在座位圖上找到你的**桌號** `T1` – `T20` |
-| **2** | 看桌上標牌確認你的**座位號** `S1` / `S2` …（2 人桌只有 S1、S2） |
-| **3** | 組合出帳號：**`labuser-t〈桌號〉-s〈座位號〉`** |
-
-> **範例：** 坐在 **4 號桌、3 號座** → 帳號為 `labuser-t4-s3`。
-
-**登入資訊：**
-
-| 項目 | 內容 |
-|---|---|
-| **平台網址** | `https://<your-jfrog-domain>` |
-| **帳號 Username** | `labuser-t〈桌號〉-s〈座位號〉` |
-| **密碼 Password** | 統一密碼（以講師現場公布為準） |
-
-登入步驟：
-
-1. 用瀏覽器打開平台網址 `https://<your-jfrog-domain>`。
-2. 在登入頁輸入你的**帳號**與**統一密碼**（密碼由講師現場公布）。
-3. 點擊 **Log In** 進入 JFrog 平台。
-
-> ⚠️ **請勿修改密碼**，以免後續登入或講師協助時對不上。
+> 💡 **提示**：整个过程中，所有命令都由 AI 助理提供，你只需在终端中执行即可。
 >
-> 登不進去？1) 確認帳號全小寫、桌號/座位號沒填錯；2) 確認密碼輸入正確；3) 仍無法登入請**舉手聯絡講師**。
-
-### 1.2 產生 Access Token 並設定 CLI
-
-登入平台後，接著讓 JFrog CLI 連上你的 JFrog Platform 實例：先在 UI 產生 Access Token，再用它設定 CLI。
-
-在 JFrog Platform UI 中產生 Access Token：
-
-1. 從左側導覽進入：**Administration → User Management → Access Tokens**。
-2. 點擊 **Generate Token**。
-3. 在彈出視窗中**直接點擊 Generate 產生**，不需要任何額外設定。
-4. 複製並妥善保存產生的 token。
-5. 將 token 寫入下方終端機的環境變數 `JFROG_ACCESS_TOKEN`，供 JFrog CLI 使用。
-
-使用一條命令設定 JFrog CLI。Server ID 固定為 `Artifactory`。
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-$env:JFROG_URL = "https://<your-jfrog-domain>"
-$env:JFROG_ACCESS_TOKEN = "<your-access-token>"
-
-jf c add Artifactory --url=$env:JFROG_URL --access-token=$env:JFROG_ACCESS_TOKEN --interactive=false
-jf c use Artifactory
-```
-
-🐧 macOS / Linux：
-
-```bash
-JFROG_URL="https://<your-jfrog-domain>"
-JFROG_ACCESS_TOKEN="<your-access-token>"
-
-jf c add Artifactory --url="$JFROG_URL" --access-token="$JFROG_ACCESS_TOKEN" --interactive=false
-jf c use Artifactory
-```
-
-驗證設定：
-
-```bash
-
-jf c show
-jf rt ping
-```
-
-後續所有命令都使用 Server ID `Artifactory`。如果看到 `Server ID 'Artifactory' does not exist`，代表 CLI 設定沒有成功建立，請重新執行 `jf c add Artifactory ...`。
-
-> ✅ 檢查點：`jf rt ping` 回傳 `OK`，且 `jf c show` 能看到 `Artifactory` 這個 server。
+> 📊 **排行榜**：讲师会将排行榜地址投屏，格式为：
+> `https://yourcompany.jfrog.io/artifactory/workshop-events/index.html?event=<EVENT_ID>`
 
 ---
 
-## 2. 複製工作坊 Repository
+## 任务概览
 
-CLI 連上平台後，把工作坊範例專案 clone 到本機。
+以下是 6 个任务的简要说明（具体命令由 AI 助理在对话中提供）：
 
-```bash
-cd ~
-# 若 ~/jfrog-workshop 已存在（例如先前已 clone 過），可略過 git clone 直接進入
-git clone https://github.com/alexwang66/jfrog-workshop.git 2>/dev/null || echo "jfrog-workshop 已存在，略過 clone"
-cd ~/jfrog-workshop
-```
-
-> ✅ 檢查點：`~/jfrog-workshop` 目錄已存在，裡面有 `npm-sample/` 與 `automation/`。
->
-> ℹ️ 後續步驟的 `cd` 指令都使用 **絕對路徑**（如 `cd ~/jfrog-workshop/automation`），所以不論你目前在哪個目錄，直接複製貼上都不會出錯，**不需要**再手動 `cd jfrog-workshop`。
+1. **T1 注册昵称**：选择一个独特昵称，脚本自动在 Artifactory 上为你创建专属的 npm 仓库套件
+2. **T2 首次构建**：配置 npm 通过你的 Artifactory 仓库解析依赖，完成 `npm install + build`
+3. **T3 发布 Build Info**：将构建的完整依赖信息发布到 Artifactory，建立可追溯性
+4. **T4 创建安全策略**：在 JFrog Curation 中创建一条 npm 风险包拦截策略
+5. **T5 触发阻断**：在项目中引入 `axios@1.7.2`（模拟恶意版本），观察 Curation 如何拦截
+6. **T6 修复问题**：将 axios 替换为安全版本，重新构建并发布 Build #3，完成修复闭环
 
 ---
 
-## 3. 建立工作坊 Repository
+## 主办者指南
 
-專案 clone 完成後，用 `automation` 目錄的腳本，在 Artifactory 建立你專屬的一組 npm 倉庫。
+如果你是讲师或活动组织者，请参阅：
 
-每位學員請使用**自己的 user id**（登入帳號）作為 `STUDENT_ID`，這個值會作為 repository 前綴，避免多人共用 lab 時互相覆蓋。
-
-範例：如果你的 user id 是 `labuser-t4-s3`，請將 `STUDENT_ID` 設為 `labuser-t4-s3`，然後執行下面的建立腳本。
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-cd ~/jfrog-workshop/automation
-$env:STUDENT_ID = "labuser-t4-s3"
-.\create-repo.ps1 -StudentId $env:STUDENT_ID
-```
-
-如果 PowerShell 執行原則阻擋腳本，可在目前終端機暫時允許腳本後重試：
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\create-repo.ps1 -StudentId $env:STUDENT_ID
-```
-
-🐧 macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/automation
-export STUDENT_ID="labuser-t4-s3"
-chmod +x ./create-repo.sh
-./create-repo.sh "$STUDENT_ID" all
-```
-
-腳本會建立以下 npm repositories：
-
-- Resolve repository：`<student-id>-npm-virtual`（virtual）
-- Remote repository：`<student-id>-npm-remote`（remote，指向 npmjs）
-- Deploy repository：`<student-id>-npm-dev-local`（local）
-
-在 Artifactory 中開啟：`https://<your-jfrog-domain>/ui/admin/repositories`，查看剛建立的倉庫。
-選擇「All Repositories」，在右側搜尋欄輸入你的 student-id 進行搜尋。
-
-![建立的倉庫列表](./workshop/images/repos-created.png)
-
-> ✅ 檢查點：在 All Repositories 中能搜到 3 個以你的 student-id 為前綴的倉庫（`-npm-virtual` / `-npm-remote` / `-npm-dev-local`）。
-
----
-
-## 4. NPM 建置、發布與 Build-Info
-
-倉庫就緒後，在本機完成第一次 npm 建置，並把 build-info 推送到 Artifactory。
-
-本工作坊 **將 `axios@1.7.2` 視為模擬惡意套件版本**。目標是讓 `npm install` 透過 JFrog Curation 解析到該版本時被阻擋。
-
-進入範例專案目錄。
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-cd ~/jfrog-workshop/npm-sample
-$env:STUDENT_ID = "labuser-t4-s3"
-Get-Content .\package.json
-```
-
-🐧 macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/npm-sample
-export STUDENT_ID="labuser-t4-s3"
-cat ./package.json
-```
-
-所有 `npm` 與 `jf npm ...` 命令都必須在 `npm-sample` 目錄中執行。不要在 `automation` 目錄中執行這些命令；`automation` 只用於建立 JFrog repositories。
-
-設定 npm 解析與部署：
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-jf npm-config `
-  --server-id-resolve=Artifactory `
-  --server-id-deploy=Artifactory `
-  --repo-resolve="$($env:STUDENT_ID)-npm-virtual" `
-  --repo-deploy="$($env:STUDENT_ID)-npm-dev-local" `
-  --global=false
-```
-
-🐧 macOS / Linux：
-
-```bash
-jf npm-config \
-  --server-id-resolve=Artifactory \
-  --server-id-deploy=Artifactory \
-  --repo-resolve="${STUDENT_ID}-npm-virtual" \
-  --repo-deploy="${STUDENT_ID}-npm-dev-local" \
-  --global=false
-```
-- 查看 package.json里的"axios"的版本"1.7.2"
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-cd ~/jfrog-workshop/npm-sample
-notepad .\package.json
-Get-Content .\package.json
-```
-
-🐧 macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/npm-sample
-cat package.json
-```
-
-確認 `package.json` 中存在以下內容：
-
-```json
-{
-  "dependencies": {
-    "axios": "1.7.2"
-  }
-}
-```
-
-安裝、發布套件並發布 build-info：
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-$env:BUILD_NAME = "$($env:STUDENT_ID)-npm-sample"
-$env:BUILD_NUMBER = "1"
-
-jf npm install --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
-jf npm publish --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
-
-jf rt build-add-git $env:BUILD_NAME $env:BUILD_NUMBER
-jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
-jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
-```
-
-🐧 macOS / Linux：
-
-```bash
-BUILD_NAME="${STUDENT_ID}-npm-sample"
-BUILD_NUMBER=1
-
-jf npm install --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
-jf npm publish --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
-
-jf rt build-add-git "$BUILD_NAME" "$BUILD_NUMBER"
-jf rt build-collect-env "$BUILD_NAME" "$BUILD_NUMBER"
-jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
-```
-
-在 UI 中驗證：
-
-- Artifactory -> Builds -> `<student-id>-npm-sample` -> `#1`
-
-![Build #1 build-info](./workshop/images/build-info-1.png)
-
-> ✅ 檢查點：Builds 中出現 `#1`，build-info 的 dependencies 含 `axios@1.7.2`。
-
----
-
-## 5. Curation 示範：阻擋 `axios@1.7.2`
-
-首次 build-info 完成後，進入本工作坊的重點：建立 Curation Policy 和 Condition，用 Curation 在下載源頭把 `axios@1.7.2` 擋下，最後再換回安全版本重新建置。
-
-### 5.1  建立 Curation Policy 來阻斷 axios@1.7.2
-
-> ⚠️ 多人共用同一個平台時，Policy 與 Condition 的名稱皆不可重複。請在 Policy 名稱與 Condition 名稱都帶上你自己的 student-id（例如 `block-axios-1.7.2-<student-id>`）。
-
-- Step 1， Platform -> Curation -> Policiies
-![建立 Curation Policy（步驟一）](./workshop/images/curation-policy-step1.png)
-- Step 2
-![確認 Remote Repository 已啟用 Curation](./workshop/images/curation-remote-enabled.png)
-
-- Step 3, 新建 Condition
-  **Conditions**。
-- 點擊 **Create Condition**。
-  ![新建 Curation Condition](./workshop/images/curation-condition-new.png)
-- 選擇 **Block Specific Package Versions** 範本。
-- 設定：
-  - Condition name：`block-axios-1.7.2-<student-id>`（請帶上你自己的 student-id，避免多人共用平台時名稱衝突）
-  - Package type：`npm`
-  - Package：`axios`
-  - Version：`1.7.2`
-- 儲存 condition。
-
-
-![設定 Curation Condition](./workshop/images/curation-condition-config.png)
-
-- Step 4, Click Next
-- Step 5, Select "Block" and Save the Policy
-  ![選擇 Block 並 Save Policy](./workshop/images/curation-policy-save.png)
-
-
-
-
-
-### 5.2 從 Artifactory Remote Cache 刪除已快取的 `axios`
-
-如果 `axios@1.7.2` 在建立 Curation policy 前已被下載，Artifactory 可能已將它快取到 remote cache repository。重新安裝前需先刪除該快取套件。
-
-在 JFrog UI 中：
-
-1. 進入 Artifactory -> Artifacts。
-2. 開啟 remote cache repository：`<student-id>-npm-remote-cache`。
-3. 找到 `axios`。
-4. 右鍵點擊 `axios`，選擇 Delete / Delete Content。
-5. 確認刪除。
-
-示例：
-
-![從 Remote Cache 刪除 axios](./workshop/images/remote-cache-delete-axios.png)
-
-### 5.3 重新執行 Install 並觀察阻擋
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-cd ~/jfrog-workshop/npm-sample
-$env:STUDENT_ID = "labuser-t4-s3"
-Remove-Item -Recurse -Force node_modules, package-lock.json -ErrorAction SilentlyContinue
-npm cache clean --force
-
-$env:BUILD_NAME = "$($env:STUDENT_ID)-npm-sample"
-$env:BUILD_NUMBER = "2"
-
-jf npm install --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
-```
-
-🐧 macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/npm-sample
-export STUDENT_ID="labuser-t4-s3"
-rm -rf node_modules package-lock.json
-npm cache clean --force
-
-BUILD_NAME="${STUDENT_ID}-npm-sample"
-BUILD_NUMBER=2
-
-jf npm install --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
-```
-
-預期結果：
-
-- CLI 輸出顯示某個套件版本被阻擋，具體為 `axios@1.7.2`。
-- 安裝失敗，或依 policy action 與設定被替換為允許版本。
-CLI 被阻擋輸出示例：
-
-
-![Curation CLI Blocked](./workshop/images/current-cli-blocked.svg)
-
-如果輸出類似 `added 28 packages`，表示 npm 已成功安裝依賴，Curation 沒有阻擋本次下載。請檢查：
-
-- Policy 是否已儲存並啟用。
-- Policy action 是否為 **Block**，而不是 Dry Run 或僅 audit。
-- Policy scope 是否包含 `<student-id>-npm-remote`。
-- Administration -> Curation -> Remote Repositories 是否顯示 `<student-id>-npm-remote` 為 Connected / Curated。
-- `<student-id>-npm-remote` 是否已啟用 Xray indexing。官方 On-Demand Curation 文件建議同時確認 remote repository 已啟用 Curation 與 Xray indexing。
-- Custom condition 是否精確匹配 Package type `npm`、Package `axios`、Version `1.7.2`。
-- 本機 `node_modules` 與 `package-lock.json` 是否已刪除，並已執行 `npm cache clean --force`。
-- Artifactory -> Artifacts -> `<student-id>-npm-remote-cache` 中是否已不再包含 `axios`。
-- Curation audit/events 是否出現本次下載事件。若沒有事件，通常表示該 repository 尚未由 Curation 接管。若事件顯示 No Policy Violation，通常表示 policy condition、scope 或 action 未匹配。
-
-Curation audit event 示例：
-
-![Curation Audit Blocked](./workshop/images/current-curation-audit.svg)
-
-### 5.4 在 Catalog 中選擇可用版本並重新構建
-
-阻擋效果確認後，回到 JFrog Catalog 查找 `axios` 的最新版本，確認該版本是否可下載。
-
-在 JFrog UI 中：
-
-1. 進入 Catalog -> Explore。
-2. 搜尋 `axios`。
-3. 選擇最新版本 `1.16.1`。
-4. 確認頁面顯示 **Approved for downloading**。
-
-示例：
-
-![Catalog Axios Approved](./workshop/images/current-catalog-axios-approved.svg)
-
-接著直接修改 `package.json`，將axios專案修復到1.16.1版本。
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-cd ~/jfrog-workshop/npm-sample
-$env:STUDENT_ID = "labuser-t4-s3"
-
-notepad .\package.json
-Get-Content .\package.json
-```
-
-🐧 macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/npm-sample
-export STUDENT_ID="labuser-t4-s3"
-
-cat package.json
-```
-
-確認 `package.json` 中至少包含以下內容：
-
-```json
-{
-  "version": "1.0.4",
-  "dependencies": {
-    "axios": "1.16.1"
-  }
-}
-```
-
-清理本機 npm 狀態後重新構建並上傳 build-info。
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-cd ~/jfrog-workshop/npm-sample
-$env:STUDENT_ID = "labuser-t4-s3"
-
-Remove-Item -Recurse -Force node_modules, package-lock.json -ErrorAction SilentlyContinue
-npm cache clean --force
-
-$env:BUILD_NAME = "$($env:STUDENT_ID)-npm-sample"
-$env:BUILD_NUMBER = "3"
-
-jf npm install --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
-jf npm publish --build-name=$env:BUILD_NAME --build-number=$env:BUILD_NUMBER
-jf rt build-add-git $env:BUILD_NAME $env:BUILD_NUMBER
-jf rt build-collect-env $env:BUILD_NAME $env:BUILD_NUMBER
-jf rt build-publish $env:BUILD_NAME $env:BUILD_NUMBER
-```
-
-🐧 macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/npm-sample
-export STUDENT_ID="labuser-t4-s3"
-
-rm -rf node_modules package-lock.json
-npm cache clean --force
-
-BUILD_NAME="${STUDENT_ID}-npm-sample"
-BUILD_NUMBER=3
-
-jf npm install --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
-jf npm publish --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
-jf rt build-add-git "$BUILD_NAME" "$BUILD_NUMBER"
-jf rt build-collect-env "$BUILD_NAME" "$BUILD_NUMBER"
-jf rt build-publish "$BUILD_NAME" "$BUILD_NUMBER"
-```
-
-在 UI 中驗證：
-
-- Artifactory -> Builds -> `<student-id>-npm-sample` -> `#3`
-- Build-info 中的 dependencies 應顯示已使用 `axios@1.16.1`。
-
-> ✅ 檢查點：`#2` 已觸發 Curation 阻擋（或在 Xray 看到 `axios 1.7.2` 的漏洞），`#3` 已改用 `axios@1.16.1` 並建置成功，Curation 流程完成。
-
----
-
-## 附錄：清理倉庫
-
-如需清理某位學員的 repository，使用相同的 `STUDENT_ID` 執行刪除腳本：
-
-<img src="./workshop/images/microsoft-logo.svg" width="14" alt="Windows"/> Windows PowerShell：
-
-```powershell
-cd ~/jfrog-workshop/automation
-$env:STUDENT_ID = "labuser-t4-s3"
-.\delete-repo.ps1 -StudentId $env:STUDENT_ID
-```
-
-🐧 macOS / Linux：
-
-```bash
-cd ~/jfrog-workshop/automation
-export STUDENT_ID="labuser-t4-s3"
-chmod +x ./delete-repo.sh
-./delete-repo.sh "$STUDENT_ID" all
-```
-
-> 說明：`delete-repo.sh ... all` 除了刪除 3 個 npm 倉庫，也會一併刪除本工作坊的 build-info（`<student-id>-npm-sample`）。
-
-
-官方參考文件：
-
-- Catalog：`https://docs.jfrog.com/security/docs/catalog`
-- Use npm with JFrog CLI：`https://docs.jfrog.com/artifactory/docs/use-npm-with-jfrog-cli`
+👉 [ORGANIZER.md](./ORGANIZER.md)

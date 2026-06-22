@@ -6,6 +6,20 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 STUDENT_ID="${1:-${STUDENT_ID:-}}"
 REPO_KIND="${2:-all}"
 
+# 可选参数（用于同时清理 workshop-events 中的学员记录）
+EVENT_ID=""
+JFROG_URL=""
+JFROG_TOKEN=""
+shift 2 2>/dev/null || true
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --event-id)   EVENT_ID="$2";   shift 2 ;;
+    --jfrog-url)  JFROG_URL="${2%/}"; shift 2 ;;
+    --token)      JFROG_TOKEN="$2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+
 normalize_student_id() {
   value="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
   case "$value" in
@@ -71,12 +85,25 @@ delete_build_info() {
     echo "Build-info '$build_name' not found or already deleted; skipping." >&2
 }
 
+delete_workshop_records() {
+  [ -n "$EVENT_ID" ] && [ -n "$JFROG_URL" ] && [ -n "$JFROG_TOKEN" ] || return 0
+  echo "Deleting workshop records for ${STUDENT_ID} in event ${EVENT_ID}..."
+  for f in profile.json progress.json; do
+    curl -sf -X DELETE \
+      -H "Authorization: Bearer ${JFROG_TOKEN}" \
+      "${JFROG_URL}/artifactory/workshop-events/${EVENT_ID}/participants/${STUDENT_ID}/${f}" \
+      >/dev/null 2>&1 || true
+  done
+  echo "Workshop records deleted."
+}
+
 case "$REPO_KIND" in
   all)
     delete_repos "$SCRIPT_DIR/virtual-repo-values.json"
     delete_repos "$SCRIPT_DIR/remote-repo-values.json"
     delete_repos "$SCRIPT_DIR/local-repo-values.json"
     delete_build_info
+    delete_workshop_records
     ;;
   local)
     delete_repos "$SCRIPT_DIR/local-repo-values.json"

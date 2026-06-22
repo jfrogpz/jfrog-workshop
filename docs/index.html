@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JFrog Workshop 排行榜</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #7d8590;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --red: #f85149;
+      --blue: #58a6ff;
+      --purple: #bc8cff;
+      --gold: #f0c040;
+      --silver: #b0b8c1;
+      --bronze: #cd7f32;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1c2a3a 0%, #0d1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 16px; }
+
+    .jfrog-logo {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #40be46, #1a7d1e);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+
+    h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+    .subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    .header-right { text-align: right; }
+
+    .countdown {
+      font-size: 28px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--blue);
+      letter-spacing: 2px;
+    }
+
+    .countdown.ending { color: var(--red); animation: pulse 1s infinite; }
+
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    .countdown-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .status-bar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      animation: blink 2s infinite;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .status-dot.error { background: var(--red); animation: none; }
+
+    main { padding: 24px 32px; max-width: 1200px; margin: 0 auto; }
+
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      white-space: nowrap;
+    }
+
+    th.center, td.center { text-align: center; }
+
+    td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(48,54,61,0.5);
+      transition: background 0.3s;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr.highlight td {
+      animation: highlight-row 1.5s ease-out;
+    }
+
+    @keyframes highlight-row {
+      0% { background: rgba(88,166,255,0.15); }
+      100% { background: transparent; }
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .rank-1 { background: rgba(240,192,64,0.2); color: var(--gold); }
+    .rank-2 { background: rgba(176,184,193,0.2); color: var(--silver); }
+    .rank-3 { background: rgba(205,127,50,0.2); color: var(--bronze); }
+    .rank-n { background: rgba(255,255,255,0.05); color: var(--muted); }
+
+    .nickname {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .points {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--green);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .task-icon { font-size: 18px; }
+
+    .progress-bar-wrap {
+      width: 80px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      transition: width 0.8s ease;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+      color: var(--muted);
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .refreshing { opacity: 0.5; transition: opacity 0.3s; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="jfrog-logo">🐸</div>
+    <div>
+      <h1 id="event-name">JFrog Workshop 排行榜</h1>
+      <div class="subtitle" id="event-id">加载中...</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="countdown" id="countdown">--:--:--</div>
+    <div class="countdown-label">距离结束</div>
+  </div>
+</header>
+
+<div class="status-bar">
+  <span><span class="status-dot" id="status-dot"></span><span id="status-text">连接中...</span></span>
+  <span>最后更新：<span id="last-updated">—</span></span>
+  <span>学员数量：<span id="participant-count">—</span></span>
+  <span>每 30 秒自动刷新</span>
+</div>
+
+<main>
+  <div class="table-wrap">
+    <table id="leaderboard-table">
+      <thead>
+        <tr>
+          <th style="width:60px">排名</th>
+          <th>昵称</th>
+          <th class="center">T1<br><small style="color:var(--muted);font-weight:400">注册</small></th>
+          <th class="center">T2<br><small style="color:var(--muted);font-weight:400">构建</small></th>
+          <th class="center">T3<br><small style="color:var(--muted);font-weight:400">发布</small></th>
+          <th class="center">T4<br><small style="color:var(--muted);font-weight:400">策略</small></th>
+          <th class="center">T5<br><small style="color:var(--muted);font-weight:400">阻断</small></th>
+          <th class="center">T6<br><small style="color:var(--muted);font-weight:400">修复</small></th>
+          <th style="width:140px">总分</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-body">
+        <tr>
+          <td colspan="9">
+            <div class="empty-state">
+              <div class="icon">⏳</div>
+              <div>正在加载排行榜数据...</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  Powered by <a href="https://jfrog.com" target="_blank">JFrog Artifactory</a> &amp;
+  <a href="https://github.com/features/copilot" target="_blank">GitHub Copilot</a>
+</footer>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const EVENT_ID = params.get('event') || '';
+
+  // 优先用 URL 参数中的 jfrog_url，否则从当前页面地址推算
+  // 页面部署在 https://xxx.jfrog.io/artifactory/workshop-events/index.html
+  // 所以直接取 origin 即可
+  const JFROG_URL = (params.get('jfrog_url') || location.origin).replace(/\/$/, '');
+
+  const LEADERBOARD_URL = EVENT_ID
+    ? `${JFROG_URL}/artifactory/workshop-events/${EVENT_ID}/leaderboard.json`
+    : null;
+
+  // 缓存：用于检测变化行
+  let prevRankings = {};
+  let endTime = null;
+
+  function taskIcon(status) {
+    if (status === 'done') return '<span class="task-icon">✅</span>';
+    if (status === 'in_progress') return '<span class="task-icon">⏳</span>';
+    return '<span class="task-icon" style="opacity:0.25">⬜</span>';
+  }
+
+  function rankBadge(rank) {
+    const cls = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-n';
+    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+    return `<span class="rank-badge ${cls}">${medal}</span>`;
+  }
+
+  function renderTable(rankings) {
+    const tbody = document.getElementById('leaderboard-body');
+
+    if (!rankings || rankings.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9">
+        <div class="empty-state">
+          <div class="icon">👀</div>
+          <div>暂无学员，等待注册中...</div>
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    const rows = rankings.map(r => {
+      const ts = r.task_status || {};
+      const prevPts = (prevRankings[r.nickname] || {}).total_points;
+      const changed = prevPts !== undefined && prevPts !== r.total_points;
+      const pct = Math.round((r.total_points / 120) * 100);
+
+      return `<tr class="${changed ? 'highlight' : ''}">
+        <td class="center">${rankBadge(r.rank)}</td>
+        <td><span class="nickname">${escHtml(r.nickname)}</span></td>
+        <td class="center">${taskIcon(ts.T1 || 'pending')}</td>
+        <td class="center">${taskIcon(ts.T2 || 'pending')}</td>
+        <td class="center">${taskIcon(ts.T3 || 'pending')}</td>
+        <td class="center">${taskIcon(ts.T4 || 'pending')}</td>
+        <td class="center">${taskIcon(ts.T5 || 'pending')}</td>
+        <td class="center">${taskIcon(ts.T6 || 'pending')}</td>
+        <td>
+          <span class="points">${r.total_points}</span>
+          <span style="color:var(--muted);font-size:12px"> / 120</span>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" style="width:${pct}%"></div>
+          </div>
+        </td>
+      </tr>`;
+    });
+
+    tbody.innerHTML = rows.join('');
+    prevRankings = Object.fromEntries(rankings.map(r => [r.nickname, r]));
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function updateCountdown() {
+    if (!endTime) return;
+    const remaining = endTime - Date.now();
+    const el = document.getElementById('countdown');
+
+    if (remaining <= 0) {
+      el.textContent = '已结束';
+      el.classList.add('ending');
+      return;
+    }
+
+    const h = Math.floor(remaining / 3600000);
+    const m = Math.floor((remaining % 3600000) / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (remaining < 300000) el.classList.add('ending');
+    else el.classList.remove('ending');
+  }
+
+  async function fetchLeaderboard() {
+    const dot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+
+    if (!LEADERBOARD_URL) {
+      dot.classList.add('error');
+      statusText.textContent = '未配置：请在 URL 中添加 ?event=<ID>&jfrog_url=<URL>';
+      document.getElementById('leaderboard-body').innerHTML = `<tr><td colspan="9">
+        <div class="empty-state">
+          <div class="icon">⚙️</div>
+          <div>请在 URL 中提供参数：</div>
+          <div style="margin-top:8px;font-family:monospace;color:var(--blue)">
+            ?event=2025-06-shanghai&jfrog_url=https://yourcompany.jfrog.io
+          </div>
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    try {
+      const res = await fetch(LEADERBOARD_URL + '?t=' + Date.now());
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      document.getElementById('event-name').textContent = data.event_name || 'JFrog Workshop';
+      document.getElementById('event-id').textContent = `赛事 ID：${data.event_id || EVENT_ID}`;
+      document.getElementById('last-updated').textContent =
+        data.updated_at ? new Date(data.updated_at).toLocaleTimeString('zh-CN') : '—';
+      document.getElementById('participant-count').textContent =
+        (data.rankings || []).length + ' 人';
+
+      renderTable(data.rankings || []);
+
+      dot.classList.remove('error');
+      statusText.textContent = '实时更新中';
+
+    } catch (e) {
+      dot.classList.add('error');
+      statusText.textContent = `加载失败：${e.message}`;
+    }
+  }
+
+  async function fetchConfig() {
+    if (!JFROG_URL || !EVENT_ID) return;
+    try {
+      const res = await fetch(
+        `${JFROG_URL}/artifactory/workshop-events/${EVENT_ID}/config.json?t=${Date.now()}`
+      );
+      if (!res.ok) return;
+      const cfg = await res.json();
+      if (cfg.end_time) endTime = new Date(cfg.end_time).getTime();
+    } catch {}
+  }
+
+  // 启动
+  fetchConfig();
+  fetchLeaderboard();
+  setInterval(fetchLeaderboard, 30000);
+  setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>

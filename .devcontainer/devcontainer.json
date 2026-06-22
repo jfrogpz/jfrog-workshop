@@ -1,0 +1,22 @@
+{
+  "name": "JFrog Workshop",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/jfrog/jfrog-cli-devcontainer-feature/jfrog-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "remoteEnv": {
+    "NODE_ENV": "development"
+  }
+}
