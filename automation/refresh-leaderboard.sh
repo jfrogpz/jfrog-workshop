@@ -58,7 +58,7 @@ verify_task() {
       ;;
     T2)
       local children
-      children=$(curl_jf "${API}/storage/${nickname}-npm-dev-local" 2>/dev/null \
+      children=$(curl_jf "${API}/storage/${nickname}-npm-remote" 2>/dev/null \
         | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('children',[])))" \
         2>/dev/null || echo "0")
       [ "$children" -gt 0 ]

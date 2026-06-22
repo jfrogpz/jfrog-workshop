@@ -88,7 +88,7 @@ print(f"  当前总分：{total_points} / 100 分")
 print("")
 
 hints = {
-    "T2": "进入 npm-sample 目录，配置 npm 指向你的虚拟仓库，然后运行 npm install && npm run build",
+    "T2": "进入 npm-sample 目录，配置 npm 指向你的虚拟仓库，然后运行 jf npm install --build-name=<昵称>-npm-sample --build-number=1",
     "T3": "执行 jf rt build-publish <build-name> <build-number> 发布 build-info",
     "T4": "在 JFrog UI 中进入 Curation → Policies，创建一条针对 npm 的 Policy",
     "T5": "在你的项目中使用 axios@1.7.2，触发 npm install，观察 Curation 阻断",

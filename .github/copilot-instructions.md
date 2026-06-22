@@ -80,13 +80,12 @@
    cd npm-sample
    jf npmc --repo-resolve <NICKNAME>-npm-virtual --repo-deploy <NICKNAME>-npm-dev-local
    ```
-3. 执行构建：
+3. 执行安装：
    ```bash
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1
-   jf npm run build --build-name=<NICKNAME>-npm-sample --build-number=1
    ```
 
-**成功标志**：Artifactory 的 `{nickname}-npm-dev-local` 仓库中有 artifact。
+**成功标志**：Artifactory 的 `{nickname}-npm-remote` 仓库中有缓存的包。
 
 ---
 
