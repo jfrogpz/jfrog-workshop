@@ -211,7 +211,11 @@ for line in sys.stdin:
 event_id = sys.argv[1]
 refresh_time = sys.argv[2]
 
-lines.sort(key=lambda x: (-(x.get('total_points', 0)), x.get('registered_at', '')))
+def last_completed_at(p):
+    times = [t.get('completed_at') or '' for t in p.get('tasks', {}).values() if t.get('status') == 'done']
+    return max(times) if times else ''
+
+lines.sort(key=lambda x: (-(x.get('total_points', 0)), last_completed_at(x)))
 
 TASK_NAMES = {
     "T1": "注册",
