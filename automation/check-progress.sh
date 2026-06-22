@@ -51,9 +51,9 @@ tasks_meta = [
     ("T1", "注册昵称并创建个人仓库",      10),
     ("T2", "完成首次 npm build",          20),
     ("T3", "发布 Build #1 build-info",    20),
-    ("T4", "创建 Curation Policy",        20),
+    ("T4", "创建 Curation Policy",        10),
     ("T5", "触发 Curation 阻断 axios@1.7.2", 20),
-    ("T6", "修复并完成 Build #3",         30),
+    ("T6", "修复并完成 Build #3",         20),
 ]
 
 tasks = data.get("tasks", {})
@@ -84,7 +84,7 @@ for tid, tname, tpts in tasks_meta:
     print(f"  {icon} {tid}  {tname:<28} {pts_str}")
 
 print("  ─────────────────────────────────────────────────")
-print(f"  当前总分：{total_points} / 120 分")
+print(f"  当前总分：{total_points} / 100 分")
 print("")
 
 hints = {

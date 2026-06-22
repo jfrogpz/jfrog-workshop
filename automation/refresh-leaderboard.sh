@@ -7,7 +7,7 @@ usage() {
   cat >&2 <<EOF
 Usage: $0 <EVENT_ID> <JFROG_URL> <JFROG_TOKEN>
 
-  EVENT_ID    赛事 ID，例如 2025-06-shanghai
+  EVENT_ID    赛事 ID，例如 2026-06-shanghai
   JFROG_URL   JFrog 实例地址，例如 https://mycompany.jfrog.io
   JFROG_TOKEN 管理员 Access Token
 
@@ -148,7 +148,7 @@ import sys, json, os
 
 data = json.loads(sys.stdin.read())
 now = sys.argv[1]
-task_points = {"T1": 10, "T2": 20, "T3": 20, "T4": 20, "T5": 20, "T6": 30}
+task_points = {"T1": 10, "T2": 20, "T3": 20, "T4": 10, "T5": 20, "T6": 20}
 tasks = data.get("tasks", {})
 
 for tid in ["T2", "T3", "T4", "T5", "T6"]:

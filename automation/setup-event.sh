@@ -7,13 +7,13 @@ usage() {
   cat >&2 <<EOF
 Usage: $0 <EVENT_ID> <EVENT_NAME> <JFROG_URL> <JFROG_TOKEN>
 
-  EVENT_ID    赛事唯一标识，例如 2025-06-shanghai
+  EVENT_ID    赛事唯一标识，例如 2026-06-shanghai
   EVENT_NAME  赛事展示名称，例如 "JFrog Workshop Shanghai"
   JFROG_URL   JFrog 实例地址，例如 https://mycompany.jfrog.io
   JFROG_TOKEN 管理员 Access Token
 
 Example:
-  $0 2025-06-shanghai "JFrog Workshop Shanghai" https://mycompany.jfrog.io \$TOKEN
+  $0 2026-06-shanghai "JFrog Workshop Shanghai" https://mycompany.jfrog.io \$TOKEN
 EOF
   exit 1
 }
@@ -79,9 +79,9 @@ CONFIG_JSON=$(cat <<JSON
     { "id": "T1", "name": "注册昵称并创建个人仓库", "points": 10 },
     { "id": "T2", "name": "完成首次 npm build", "points": 20 },
     { "id": "T3", "name": "发布 Build #1 build-info", "points": 20 },
-    { "id": "T4", "name": "创建 Curation Policy", "points": 20 },
+    { "id": "T4", "name": "创建 Curation Policy", "points": 10 },
     { "id": "T5", "name": "触发 Curation 阻断 axios@1.7.2", "points": 20 },
-    { "id": "T6", "name": "修复并完成 Build #3", "points": 30 }
+    { "id": "T6", "name": "修复并完成 Build #3", "points": 20 }
   ]
 }
 JSON
