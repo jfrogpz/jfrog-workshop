@@ -179,9 +179,8 @@ curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
 |------|---------|
 | 排行榜无学员显示 | 检查 Artifactory 中 `workshop-events/{event_id}/participants/` 目录是否有数据 |
 | 学员任务长时间不更新 | 确认 `refresh-leaderboard.sh` 正在运行；检查 Admin Token 是否有效 |
-| Curation 不阻断 axios@1.7.2 | 确认学员 Curation Policy 已激活，且 Apply to 选择了正确的 Artifactory 仓库（remote 仓库，不是 virtual） |
-| Codespace 启动后缺少工具 | 执行 `Codespaces: Rebuild Container` 重建环境 |
-| T4 验证始终失败 | Curation Policy API 路径可能因版本而异，检查 `refresh-leaderboard.sh` 中的 API 路径 |
+| Curation 不阻断 axios@1.7.2 | 确认学员 Curation Policy 已激活，Policy Action 下方开启了 **Enforce policy on cached packages**，且 Apply to 选择了 remote 仓库（不是 virtual） |
+| T5 长时间不更新 | T5 通过 `GET /xray/api/v1/curation/audit/packages` 轮询 Curation 拦截记录验证，需确认学员已执行 `clear-remote-cache.sh` 清除 Artifactory 远程缓存后再次尝试安装 |
 
 ---
 
