@@ -39,42 +39,45 @@ else
   MODE="self-study"
 fi
 
+# ── 初始化空进度 JSON（T1 标记为 done）────────────────────────────────────────
+make_initial_progress() {
+  local nick="$1" now="$2" eid="$3"
+  python3 -c "
+import json, sys
+nick, now, eid = sys.argv[1], sys.argv[2], sys.argv[3]
+tasks = {}
+for tid, pts in [('T1',10),('T2',20),('T3',20),('T4',10),('T5',20),('T6',20)]:
+    if tid == 'T1':
+        tasks[tid] = {'status': 'done', 'completed_at': now, 'points': pts}
+    else:
+        tasks[tid] = {'status': 'pending', 'completed_at': None, 'points': 0}
+print(json.dumps({'nickname': nick, 'event_id': eid, 'tasks': tasks, 'total_points': 10}, ensure_ascii=False))
+" "$nick" "$now" "$eid"
+}
+
 # ── 读取当前进度 ─────────────────────────────────────────────────────────────
+NOW_INIT=$(date -u +"%Y-%m-%dT%H:%M:%S+00:00")
+
 if [ "$MODE" = "event" ]; then
   PROGRESS_RAW=$(curl_jf \
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/progress.json" \
     2>/dev/null || echo "")
   if [ -z "$PROGRESS_RAW" ]; then
-    echo "" >&2
-    echo "  ❌ 无法获取进度数据，请检查网络或 Token 是否有效" >&2
-    exit 1
+    echo "  ⚠️  Artifactory 中暂无进度记录，初始化本地进度..." >&2
+    PROGRESS_RAW=$(make_initial_progress "$NICKNAME" "$NOW_INIT" "$EVENT_ID")
   fi
 else
-  # 自主学习模式：读取本地文件，不存在则初始化空进度（T1 标记为 done）
   if [ -f "$LOCAL_PROGRESS_FILE" ]; then
     PROGRESS_RAW=$(cat "$LOCAL_PROGRESS_FILE")
   else
-    NOW_INIT=$(date -u +"%Y-%m-%dT%H:%M:%S+00:00")
-    PROGRESS_RAW=$(python3 - "$NICKNAME" "$NOW_INIT" <<'PY'
-import sys, json
-nickname, now = sys.argv[1], sys.argv[2]
-task_points = {"T1": 10, "T2": 20, "T3": 20, "T4": 10, "T5": 20, "T6": 20}
-tasks = {}
-for tid, pts in task_points.items():
-    if tid == "T1":
-        tasks[tid] = {"status": "done", "completed_at": now, "points": pts}
-    else:
-        tasks[tid] = {"status": "pending", "completed_at": None, "points": 0}
-data = {
-    "nickname": nickname,
-    "event_id": "self-study",
-    "tasks": tasks,
-    "total_points": task_points["T1"],
-}
-print(json.dumps(data, ensure_ascii=False))
-PY
-)
+    PROGRESS_RAW=$(make_initial_progress "$NICKNAME" "$NOW_INIT" "self-study")
   fi
+fi
+
+# 防御：如果 PROGRESS_RAW 仍为空，直接报错退出
+if [ -z "$PROGRESS_RAW" ]; then
+  echo "  ❌ 无法获取或初始化进度数据，请检查网络或 Token 是否有效" >&2
+  exit 1
 fi
 
 # ── 验证单个任务 ────────────────────────────────────────────────────────────
