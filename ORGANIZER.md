@@ -178,8 +178,8 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 
 | 任务 | 验证方式 |
 |------|---------|
-| T1 | `GET /api/repositories/{nickname}-npm-virtual` 返回 200 |
-| T2 | `GET /api/storage/{nickname}-npm-remote` 有子目录（有缓存包） |
+| T1 | `GET /api/repositories/{nickname}-npm-dev-virtual` 返回 200 |
+| T2 | `GET /api/storage/{nickname}-npm-org-remote` 有子目录（有缓存包） |
 | T3 | `GET /api/build/{nickname}-npm-sample/1` 返回 200 |
 | T4 | `GET /xray/api/v1/curation/policies` 列表中有包含昵称的 Policy |
 | T5 | `GET /xray/api/v1/curation/audit/packages` 中有昵称对应仓库 blocked axios@1.7.2 的记录 |

@@ -121,7 +121,7 @@ fi
 # ── 步骤 4：创建个人 npm 仓库 ──────────────────────────────────────────────
 echo ""
 echo ">>> 创建个人 npm 仓库（昵称: ${NICKNAME}）..."
-echo "    将创建：${NICKNAME}-npm-dev-local, ${NICKNAME}-npm-remote, ${NICKNAME}-npm-virtual"
+echo "    将创建：${NICKNAME}-npm-dev-local, ${NICKNAME}-npm-org-remote, ${NICKNAME}-npm-dev-virtual"
 
 if bash "${SCRIPT_DIR}/create-repo.sh" "$NICKNAME"; then
   echo "    ✅ 仓库就绪"

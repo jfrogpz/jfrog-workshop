@@ -116,8 +116,8 @@ AI 助理将引导你完成所有任务，包括登录 JFrog UI 生成个人 Tok
 
 | 任务 | 说明 | 验证方式 |
 |------|------|---------|
-| **T1 注册昵称** | 选择一个独特昵称，脚本自动在 Artifactory 上为你创建专属的 npm 仓库组（local / remote / virtual） | Artifactory 中存在 `{昵称}-npm-virtual` 仓库 |
-| **T2 首次安装** | 配置 JFrog CLI 指向你的 Artifactory 虚拟仓库，运行 `jf npm install` | `{昵称}-npm-remote` 仓库中有缓存的包 |
+| **T1 注册昵称** | 选择一个独特昵称，脚本自动在 Artifactory 上为你创建专属的 npm 仓库组（local / remote / virtual） | Artifactory 中存在 `{昵称}-npm-dev-virtual` 仓库 |
+| **T2 首次安装** | 配置 JFrog CLI 指向你的 Artifactory 虚拟仓库，运行 `jf npm install` | `{昵称}-npm-org-remote` 仓库中有缓存的包 |
 | **T3 发布 Build Info** | 将构建的完整依赖信息发布到 Artifactory，建立可追溯性 | Artifactory 中存在 Build `{昵称}-npm-sample #1` |
 | **T4 创建安全策略** | 在 JFrog Curation 中创建针对你个人 Artifactory 仓库的 npm 风险包拦截策略，命名须包含你的昵称 | Curation Policy 列表中存在名称包含昵称的 Policy |
 | **T5 触发阻断** | 在项目中引入 `axios@1.7.2`（模拟恶意版本），运行 `jf npm install`，观察 Curation 如何拦截 | Curation 审计日志中有昵称对应仓库拦截 `axios@1.7.2` 的记录 |

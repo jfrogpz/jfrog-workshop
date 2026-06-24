@@ -48,8 +48,8 @@ delete_repo() {
 }
 
 echo ">>> 删除 Artifactory 仓库..."
-delete_repo "${STUDENT_ID}-npm-virtual"
-delete_repo "${STUDENT_ID}-npm-remote"
+delete_repo "${STUDENT_ID}-npm-dev-virtual"
+delete_repo "${STUDENT_ID}-npm-org-remote"
 delete_repo "${STUDENT_ID}-npm-dev-local"
 
 echo ">>> 删除 build-info..."

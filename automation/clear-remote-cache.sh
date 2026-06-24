@@ -17,7 +17,7 @@ fi
 : "${NICKNAME:?}" "${JFROG_URL:?}" "${JFROG_TOKEN:?}"
 JFROG_URL="${JFROG_URL%/}"
 
-REMOTE_REPO="${NICKNAME}-npm-remote"
+REMOTE_REPO="${NICKNAME}-npm-org-remote"
 AXIOS_PATH="axios/-/axios-1.7.2.tgz"
 
 echo ""

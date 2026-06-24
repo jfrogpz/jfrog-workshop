@@ -88,12 +88,12 @@ verify_task() {
     T1)
       local s
       s=$(curl_jf -o /dev/null -w "%{http_code}" \
-        "${API}/repositories/${NICKNAME}-npm-virtual" 2>/dev/null || echo "000")
+        "${API}/repositories/${NICKNAME}-npm-dev-virtual" 2>/dev/null || echo "000")
       [ "$s" = "200" ]
       ;;
     T2)
       local children
-      children=$(curl_jf "${API}/storage/${NICKNAME}-npm-remote" 2>/dev/null \
+      children=$(curl_jf "${API}/storage/${NICKNAME}-npm-org-remote" 2>/dev/null \
         | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('children',[])))" \
         2>/dev/null || echo "0")
       [ "$children" -gt 0 ]

@@ -39,8 +39,8 @@ create_repo() {
 create_repo "${NICKNAME}-npm-dev-local" \
   "{\"rclass\":\"local\",\"packageType\":\"npm\",\"repoLayoutRef\":\"npm-default\",\"xrayIndex\":true}"
 
-create_repo "${NICKNAME}-npm-remote" \
+create_repo "${NICKNAME}-npm-org-remote" \
   "{\"rclass\":\"remote\",\"packageType\":\"npm\",\"url\":\"https://registry.npmjs.org\",\"repoLayoutRef\":\"npm-default\",\"xrayIndex\":true}"
 
-create_repo "${NICKNAME}-npm-virtual" \
-  "{\"rclass\":\"virtual\",\"packageType\":\"npm\",\"repoLayoutRef\":\"npm-default\",\"repositories\":[\"${NICKNAME}-npm-dev-local\",\"${NICKNAME}-npm-remote\"],\"defaultDeploymentRepo\":\"${NICKNAME}-npm-dev-local\"}"
+create_repo "${NICKNAME}-npm-dev-virtual" \
+  "{\"rclass\":\"virtual\",\"packageType\":\"npm\",\"repoLayoutRef\":\"npm-default\",\"repositories\":[\"${NICKNAME}-npm-dev-local\",\"${NICKNAME}-npm-org-remote\"],\"defaultDeploymentRepo\":\"${NICKNAME}-npm-dev-local\"}"
