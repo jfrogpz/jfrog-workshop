@@ -296,11 +296,10 @@ else
 fi
 
 # ── 打印当前进度 ─────────────────────────────────────────────────────────────
-echo "$UPDATED_JSON" | python3 - "$NICKNAME" "${EVENT_ID:-self-study}" "$MODE" <<'PY'
-import sys
-import json
+UPDATED_JSON_DATA="$UPDATED_JSON" python3 - "$NICKNAME" "${EVENT_ID:-self-study}" "$MODE" <<'PY'
+import sys, json, os
 
-data = json.loads(sys.stdin.read())
+data = json.loads(os.environ['UPDATED_JSON_DATA'])
 nickname_arg = sys.argv[1]
 event_id_arg = sys.argv[2]
 mode = sys.argv[3]
