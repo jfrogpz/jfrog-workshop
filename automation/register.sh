@@ -135,7 +135,27 @@ echo ""
 echo ">>> 初始化进度数据..."
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%S+00:00")
 
-PROGRESS_JSON=$(cat <<JSON
+# 如果本地有自主学习模式的进度文件，切换赛事模式时保留已完成的任务进度
+LOCAL_PROGRESS_FILE="${HOME}/.workshop-progress.json"
+if [ -n "${EVENT_ID:-}" ] && [ -f "$LOCAL_PROGRESS_FILE" ]; then
+  echo "    检测到本地自主学习进度，将迁移至赛事模式..."
+  PROGRESS_JSON=$(EVENT_ID="$EVENT_ID" NICKNAME="$NICKNAME" NOW="$NOW" \
+    python3 -c "
+import json, os, sys
+with open(os.path.expanduser('~/.workshop-progress.json')) as f:
+    existing = json.load(f)
+existing['nickname'] = os.environ['NICKNAME']
+existing['event_id'] = os.environ['EVENT_ID']
+# 确保 T1 是 done
+t1 = existing.setdefault('tasks', {}).setdefault('T1', {})
+if t1.get('status') != 'done':
+    t1.update({'status': 'done', 'completed_at': os.environ['NOW'], 'points': 10})
+print(json.dumps(existing, ensure_ascii=False))
+" 2>/dev/null || echo "")
+fi
+
+if [ -z "${PROGRESS_JSON:-}" ]; then
+  PROGRESS_JSON=$(cat <<JSON
 {
   "nickname": "${NICKNAME}",
   "event_id": "${EVENT_ID:-self-study}",
@@ -152,6 +172,7 @@ PROGRESS_JSON=$(cat <<JSON
 }
 JSON
 )
+fi
 
 if [ -n "$EVENT_ID" ]; then
   PROFILE_JSON=$(cat <<JSON
