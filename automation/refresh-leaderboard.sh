@@ -1,5 +1,6 @@
 #!/bin/bash
-# 主办者持续运行：验证所有学员任务进度，终端实时显示排行榜（每 30 秒刷新一次）
+# 主办者持续运行：只读取所有学员进展并渲染排行榜（每 30 秒刷新一次）
+# 验证逻辑已移至学员侧 check-progress.sh，此脚本不做任何验证或更新
 
 set -eu
 
@@ -42,197 +43,6 @@ INTERVAL=30
 
 curl_jf() {
   curl -sf -H "Authorization: Bearer ${JFROG_TOKEN}" "$@"
-}
-
-# ── 验证单个任务 ────────────────────────────────────────────────────────────
-verify_task() {
-  local nickname="$1"
-  local task_id="$2"
-
-  case "$task_id" in
-    T1)
-      local s
-      s=$(curl_jf -o /dev/null -w "%{http_code}" \
-        "${API}/repositories/${nickname}-npm-virtual" 2>/dev/null || echo "000")
-      [ "$s" = "200" ]
-      ;;
-    T2)
-      local children
-      children=$(curl_jf "${API}/storage/${nickname}-npm-remote" 2>/dev/null \
-        | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('children',[])))" \
-        2>/dev/null || echo "0")
-      [ "$children" -gt 0 ]
-      ;;
-    T3)
-      local s
-      s=$(curl_jf -o /dev/null -w "%{http_code}" \
-        "${API}/build/${nickname}-npm-sample/1" 2>/dev/null || echo "000")
-      [ "$s" = "200" ]
-      ;;
-    T4)
-      local found="no"
-      local offset=0
-      local page_size=50
-      while true; do
-        local page
-        page=$(curl_jf "${JFROG_URL}/xray/api/v1/curation/policies?num_of_rows=${page_size}&offset=${offset}" 2>/dev/null || echo "")
-        local result
-        result=$(echo "$page" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    nick = '${nickname}'
-    policies = data.get('data', [])
-    found = any(nick.lower() in p.get('name','').lower() for p in policies)
-    total = data.get('meta', {}).get('total_count', 0)
-    returned = data.get('meta', {}).get('result_count', 0)
-    print('yes' if found else 'no')
-    print(total)
-    print(returned)
-except:
-    print('no')
-    print(0)
-    print(0)
-" 2>/dev/null || echo -e "no\n0\n0")
-        local page_found total_count result_count
-        page_found=$(echo "$result" | sed -n '1p')
-        total_count=$(echo "$result" | sed -n '2p')
-        result_count=$(echo "$result" | sed -n '3p')
-        if [ "$page_found" = "yes" ]; then found="yes"; break; fi
-        offset=$((offset + page_size))
-        [ "$offset" -lt "${total_count:-0}" ] || break
-      done
-      [ "$found" = "yes" ]
-      ;;
-    T5)
-      local found="no"
-      local offset=0
-      local page_size=500
-      while true; do
-        local page_result
-        page_result=$(curl_jf \
-          "${JFROG_URL}/xray/api/v1/curation/audit/packages?num_of_rows=${page_size}&offset=${offset}&include_total=true" \
-          2>/dev/null || echo "{}")
-        local page_found total_count result_count
-        page_found=$(echo "$page_result" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    entries = data if isinstance(data, list) else data.get('packages', [])
-    nick = '${nickname}'
-    f = any(
-        nick in str(e.get('curated_repository_name','')) and
-        '1.7.2' in str(e.get('package_version','')) and
-        'axios' in str(e.get('package_name','')) and
-        e.get('action','') == 'blocked'
-        for e in entries
-    )
-    meta = data.get('meta', {}) if isinstance(data, dict) else {}
-    print('found=' + ('yes' if f else 'no'))
-    print('total=' + str(meta.get('total_count', len(entries))))
-    print('count=' + str(len(entries)))
-except Exception as ex:
-    print('found=no'); print('total=0'); print('count=0')
-" 2>/dev/null || printf 'found=no\ntotal=0\ncount=0')
-        local pf pt pc
-        pf=$(echo "$page_found" | grep '^found=' | cut -d= -f2)
-        pt=$(echo "$page_found" | grep '^total=' | cut -d= -f2)
-        pc=$(echo "$page_found" | grep '^count=' | cut -d= -f2)
-        if [ "$pf" = "yes" ]; then found="yes"; break; fi
-        offset=$((offset + page_size))
-        [ "$offset" -lt "${pt:-0}" ] || break
-      done
-      [ "$found" = "yes" ]
-      ;;
-    T6)
-      local s
-      s=$(curl_jf -o /dev/null -w "%{http_code}" \
-        "${API}/build/${nickname}-npm-sample/3" 2>/dev/null || echo "000")
-      if [ "$s" != "200" ]; then return 1; fi
-      local axios_ver
-      axios_ver=$(curl_jf "${API}/build/${nickname}-npm-sample/3" 2>/dev/null \
-        | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    mods = data.get('buildInfo', {}).get('modules', [])
-    for m in mods:
-        for dep in m.get('dependencies', []):
-            if 'axios' in dep.get('id', '').lower():
-                print(dep.get('id',''))
-                sys.exit()
-    print('')
-except:
-    print('')
-" 2>/dev/null || echo "")
-      [ -n "$axios_ver" ] && ! echo "$axios_ver" | grep -q "1.7.2"
-      ;;
-    *)
-      return 1
-      ;;
-  esac
-}
-
-# ── 处理单个学员，返回更新后的 progress JSON ───────────────────────────────
-process_participant() {
-  local nickname="$1"
-  local now="$2"
-
-  local progress_raw
-  progress_raw=$(curl_jf \
-    "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${nickname}/progress.json" \
-    2>/dev/null || echo "")
-  [ -n "$progress_raw" ] || return 0
-
-  # 读取各任务当前状态，已完成的跳过验证直接标 pass
-  local cur_t2 cur_t3 cur_t4 cur_t5 cur_t6
-  cur_t2=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T2',{}).get('status',''))" 2>/dev/null || echo "")
-  cur_t3=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T3',{}).get('status',''))" 2>/dev/null || echo "")
-  cur_t4=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T4',{}).get('status',''))" 2>/dev/null || echo "")
-  cur_t5=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T5',{}).get('status',''))" 2>/dev/null || echo "")
-  cur_t6=$(echo "$progress_raw" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tasks',{}).get('T6',{}).get('status',''))" 2>/dev/null || echo "")
-
-  local v_t2 v_t3 v_t4 v_t5 v_t6
-  if [ "$cur_t2" = "done" ]; then v_t2="pass"; else v_t2="fail"; verify_task "$nickname" T2 2>/dev/null && v_t2="pass" || true; fi
-  if [ "$cur_t3" = "done" ]; then v_t3="pass"; else v_t3="fail"; verify_task "$nickname" T3 2>/dev/null && v_t3="pass" || true; fi
-  if [ "$cur_t4" = "done" ]; then v_t4="pass"; else v_t4="fail"; verify_task "$nickname" T4 2>/dev/null && v_t4="pass" || true; fi
-  if [ "$cur_t5" = "done" ]; then v_t5="pass"; else v_t5="fail"; verify_task "$nickname" T5 2>/dev/null && v_t5="pass" || true; fi
-  if [ "$cur_t6" = "done" ]; then v_t6="pass"; else v_t6="fail"; verify_task "$nickname" T6 2>/dev/null && v_t6="pass" || true; fi
-
-  local updated
-  updated=$(VERIFY_T2="$v_t2" VERIFY_T3="$v_t3" VERIFY_T4="$v_t4" \
-    VERIFY_T5="$v_t5" VERIFY_T6="$v_t6" \
-    PROGRESS_JSON="$progress_raw" \
-    python3 - "$now" <<'PY'
-import sys, json, os
-
-data = json.loads(os.environ['PROGRESS_JSON'])
-now = sys.argv[1]
-task_points = {"T1": 10, "T2": 20, "T3": 20, "T4": 10, "T5": 20, "T6": 20}
-tasks = data.get("tasks", {})
-
-for tid in ["T2", "T3", "T4", "T5", "T6"]:
-    t = tasks.get(tid, {"status": "pending", "completed_at": None, "points": 0})
-    if os.environ.get(f"VERIFY_{tid}") == "pass" and t.get("status") != "done":
-        t["status"] = "done"
-        t["completed_at"] = now
-        t["points"] = task_points[tid]
-    tasks[tid] = t
-
-data["tasks"] = tasks
-data["total_points"] = sum(t.get("points", 0) for t in tasks.values())
-print(json.dumps(data, ensure_ascii=False))
-PY
-  )
-
-  [ -n "$updated" ] || return 0
-
-  echo "$updated" | curl_jf -X PUT \
-    "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${nickname}/progress.json" \
-    -H "Content-Type: application/json" \
-    -T - >/dev/null 2>&1 || true
-
-  echo "$updated"
 }
 
 # ── 打印排行榜 ─────────────────────────────────────────────────────────────
@@ -332,7 +142,6 @@ echo "=========================================="
 trap 'echo ""; echo "排行榜服务已停止。"; exit 0' INT TERM
 
 while true; do
-  NOW=$(date -u +"%Y-%m-%dT%H:%M:%S+00:00")
   REFRESH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
 
   PARTICIPANTS=$(curl_jf \
@@ -352,7 +161,9 @@ except Exception as e:
   if [ -n "$PARTICIPANTS" ]; then
     while IFS= read -r nickname; do
       [ -n "$nickname" ] || continue
-      progress=$(process_participant "$nickname" "$NOW")
+      progress=$(curl_jf \
+        "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${nickname}/progress.json" \
+        2>/dev/null || echo "")
       [ -n "$progress" ] && ALL_PROGRESS="${ALL_PROGRESS}${progress}
 "
     done <<EOF

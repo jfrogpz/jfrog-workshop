@@ -6,6 +6,8 @@
 
 ## 前置要求
 
+> 如果不举办竞赛活动，学员可直接自主学习，**不需要组织者做任何初始化操作**。本文档仅适用于需要排行榜的赛事场景。
+
 | 项目 | 要求 |
 |------|------|
 | JFrog 实例 | JFrog Cloud（SaaS），域名格式 `xxx.jfrog.io` |
@@ -170,9 +172,9 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 - 注册成功后，脚本在学员本地写入 `~/.workshop-profile`，保存昵称、赛事 ID、JFrog 地址和 Token，后续脚本（`check-progress.sh`、`clear-remote-cache.sh` 等）均从此文件读取，无需重复输入
 
 **任务验证（T2–T6）**：
-- 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒轮询一次
-- 对每位学员，通过 Artifactory REST API 逐一验证各任务是否完成（见下表）
-- 验证通过则将对应任务状态更新为 `done` 并写回学员的 `progress.json`
+- **验证发生在学员侧**：学员每完成一个任务后运行 `check-progress.sh`，脚本通过 Artifactory/Xray REST API 自动验证并更新进度
+- 验证通过的任务标记为 `done`，进度上传至 `workshop-events` 仓库供排行榜读取
+- 已完成的任务不重复验证，只验证尚未完成的任务
 
 | 任务 | 验证方式 |
 |------|---------|
@@ -184,8 +186,11 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 | T6 | Build #3 存在且依赖中 axios 版本不是 1.7.2 |
 
 **排行榜渲染**：
-- 所有学员的 `progress.json` 更新完后，按总分降序、同分按最后任务完成时间升序排列，在终端打印 ASCII 排行榜
+- 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒**只读取**所有学员上传的 `progress.json`，不做任何验证
+- 按总分降序、同分按最后任务完成时间升序排列，在终端打印 ASCII 排行榜
 - 组织者将此终端窗口投屏，学员实时可见
+
+> **注意**：排行榜反映的是学员最后一次运行 `check-progress.sh` 时上传的进度。学员完成任务后需主动运行脚本，进度才会更新。
 
 ---
 

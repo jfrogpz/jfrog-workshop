@@ -13,23 +13,24 @@ usage() {
   export JFROG_URL="https://mycompany.jfrog.io"
   export JFROG_TOKEN="your-access-token"
 
-Usage: $0 <NICKNAME> <EVENT_ID>
+Usage: $0 <NICKNAME> [EVENT_ID]
 
   NICKNAME    你的昵称（小写字母、数字、连字符，3-20 个字符）
-  EVENT_ID    赛事 ID（由讲师提供）
+  EVENT_ID    赛事 ID（由讲师提供）。不提供则进入自主学习模式。
 
-Example:
-  export JFROG_URL="https://mycompany.jfrog.io"
-  export JFROG_TOKEN="your-access-token"
+Example（参加赛事）：
   $0 alex 2026-06-shanghai
+
+Example（自主学习）：
+  $0 alex
 EOF
   exit 1
 }
 
-[ $# -ge 2 ] || usage
+[ $# -ge 1 ] || usage
 
 NICKNAME="$1"
-EVENT_ID="$2"
+EVENT_ID="${2:-}"
 
 if [ -z "${JFROG_URL:-}" ]; then
   echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" >&2
@@ -70,49 +71,51 @@ if ! echo "$NICKNAME" | grep -Eq '^[a-z0-9][a-z0-9-]{1,18}[a-z0-9]$'; then
 fi
 echo "    ✅ 昵称格式正确：${NICKNAME}"
 
-# ── 步骤 2：检查赛事配置是否存在 ──────────────────────────────────────────
-echo ""
-echo ">>> 获取赛事配置..."
-CONFIG_STATUS=$(curl_jf -o /dev/null -w "%{http_code}" \
-  "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/config.json" 2>/dev/null || echo "000")
+# ── 步骤 2：赛事模式：检查赛事配置 + 昵称可用性 ──────────────────────────
+if [ -n "$EVENT_ID" ]; then
+  echo ""
+  echo ">>> 获取赛事配置..."
+  CONFIG_STATUS=$(curl_jf -o /dev/null -w "%{http_code}" \
+    "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/config.json" 2>/dev/null || echo "000")
 
-if [ "$CONFIG_STATUS" != "200" ]; then
-  echo "  ❌ 找不到赛事 ${EVENT_ID}，请确认 EVENT_ID 是否正确，或联系讲师" >&2
-  exit 1
-fi
-echo "    ✅ 赛事配置已确认"
+  if [ "$CONFIG_STATUS" != "200" ]; then
+    echo "  ❌ 找不到赛事 ${EVENT_ID}，请确认 EVENT_ID 是否正确，或联系讲师" >&2
+    exit 1
+  fi
+  echo "    ✅ 赛事配置已确认"
 
-# ── 步骤 3：检查是否已注册（支持 Codespace 重启恢复） ─────────────────────
-echo ""
-echo ">>> 检查昵称可用性..."
-PROFILE_STATUS=$(curl_jf -o /dev/null -w "%{http_code}" \
-  "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/profile.json" \
-  2>/dev/null || echo "000")
-
-if [ "$PROFILE_STATUS" = "200" ]; then
-  # 检查是否是同一个 GitHub 用户（Codespace 重启场景）
-  EXISTING_GITHUB=$(curl_jf \
+  echo ""
+  echo ">>> 检查昵称可用性..."
+  PROFILE_STATUS=$(curl_jf -o /dev/null -w "%{http_code}" \
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/profile.json" \
-    2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('github_user',''))" \
-    2>/dev/null || echo "")
+    2>/dev/null || echo "000")
 
-  if [ "$EXISTING_GITHUB" = "$GITHUB_USER" ] || [ "$EXISTING_GITHUB" = "unknown" ]; then
-    echo "    ✅ 检测到你之前已注册，正在恢复本地配置..."
-    cat > "$PROFILE_FILE" <<PROF
+  if [ "$PROFILE_STATUS" = "200" ]; then
+    EXISTING_GITHUB=$(curl_jf \
+      "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/profile.json" \
+      2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('github_user',''))" \
+      2>/dev/null || echo "")
+
+    if [ "$EXISTING_GITHUB" = "$GITHUB_USER" ] || [ "$EXISTING_GITHUB" = "unknown" ]; then
+      echo "    ✅ 检测到你之前已注册，正在恢复本地配置..."
+      cat > "$PROFILE_FILE" <<PROF
 NICKNAME=${NICKNAME}
 EVENT_ID=${EVENT_ID}
 JFROG_URL=${JFROG_URL}
 JFROG_TOKEN=${JFROG_TOKEN}
 PROF
-    echo ""
-    echo "  ✅ 注册信息已恢复！"
-    echo "  运行 bash automation/check-progress.sh 查看当前进度"
-    echo ""
-    exit 0
-  else
-    echo "  ❌ 昵称 '${NICKNAME}' 已被其他人使用，请换一个昵称" >&2
-    exit 1
+      echo ""
+      echo "  ✅ 注册信息已恢复！"
+      echo "  运行 bash automation/check-progress.sh 查看当前进度"
+      echo ""
+      exit 0
+    else
+      echo "  ❌ 昵称 '${NICKNAME}' 已被其他人使用，请换一个昵称" >&2
+      exit 1
+    fi
   fi
+else
+  echo "    ℹ️  自主学习模式，跳过赛事验证"
 fi
 
 # ── 步骤 4：创建个人 npm 仓库 ──────────────────────────────────────────────
@@ -127,31 +130,15 @@ else
   exit 1
 fi
 
-# ── 步骤 5：生成并上传 profile.json ───────────────────────────────────────
+# ── 步骤 5/6：上传或初始化进度数据 ───────────────────────────────────────
 echo ""
-echo ">>> 注册学员信息..."
+echo ">>> 初始化进度数据..."
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%S+00:00")
 
-PROFILE_JSON=$(cat <<JSON
-{
-  "nickname": "${NICKNAME}",
-  "event_id": "${EVENT_ID}",
-  "github_user": "${GITHUB_USER}",
-  "registered_at": "${NOW}"
-}
-JSON
-)
-
-echo "$PROFILE_JSON" | curl_jf -X PUT \
-  "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/profile.json" \
-  -H "Content-Type: application/json" \
-  -T -
-
-# ── 步骤 6：上传初始 progress.json ────────────────────────────────────────
 PROGRESS_JSON=$(cat <<JSON
 {
   "nickname": "${NICKNAME}",
-  "event_id": "${EVENT_ID}",
+  "event_id": "${EVENT_ID:-self-study}",
   "registered_at": "${NOW}",
   "tasks": {
     "T1": { "status": "done",    "completed_at": "${NOW}", "points": 10 },
@@ -166,17 +153,34 @@ PROGRESS_JSON=$(cat <<JSON
 JSON
 )
 
-echo "$PROGRESS_JSON" | curl_jf -X PUT \
-  "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/progress.json" \
-  -H "Content-Type: application/json" \
-  -T -
-
-echo "    ✅ 学员信息已上传"
+if [ -n "$EVENT_ID" ]; then
+  PROFILE_JSON=$(cat <<JSON
+{
+  "nickname": "${NICKNAME}",
+  "event_id": "${EVENT_ID}",
+  "github_user": "${GITHUB_USER}",
+  "registered_at": "${NOW}"
+}
+JSON
+)
+  echo "$PROFILE_JSON" | curl_jf -X PUT \
+    "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/profile.json" \
+    -H "Content-Type: application/json" \
+    -T -
+  echo "$PROGRESS_JSON" | curl_jf -X PUT \
+    "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/progress.json" \
+    -H "Content-Type: application/json" \
+    -T -
+  echo "    ✅ 进度已上传至 Artifactory"
+else
+  echo "$PROGRESS_JSON" > "${HOME}/.workshop-progress.json"
+  echo "    ✅ 进度已保存至本地（~/.workshop-progress.json）"
+fi
 
 # ── 步骤 7：保存本地 profile ────────────────────────────────────────────────
 cat > "$PROFILE_FILE" <<PROF
 NICKNAME=${NICKNAME}
-EVENT_ID=${EVENT_ID}
+EVENT_ID=${EVENT_ID:-}
 JFROG_URL=${JFROG_URL}
 JFROG_TOKEN=${JFROG_TOKEN}
 PROF
@@ -186,7 +190,11 @@ echo "=========================================="
 echo "  🎉 注册成功！"
 echo "=========================================="
 echo "  昵称     : ${NICKNAME}"
-echo "  赛事     : ${EVENT_ID}"
+if [ -n "${EVENT_ID:-}" ]; then
+  echo "  赛事     : ${EVENT_ID}"
+else
+  echo "  模式     : 自主学习"
+fi
 echo "  获得     : 10 分（T1 完成）"
 echo ""
 echo "  运行以下命令查看当前进度："

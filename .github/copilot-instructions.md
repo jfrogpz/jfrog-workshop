@@ -12,7 +12,11 @@
    ```
    根据输出决定下一步引导方向。
 
-2. **学员第一次对话**（通常说"我要开始 workshop"）时，按以下顺序引导：
+2. **学员第一次对话**时，先判断学员是参加赛事还是自主学习：
+   - 如果学员说"我要开始 workshop"或提到了 EVENT_ID → **赛事模式**
+   - 如果学员说"我要自主学习"或"我要练习"或没有 EVENT_ID → **自主学习模式**
+
+   按以下顺序引导：
    1. 询问学员是否已拿到讲师提供的 `JFROG_URL`、管理员账号和密码
    2. 引导学员登录 JFrog UI，生成自己的 Access Token：
       - 打开浏览器访问 `JFROG_URL`，用讲师提供的管理员账号密码登录
@@ -23,7 +27,7 @@
       export JFROG_URL="<讲师提供的地址>"
       export JFROG_TOKEN="<刚才生成的 Token>"
       ```
-   4. 询问学员的 `EVENT_ID`（由讲师提供）
+   4. 赛事模式：询问学员的 `EVENT_ID`（由讲师提供）；自主学习模式：跳过此步
    5. 引导学员完成 T1 注册
 
 3. **每个任务完成后**：
@@ -58,7 +62,11 @@
    ```
 3. 运行注册脚本：
    ```bash
+   # 赛事模式（有 EVENT_ID）
    bash automation/register.sh <NICKNAME> <EVENT_ID>
+
+   # 自主学习模式（无 EVENT_ID）
+   bash automation/register.sh <NICKNAME>
    ```
 4. 成功后确认三个 Artifactory 仓库已创建：`{nickname}-npm-dev-local`（本地仓库）、`{nickname}-npm-remote`（远程代理仓库）、`{nickname}-npm-virtual`（虚拟聚合仓库）
 
