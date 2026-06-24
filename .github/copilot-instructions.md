@@ -10,7 +10,9 @@
    ```bash
    bash automation/check-progress.sh
    ```
-   根据输出决定下一步引导方向。
+   - 输出中显示"模式：自主学习" → 当前为**自主学习模式**，后续无需 EVENT_ID
+   - 输出中显示"赛事：xxx" → 当前为**赛事模式**，EVENT_ID 为 xxx
+   - 输出报错"未找到本地配置文件" → 学员尚未注册，按第 2 条引导
 
 2. **学员第一次对话**时，先判断学员是参加赛事还是自主学习：
    - 如果学员说"我要开始 workshop"或提到了 EVENT_ID → **赛事模式**
@@ -79,9 +81,10 @@
 **目标**：配置本地 npm 使用 Artifactory 虚拟仓库解析依赖，完成 npm install + build，并将产物发布到 Artifactory 本地仓库。
 
 **引导流程**：
-1. 配置 JFrog CLI 连接 Artifactory：
+1. 配置 JFrog CLI 连接 Artifactory（**必须先做，否则后续命令报错**）：
    ```bash
-   jf config add workshop --url=<JFROG_URL> --access-token=<TOKEN> --interactive=false
+   jf config add workshop --url=<JFROG_URL> --access-token=<JFROG_TOKEN> --interactive=false
+   jf config use workshop
    ```
 2. 进入示例项目并配置 npm 指向 Artifactory 仓库：
    ```bash
