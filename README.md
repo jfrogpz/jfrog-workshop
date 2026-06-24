@@ -86,7 +86,7 @@
 
 ### 第二步：打开 AI 助理
 
-Codespace 启动完成后，点击窗口**右侧**的 **GitHub Copilot Chat** 图标（💬）打开对话面板。
+Codespace 启动完成后，窗口**右侧**已内嵌 **GitHub Copilot Chat** 对话面板，可直接输入消息。
 
 > 🤖 **如果 Copilot Chat 不可用**，可以直接阅读 [.github/copilot-instructions.md](.github/copilot-instructions.md)，其中包含所有任务的完整步骤和命令，按顺序执行即可。
 
