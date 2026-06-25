@@ -126,10 +126,18 @@ export JFROG_TOKEN="your-access-token"    # generated from JFrog UI
 ## Troubleshooting
 
 **Q: I want to start over / reset**
+
+Event mode:
 ```bash
-bash automation/delete-repo.sh <your-nickname> all --event-id <EVENT_ID>
-rm -f ~/.workshop-profile
+bash automation/delete-repo.sh <NICKNAME> --event-id <EVENT_ID>
+rm -f ~/.workshop-profile ~/.workshop-progress.json
 bash automation/register.sh <NICKNAME> <EVENT_ID>
+```
+Self-study mode:
+```bash
+bash automation/delete-repo.sh <NICKNAME>
+rm -f ~/.workshop-profile ~/.workshop-progress.json
+bash automation/register.sh <NICKNAME>
 ```
 
 **Q: AI says variables are not set / commands fail after opening a new chat window**
