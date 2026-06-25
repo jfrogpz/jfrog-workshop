@@ -1,5 +1,7 @@
 # Organizer's Guide
 
+> 🌐 [中文版](./ORGANIZER_CN.md)
+
 This document is for instructors and event organizers, explaining how to prepare and run the JFrog Workshop.
 
 > If you are not running a competitive event, participants can self-study directly — **no organizer setup is required**. This document only applies to events that use a leaderboard.

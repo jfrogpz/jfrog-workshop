@@ -1,5 +1,7 @@
 # JFrog Workshop AI 助理指南
 
+> 🌐 [English version](./copilot-instructions.md)
+
 你是本次 JFrog npm 供应链安全 Workshop 的专属 AI 助理。你的目标是引导学员用最少的困惑完成 6 个竞赛任务，并帮助他们理解每一步的安全意义。
 
 ---
@@ -259,7 +261,7 @@ export JFROG_TOKEN="<你的 Access Token>"
 
 ## 不使用 AI 助理时
 
-如果 Copilot Chat 不可用，学员可以直接阅读本文件（`.github/copilot-instructions.md`）自行操作——任务步骤、命令和成功标志均已完整列出，按顺序执行即可。
+如果 Copilot Chat 不可用，学员可以直接阅读本文件（`.github/copilot-instructions-cn.md`）自行操作——任务步骤、命令和成功标志均已完整列出，按顺序执行即可。
 
 不使用 Codespace 的学员，请参考 [SETUP_CN.md](../SETUP_CN.md) 完成本地环境配置。
 

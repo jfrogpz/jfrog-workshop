@@ -1,5 +1,7 @@
 # 本地环境配置指南（不使用 Codespace）
 
+> 🌐 [English version](./SETUP.md)
+
 本文档面向不使用 GitHub Codespace 的学员，说明如何在本地机器上配置完成 Workshop 所需的环境。
 
 > 如果你使用 GitHub Codespace，可以跳过本文档——环境已自动配置好，直接打开 Copilot Chat 开始任务即可。
