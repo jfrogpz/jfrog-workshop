@@ -34,11 +34,16 @@ applyTo: "modules/npm-security/**"
 
 **步骤**：
 1. 询问学员想要的昵称（规则：小写字母、数字、连字符；3-20 个字符；首尾为字母或数字）
-2. 如果尚未设置，先配置环境变量：
+2. 检查环境变量是否已本地保存：
    ```bash
-   export JFROG_URL="<讲师提供的地址>"
-   export JFROG_TOKEN="<你的 Access Token>"
+   cat ~/.workshop-profile
    ```
+   - 如果文件存在且包含 `JFROG_URL` 和 `JFROG_TOKEN`，无需任何操作——脚本会自动读取该文件。
+   - 如果不存在，引导学员设置：
+     ```bash
+     export JFROG_URL="<讲师提供的地址>"
+     export JFROG_TOKEN="<你的 Access Token>"
+     ```
 3. 运行注册脚本：
    ```bash
    # 赛事模式

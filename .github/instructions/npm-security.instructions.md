@@ -34,11 +34,16 @@ The participant has already chosen this module. Guide them through the following
 
 **Steps**:
 1. Ask the participant for their desired nickname (rules: lowercase letters, numbers, hyphens; 3–20 characters; must start and end with a letter or number)
-2. Set environment variables if not already set:
+2. Check if environment variables are already saved locally:
    ```bash
-   export JFROG_URL="<URL provided by instructor>"
-   export JFROG_TOKEN="<your Access Token>"
+   cat ~/.workshop-profile
    ```
+   - If the file exists and contains `JFROG_URL` and `JFROG_TOKEN`, no action needed — scripts source this file automatically.
+   - If not, guide them to set:
+     ```bash
+     export JFROG_URL="<URL provided by instructor>"
+     export JFROG_TOKEN="<your Access Token>"
+     ```
 3. Run the registration script:
    ```bash
    # Event mode

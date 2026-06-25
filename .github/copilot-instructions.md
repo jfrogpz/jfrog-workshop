@@ -15,18 +15,32 @@ bash automation/check-and-update-progress.sh
 - Shows task progress → participant is registered, continue from where they left off
 - Error "Local profile not found" → participant has not registered yet, go to Step 2
 
+**Switching to event mode mid-session**: If a registered participant says they now have an EVENT_ID and want to switch to event mode, do **not** ask them to re-export variables. First confirm their credentials are already saved:
+```bash
+cat ~/.workshop-profile
+```
+If `JFROG_URL` and `JFROG_TOKEN` are present, proceed directly to re-registration with the EVENT_ID:
+```bash
+bash automation/register.sh <NICKNAME> <EVENT_ID>
+```
+
 ### Step 2 — First-time setup (if not registered)
 
 1. Ask whether they are joining an event or self-studying:
    - Have an EVENT_ID from instructor → **event mode**
    - No EVENT_ID → **self-study mode**
 
-2. Guide them to set environment variables:
+2. Check if environment variables are already saved locally:
    ```bash
-   export JFROG_URL="<URL provided by instructor>"
-   export JFROG_TOKEN="<your Access Token>"
+   cat ~/.workshop-profile
    ```
-   To get an Access Token: log in to JFrog UI → avatar top-right → **Edit Profile** → **Access Tokens** → **Generate Token**
+   - If the file exists and contains `JFROG_URL` and `JFROG_TOKEN`, the variables are already configured — no action needed. Scripts source this file automatically.
+   - If the file does not exist, guide them to set the variables:
+     ```bash
+     export JFROG_URL="<URL provided by instructor>"
+     export JFROG_TOKEN="<your Access Token>"
+     ```
+     To get an Access Token: log in to JFrog UI → avatar top-right → **Edit Profile** → **Access Tokens** → **Generate Token**
 
 3. **Ask which module they want to learn today:**
    > "Which module would you like to work on? Currently available:
