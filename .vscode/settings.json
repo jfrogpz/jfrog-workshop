@@ -1,0 +1,52 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^bash automation\\/check-and-update-progress\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash automation\\/register\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash automation\\/delete-repo\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash automation\\/refresh-leaderboard\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash automation\\/setup-event\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash modules\\/npm-security\\/clear-remote-cache\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash modules\\/npm-security\\/create-repo\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash modules\\/npm-security\\/install-tools\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash modules\\/npm-security\\/verify-tasks\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^source ~\\/.workshop-profile/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cat ~\\/.workshop-profile/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cat \\.github\\/instructions\\//": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
