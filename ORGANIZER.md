@@ -76,23 +76,42 @@ The script automatically every 30 seconds:
 
 Press `Ctrl+C` to stop. Example leaderboard output:
 
+Single-module event (`--modules npm-security`):
+
 ```
-========================================================================
+============================================================
   🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
   🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：100 pts
-========================================================================
-               [npm-security                              ]
-  Rank  Nickname                T1  T2  T3  T4  T5  T6     Pts
-------------------------------------------------------------------------
-  🥇   alex                   ✅  ✅  ✅  ⬜  ⬜  ⬜    50pts
-  🥈   mary-chen              ✅  ✅  ⬜  ⬜  ⬜  ⬜    30pts
-  🥉   bob                    ✅  ⬜  ⬜  ⬜  ⬜  ⬜    10pts
-------------------------------------------------------------------------
+============================================================
+              [npm-security                    ]
+  Rank  Nickname               T1  T2  T3  T4  T5  T6    Pts
+------------------------------------------------------------
+  🥇   alex                  ✅  ✅  ✅  ⬜  ⬜  ⬜   50pts
+  🥈   mary-chen             ✅  ✅  ⬜  ⬜  ⬜  ⬜   30pts
+  🥉   bob                   ✅  ⬜  ⬜  ⬜  ⬜  ⬜   10pts
+------------------------------------------------------------
   3 participants / 名学员参赛
-========================================================================
+============================================================
 ```
 
-With multiple modules, task columns are grouped by module header.
+Multi-module event (`--modules npm-security,maven-basic`), task columns are grouped by module:
+
+```
+=====================================================================
+  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：160 pts
+=====================================================================
+          [npm-security          ]  [maven-basic    ]
+  Rank  Nickname            T1 T2 T3 T4 T5 T6  T1 T2 T3    Pts
+---------------------------------------------------------------------
+  🥇   alex               ✅ ✅ ✅ ⬜ ⬜ ⬜  ✅ ✅ ⬜   80pts
+  🥈   mary-chen          ✅ ✅ ⬜ ⬜ ⬜ ⬜  ✅ ⬜ ⬜   40pts
+---------------------------------------------------------------------
+  2 participants / 名学员参赛
+=====================================================================
+```
+
+> **Note**: Column labels show the last segment of the task ID (e.g. `npm-security-T1` → `T1`).
 
 ---
 
@@ -116,8 +135,8 @@ Before starting, provide all participants with:
 
 Confirm the following before the event starts:
 
-1. **Confirm Curation is enabled**: Log in to JFrog UI → Curation, confirm the feature is enabled and supports npm
-2. **Run through the full flow**: Using a test environment, simulate a participant completing all T1–T6 tasks and confirm each task's verification logic works correctly — avoid surprises on the day
+1. **Verify module prerequisites**: Check the module(s) you selected require specific JFrog features (e.g. Curation, Xray). Refer to each module's `instructions.md` or the module author's notes for what needs to be enabled in JFrog UI beforehand
+2. **Run through the full flow**: Using a test environment, simulate a participant completing all tasks in the active module(s) and confirm each task's verification logic works correctly — avoid surprises on the day
 
 ---
 
@@ -153,7 +172,7 @@ Delete the `workshop-events/2026-06-shanghai/` directory in the Artifactory UI.
 |---------|--------------------|
 | Leaderboard shows no participants | Check if the `workshop-events/{event_id}/participants/` directory has data in Artifactory |
 | Participant tasks not updating | Confirm `refresh-leaderboard.sh` is running; check if the Admin Token is still valid |
-| Curation not blocking axios@1.7.2 | Confirm the participant's Curation Policy is Active, **Enforce policy on cached packages** is enabled under Policy Action, and Apply to is set to the remote repository (not virtual) |
+| Module-specific feature not working | Refer to the module's `.github/instructions/<module>.instructions.md` for troubleshooting tips specific to that module |
 
 ---
 
@@ -195,16 +214,7 @@ Participants who don't use Codespace need to set up the environment manually —
 - Completed tasks are marked `done` and progress is uploaded to the `workshop-events` repository for the leaderboard to read
 - Already-completed tasks are not re-verified — only pending tasks are checked
 
-Task IDs use the format `<module>-<sequence>`, e.g. `npm-security-T1`. The verification logic for each task lives in `modules/<module>/verify-tasks.sh`.
-
-| Task (npm-security) | Verification Method |
-|---------------------|---------------------|
-| npm-security-T1 | `GET /api/repositories/{nickname}-npm-dev-virtual` returns 200 |
-| npm-security-T2 | `GET /api/storage/{nickname}-npm-org-remote` has subdirectories (cached packages present) |
-| npm-security-T3 | `GET /api/build/{nickname}-npm-sample/1` returns 200 |
-| npm-security-T4 | `GET /xray/api/v1/curation/policies` list contains a Policy with the participant's nickname |
-| npm-security-T5 | `GET /xray/api/v1/curation/audit/packages` contains a record of axios@1.7.2 blocked for the participant's repository |
-| npm-security-T6 | Build #3 exists and axios in its dependencies is not version 1.7.2 |
+Task IDs use the format `<module>-<sequence>`, e.g. `npm-security-T1`. The verification logic for each task lives in `modules/<module>/verify-tasks.sh`. For task-level details, refer to the module's `.github/instructions/<module>.instructions.md`.
 
 **Leaderboard Rendering**:
 - The organizer runs `refresh-leaderboard.sh`, which every 30 seconds **reads only** all participants' uploaded `progress.json` — no verification is performed

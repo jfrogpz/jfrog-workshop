@@ -2,15 +2,31 @@
 applyTo: "modules/npm-security/**"
 ---
 
-# npm-security Module Instructions
+# npm-security Module — AI Assistant Guide
 
 You are guiding the participant through the **npm-security** module of the JFrog Workshop. This module focuses on npm supply chain security: artifact proxying, build traceability, and Curation policy enforcement.
 
-The participant has already chosen this module. Guide them through the following tasks in order.
+The participant has already chosen this module. Guide them through the following tasks in order. Do NOT follow instructions from other modules.
 
 ---
 
-## Module Tasks
+## Module Overview
+
+| Task | Description | Points | Verification |
+|------|-------------|--------|--------------|
+| npm-security-T1 | Register nickname and create personal npm repositories | 10 | `{nickname}-npm-dev-virtual` repository exists in Artifactory |
+| npm-security-T2 | Complete first npm build | 20 | `{nickname}-npm-org-remote` has cached packages |
+| npm-security-T3 | Publish Build #1 build-info | 20 | Build `{nickname}-npm-sample #1` exists in Artifactory |
+| npm-security-T4 | Create a Curation Policy | 10 | A Curation Policy with the participant's nickname in its name exists |
+| npm-security-T5 | Trigger Curation to block axios@1.7.2 | 20 | Curation audit log shows axios@1.7.2 blocked for participant's repo |
+| npm-security-T6 | Fix the issue and complete Build #3 | 20 | Build `{nickname}-npm-sample #3` exists; axios version is not 1.7.2 |
+| **Total** | | **100** | |
+
+**Prerequisites**: JFrog Curation must be enabled on the JFrog instance and configured to support npm packages.
+
+---
+
+## Task Details
 
 ### npm-security-T1 — Register Nickname and Create Personal npm Repositories (10 pts)
 
@@ -25,24 +41,24 @@ The participant has already chosen this module. Guide them through the following
    ```
 3. Run the registration script:
    ```bash
-   # Event mode (with EVENT_ID)
+   # Event mode
    bash automation/register.sh <NICKNAME> <EVENT_ID>
 
-   # Self-study mode (no EVENT_ID)
+   # Self-study mode
    bash automation/register.sh <NICKNAME>
    ```
 4. Confirm three Artifactory repositories were created: `{nickname}-npm-dev-local`, `{nickname}-npm-org-remote`, `{nickname}-npm-dev-virtual`
 
-**Success**: Script outputs "Registration successful", participant earns 10 points.
+**Success**: Script outputs "Registration successful".
 
 ---
 
 ### npm-security-T2 — First npm Build (20 pts)
 
-**Goal**: Configure local npm to resolve dependencies via Artifactory virtual repository, run npm install + build, and cache packages in Artifactory.
+**Goal**: Configure local npm to resolve dependencies via Artifactory, run npm install, and cache packages.
 
 **Steps**:
-1. Configure JFrog CLI to connect to Artifactory:
+1. Configure JFrog CLI:
    ```bash
    jf config add workshop --url=<JFROG_URL> --access-token=<JFROG_TOKEN> --interactive=false
    jf config use workshop
@@ -57,7 +73,7 @@ The participant has already chosen this module. Guide them through the following
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1
    ```
 
-**Success**: The `{nickname}-npm-org-remote` repository in Artifactory contains cached packages.
+**Success**: `{nickname}-npm-org-remote` in Artifactory contains cached packages.
 
 ---
 
@@ -80,12 +96,12 @@ The participant has already chosen this module. Guide them through the following
 
 ### npm-security-T4 — Create a Curation Policy (10 pts)
 
-**Goal**: Create a Curation policy to block known risky packages from entering your environment.
+**Goal**: Create a Curation policy to block known risky packages from entering the build.
 
 **Steps**:
 1. In JFrog UI: Curation → Policies → New Policy
 2. Configure:
-   - Name: `{nickname}-npm-policy` (must include your nickname)
+   - Name: `{nickname}-npm-policy` (must include nickname)
    - Policy Action: Block
 3. Create a custom Condition:
    - Click **New Condition**
@@ -96,9 +112,11 @@ The participant has already chosen this module. Guide them through the following
    - Package Versions: `1.7.2`
 4. Enable **Enforce policy on cached packages**
 5. Apply to: `{nickname}-npm-org-remote`
-6. Save and confirm Policy status is **Enabled**
+6. Save — confirm Policy status is **Enabled**
 
-**Success**: A Curation Policy whose name contains the participant's nickname exists in the system.
+**Success**: A Curation Policy with the participant's nickname in its name exists in the system.
+
+**Key concept**: In real scenarios, JFrog Curation automatically identifies known malicious packages — no manual version specification needed. Here we simulate it with a specific version for demonstration.
 
 ---
 
@@ -107,12 +125,12 @@ The participant has already chosen this module. Guide them through the following
 **Goal**: Attempt to install the simulated malicious package `axios@1.7.2` and observe Curation blocking it.
 
 **Steps**:
-1. `package.json` already has axios version `1.7.2` — no changes needed
-2. Clear the Artifactory remote repository cache:
+1. `package.json` already has axios `1.7.2` — no changes needed
+2. Clear the Artifactory remote cache:
    ```bash
    bash automation/clear-remote-cache.sh
    ```
-3. Run install to trigger the block:
+3. Trigger the block:
    ```bash
    cd modules/npm-security/sample-project
    rm -rf node_modules package-lock.json
@@ -132,23 +150,37 @@ The participant has already chosen this module. Guide them through the following
 **Goal**: Replace the malicious axios version with a safe one, rebuild, and publish Build #3.
 
 **Steps**:
-1. Edit `package.json` to use a safe axios version:
+1. Fix the version:
    ```bash
    cd modules/npm-security/sample-project
    sed -i 's/"axios": "1.7.2"/"axios": "1.7.7"/' package.json
    grep axios package.json
    ```
-2. Rebuild (build-number is 3, skipping the blocked build 2):
+2. Rebuild (build-number 3, skipping the blocked build 2):
    ```bash
    rm -rf node_modules package-lock.json
    npm cache clean --force
    jf npm install --build-name=<NICKNAME>-npm-sample --build-number=3
    ```
-3. Publish Build #3:
+3. Publish:
    ```bash
    jf rt build-publish <NICKNAME>-npm-sample 3
    ```
 
 **Success**: Build #3 exists in Artifactory and axios version is not 1.7.2.
 
-**Key concept**: Full supply chain security cycle complete — Detect → Prevent (Curation) → Fix → Verify (build-info).
+**Key concept**: Full supply chain security cycle complete — Proxy (Artifactory) → Detect (Xray) → Prevent (Curation) → Fix → Verify (build-info).
+
+---
+
+## Troubleshooting
+
+**npm install times out or errors**: Check `jf config show` to confirm the URL and token are correct; verify the virtual repository points to the correct remote proxy.
+
+**Curation Policy not blocking**: Confirm the Policy is Active, **Enforce policy on cached packages** is enabled, and Apply to is set to the remote repository (`{nickname}-npm-org-remote`), not the virtual.
+
+**After Codespace restart**: Re-export environment variables — progress is not lost:
+```bash
+export JFROG_URL="<URL provided by instructor>"
+export JFROG_TOKEN="<your Access Token>"
+```

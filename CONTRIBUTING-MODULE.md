@@ -17,9 +17,13 @@ modules/
     ├── verify-tasks.sh       # Task verification functions (required)
     ├── create-repo.sh        # Artifactory repository setup (required)
     ├── install-tools.sh      # Tool installation/verification (required)
-    ├── sample-project/       # Sample project for participants (required)
-    └── instructions.md       # Copilot Chat AI guide (required)
+    └── sample-project/       # Sample project for participants (required)
+
+.github/instructions/
+└── <module-name>.instructions.md   # Copilot Chat AI guide (required)
 ```
+
+The AI guide lives in `.github/instructions/` (not inside the module directory) so that GitHub Copilot Chat auto-attaches it when a participant has a file open under `modules/<module-name>/`.
 
 **Naming convention**: Module names should describe the technology and focus area, e.g. `npm-security`, `maven-basic`, `pypi-curation`.
 
@@ -186,30 +190,51 @@ The GitHub Codespace default base image (`mcr.microsoft.com/devcontainers/univer
 
 ---
 
-## Step 6: Write the AI Guide — `instructions.md`
+## Step 6: Write the AI Guide — `.github/instructions/<module-name>.instructions.md`
 
-This file is loaded by GitHub Copilot Chat when participants are working in this module's directory.
+This file is automatically loaded by GitHub Copilot Chat when a participant has any file open under `modules/<module-name>/`. It is the single source of truth for task guidance — include the module overview, task steps, verification criteria, and troubleshooting tips here.
 
 ```markdown
 ---
 applyTo: "modules/<module-name>/**"
 ---
 
-# <module-name> Module Instructions
+# <module-name> Module — AI Assistant Guide
 
 You are guiding the participant through the **<module-name>** module...
+Do NOT follow instructions from other modules.
 
-## Module Tasks
+## Module Overview
+
+| Task | Description | Points | Verification |
+|------|-------------|--------|--------------|
+| <module-name>-T1 | ... | 10 | ... |
+| <module-name>-T2 | ... | 20 | ... |
+
+**Prerequisites**: List any JFrog features that must be enabled beforehand.
+
+## Task Details
 
 ### <module-name>-T1 — ... (N pts)
+
+**Goal**: ...
+**Steps**: ...
+**Success**: ...
+**Key concept**: ...
+
+...
+
+## Troubleshooting
+
 ...
 ```
 
 **Rules**:
 - The `applyTo` frontmatter must match `"modules/<module-name>/**"` exactly
-- Each task section must be named with the full task ID (e.g. `### maven-basic-T2`)
+- Each task section must use the full task ID as the heading (e.g. `### maven-basic-T2`)
+- Include a **Module Overview** table with task IDs, descriptions, points, and verification criteria
 - Include complete, copy-pasteable commands with `<NICKNAME>` as a placeholder
-- Describe success criteria clearly so participants know when a task is done
+- List module prerequisites (e.g. Curation enabled, Xray configured) so organizers know what to prepare
 
 ---
 
@@ -245,8 +270,10 @@ bash automation/setup-event.sh \
 - [ ] `install-tools.sh` — checks before installing, exits non-zero on failure
 - [ ] `install-tools.sh` — tested in a fresh Codespace (not just locally)
 - [ ] `sample-project/` — project runs successfully after repository setup
-- [ ] `instructions.md` — `applyTo` frontmatter set correctly
-- [ ] `instructions.md` — all commands use `<NICKNAME>` placeholder
+- [ ] `.github/instructions/<module>.instructions.md` — `applyTo` frontmatter set correctly
+- [ ] `.github/instructions/<module>.instructions.md` — includes Module Overview table with verification criteria
+- [ ] `.github/instructions/<module>.instructions.md` — all commands use `<NICKNAME>` placeholder
+- [ ] `.github/instructions/<module>.instructions.md` — prerequisites section lists required JFrog features
 - [ ] Run `bash automation/setup-event.sh` — new module appears in available list
 - [ ] Run `bash automation/register.sh` — repositories created successfully
 - [ ] Run `bash automation/check-progress.sh` — all tasks verified correctly
