@@ -1,6 +1,6 @@
 #!/bin/bash
-# Create three npm Artifactory repositories for a participant: local, remote, virtual
-# 为学员创建三个 npm Artifactory 仓库：local、remote、virtual
+# npm-security module: create personal Artifactory repositories for a participant
+# npm-security 模块：为学员创建个人 Artifactory 仓库
 
 set -eu
 

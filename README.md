@@ -1,16 +1,18 @@
-# NPM Supply Chain Security Workshop
+# JFrog Supply Chain Security Workshop
 
 > 🌐 [中文版](./README_CN.md)
 
-This Workshop has three key features:
+This Workshop has the following features:
 
 - **Ready out of the box**: Built on GitHub Codespace — no local tool installation required, just click to enter a unified cloud development environment
 - **AI-guided learning**: Powered by GitHub Copilot Chat, the AI assistant guides you through every step — no prior JFrog knowledge needed
-- **Competitive and fun**: Complete tasks to earn points in real time, with the instructor projecting a live leaderboard
+- **Self-study mode**: Start anytime without an instructor — work at your own pace with the AI assistant by your side
+- **Competitive mode**: Fun guaranteed, complete tasks to earn points in real time, with the instructor projecting a live leaderboard
+- **Freely extensible**: Guide an AI to add new learning modules in one shot — customize tasks and auto-verify completion conditions
 
 ---
 
-## Background: npm Supply Chain Attacks
+## Background: Software Supply Chain Attacks
 
 Supply chain attacks have become one of the most insidious threats facing developers today:
 
@@ -51,21 +53,15 @@ The common thread: **developers unknowingly introduced malicious code into their
 Hands-on practice experiencing the complete supply chain security cycle: from "introducing a malicious dependency" to "detect → block → fix".
 
 ### Duration
-Approximately 60 minutes
+Approximately 60 minutes per module
 
-### Competition Rules
+### Competitive Mode Rules
 
-| Task | Description | Points |
-|------|-------------|--------|
-| T1 | Register a nickname and create personal Artifactory repositories | 10 |
-| T2 | Complete the first npm build | 20 |
-| T3 | Publish Build #1 build-info | 20 |
-| T4 | Create a Curation Policy | 10 |
-| T5 | Trigger Curation to block axios@1.7.2 | 20 |
-| T6 | Fix the issue and complete Build #3 | 20 |
-| **Total** | | **100** |
+Tasks are organized into **modules** (e.g. `npm-basic`, `npm-security`). Each module has its own task list with individual point values. The instructor chooses which modules are active for the event.
 
-Ties are broken by the time the last task was completed (earlier is better).
+- Complete tasks within the active module(s) to earn points
+- Ties are broken by the time the last task was completed (earlier is better)
+- Task details and commands are provided by the AI assistant during the session
 
 ### Prize
 > To be announced by the instructor on the day 🎁
@@ -78,52 +74,46 @@ Ties are broken by the time the last task was completed (earlier is better).
 
 Click the button below to launch the cloud development environment instantly (no local tool installation needed):
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/alexwang66/jfrog-workshop)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/jfrogpz/jfrog-workshop)
 
 > ⏱️ First-time Codespace startup takes about 1–2 minutes — please be patient.
 >
 > 🆓 GitHub personal accounts get 60 free Codespace hours per month. This Workshop uses approximately 1 hour.
 >
-> 💻 **If Codespace is not available**, refer to [SETUP.md](./SETUP.md) to set up the environment on your local machine.
+> 💻 **If Codespace is not available**, refer to [SETUP.md](./docs/SETUP.md) to set up the environment on your local machine.
 
 ### Step 2: Open AI Assistant
 
 Once Codespace is ready, the **GitHub Copilot Chat** panel is embedded on the **right side** of the window — type your message directly.
 
-> 🤖 **If Copilot Chat is unavailable**, you can read [.github/copilot-instructions.md](.github/copilot-instructions.md) directly — it contains complete step-by-step instructions for all tasks.
+> 🤖 **If Copilot Chat is unavailable**, read the module instructions file directly — e.g. [.github/instructions/npm-security.instructions.md](.github/instructions/npm-security.instructions.md) — it contains complete step-by-step instructions for all tasks.
 
 ### Step 3: Start the Workshop
 
 Type one of the following in the Copilot Chat panel:
 
 ```
-# Joining an event (with an instructor)
+# Self-study mode (no instructor or EVENT_ID needed)
+I want to self-study
+
+# Event mode (joining an instructor-led session)
 I want to start the workshop, my EVENT_ID is <ID provided by instructor>
 
-# Self-study (no instructor or EVENT_ID needed)
-I want to self-study
+# Switching modules mid-session
+I want to switch to the npm-security module
+
+# Switching modes mid-session (your progress is preserved)
+I want to switch to event mode
 ```
 
-The AI assistant will guide you through all tasks, including logging in to JFrog UI to generate your personal token and registering your nickname. Event mode uses the instructor-provided admin account; self-study mode uses your own account.
+The AI assistant will:
+1. Guide you to log in to JFrog UI and generate your personal access token
+2. Ask which module you want to learn
+3. Walk you through each task step by step (check your progress, explain concepts, and help diagnose issues)
 
 > 💡 **Tip**: All commands are provided by the AI assistant — just paste them into the terminal.
 >
-> 📊 **Leaderboard** (event mode): The instructor will project the leaderboard, which refreshes every 30 seconds. No leaderboard in self-study mode.
-
----
-
-## Task Overview
-
-Here is a brief description of all 6 tasks (exact commands are provided by the AI assistant during the conversation):
-
-| Task | Description | Verification |
-|------|-------------|--------------|
-| **T1 Register** | Choose a unique nickname; the script automatically creates your personal npm repository group on Artifactory (local / remote / virtual) | Artifactory contains a `{nickname}-npm-dev-virtual` repository |
-| **T2 First Install** | Configure JFrog CLI to point to your Artifactory virtual repository, run `jf npm install` | `{nickname}-npm-org-remote` repository contains cached packages |
-| **T3 Publish Build Info** | Publish the complete dependency information of your build to Artifactory for traceability | Artifactory contains Build `{nickname}-npm-sample #1` |
-| **T4 Create Security Policy** | Create a Curation policy targeting your personal Artifactory repository to block risky npm packages; name must include your nickname | A Curation Policy with your nickname in its name exists in the policy list |
-| **T5 Trigger Block** | Add `axios@1.7.2` (simulated malicious version) to the project, run `jf npm install`, observe Curation blocking it | Curation audit log contains a record of `axios@1.7.2` being blocked for your repository |
-| **T6 Fix Issue** | Replace axios with a safe version, re-run `jf npm install`, and publish Build #3 | Artifactory contains Build `{nickname}-npm-sample #3` with an axios version other than `1.7.2` |
+> 📊 **Leaderboard** (event mode only): The instructor will project the leaderboard, which refreshes every 30 seconds.
 
 ---
 
@@ -131,4 +121,8 @@ Here is a brief description of all 6 tasks (exact commands are provided by the A
 
 If you are an instructor or event organizer, please refer to:
 
-👉 [ORGANIZER.md](./ORGANIZER.md)
+👉 [ORGANIZER.md](./docs/ORGANIZER.md)
+
+To add a new learning module to the workshop:
+
+👉 [CONTRIBUTING-MODULE.md](./docs/CONTRIBUTING-MODULE.md)

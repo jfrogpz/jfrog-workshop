@@ -21,34 +21,32 @@ fi
 JFROG_URL="${JFROG_URL%/}"
 
 REMOTE_REPO="${NICKNAME}-npm-org-remote"
+REMOTE_CACHE="${NICKNAME}-npm-org-remote-cache"
 AXIOS_PATH="axios/-/axios-1.7.2.tgz"
 
 echo ""
-echo ">>> Clearing Artifactory remote repository cache / 清除 Artifactory 远程仓库缓存：${REMOTE_REPO}"
+echo ">>> Clearing Artifactory remote repository cache / 清除 Artifactory 远程仓库缓存：${REMOTE_CACHE}"
 echo "    Target / 目标：${AXIOS_PATH}"
 echo ""
 
-STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
   -H "Authorization: Bearer ${JFROG_TOKEN}" \
-  "${JFROG_URL}/artifactory/${REMOTE_REPO}/${AXIOS_PATH}" 2>/dev/null || echo "000")
+  "${JFROG_URL}/artifactory/${REMOTE_CACHE}/${AXIOS_PATH}" 2>/dev/null || echo "000")
 
-if [ "$STATUS" = "200" ]; then
-  curl -sf -X DELETE \
-    -H "Authorization: Bearer ${JFROG_TOKEN}" \
-    "${JFROG_URL}/artifactory/${REMOTE_REPO}/${AXIOS_PATH}" >/dev/null
+if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
   echo "  ✅ Cache cleared / 缓存已清除：axios@1.7.2"
 elif [ "$STATUS" = "404" ]; then
   echo "  ℹ️  axios@1.7.2 not in cache, nothing to clear / 缓存中不存在 axios@1.7.2，无需清除"
 else
-  echo "  ⚠️  Cannot access repository (HTTP ${STATUS}). Check if JFROG_TOKEN is valid." >&2
-  echo "  ⚠️  无法访问仓库（HTTP ${STATUS}），请检查 JFROG_TOKEN 是否有效" >&2
+  echo "  ⚠️  Delete failed (HTTP ${STATUS}). Check if JFROG_TOKEN is valid." >&2
+  echo "  ⚠️  删除失败（HTTP ${STATUS}），请检查 JFROG_TOKEN 是否有效" >&2
   exit 1
 fi
 
 echo ""
 echo "  Now run the following commands to test Curation blocking / 现在可以运行以下命令测试 Curation 拦截效果："
 echo ""
-echo "    cd /workspaces/jfrog-workshop/npm-sample"
+echo "    cd /workspaces/jfrog-workshop/modules/npm-security/sample-project"
 echo "    rm -rf node_modules package-lock.json"
 echo "    npm cache clean --force"
 echo "    jf npm install --build-name=${NICKNAME}-npm-sample --build-number=2"
