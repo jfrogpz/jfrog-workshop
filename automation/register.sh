@@ -140,6 +140,7 @@ PROF
       exit 1
     fi
   fi
+  echo "    ✅ Nickname available / 昵称可用：${NICKNAME}"
 else
   echo "    ℹ️  Self-study mode / 自主学习模式"
   TASKS_JSON=$(python3 -c "
