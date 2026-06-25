@@ -134,12 +134,18 @@ RANK_W = 4
 ICONS = {"done": "✅", "in_progress": "⏳", "pending": "⬜"}
 MEDALS = {1: "🥇", 2: "🥈", 3: "🥉"}
 
-# Outer width — based on widest module block
+# Outer width — based on widest module block or header lines
 def block_width(mod_task_list):
     w = 2 + RANK_W + 1 + NAME_W + 1 + COL_W * len(mod_task_list) + 2 + 6
     return max(w, 60)
 
-W = max((block_width(module_tasks[m]) for m in modules_seen), default=60)
+header1 = f"  🏆  JFrog Workshop  |  Event ID / 赛事 ID：{event_id}"
+header2 = f"  🕐  Updated / 更新时间：{refresh_time}  |  Max / 满分：{max_points} pts"
+W = max(
+    max((block_width(module_tasks[m]) for m in modules_seen), default=60),
+    dw(header1) + 2,
+    dw(header2) + 2,
+)
 
 print("=" * W)
 print(f"  🏆  JFrog Workshop  |  Event ID / 赛事 ID：{event_id}")
