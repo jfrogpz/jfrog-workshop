@@ -33,18 +33,31 @@ export JFROG_TOKEN="your-admin-token"
 export JFROG_URL="https://yourcompany.jfrog.io"
 ```
 
-然后运行初始化脚本：
+然后运行初始化脚本，指定本场赛事要使用的学习模块：
 
 ```bash
 bash automation/setup-event.sh \
   "2026-06-shanghai" \
-  "JFrog Workshop Shanghai 2026"
+  "JFrog Workshop Shanghai 2026" \
+  --modules npm-security
+```
+
+如果需要同时包含多个模块：
+
+```bash
+bash automation/setup-event.sh \
+  "2026-06-shanghai" \
+  "JFrog Workshop Shanghai 2026" \
+  --modules npm-security,maven-basic
 ```
 
 脚本将：
+- 验证所有指定模块在 `modules/` 目录中存在
 - 在 Artifactory 中创建 `workshop-events` Generic 仓库（如不存在）
-- 上传赛事配置 `config.json`
+- 从各模块的 `tasks.json` 聚合任务列表，上传赛事配置 `config.json`
 - 输出启动排行榜的完整命令
+
+运行脚本时不带参数可查看当前可用模块列表。
 
 ---
 
@@ -58,26 +71,47 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 ```
 
 脚本每 30 秒自动：
-- 调用 Artifactory API 验证所有学员的任务完成状态
-- 更新各学员在 Artifactory 中的 `progress.json`
+- 读取所有学员上传的 `progress.json`
 - 清屏并刷新终端排行榜
 
-按 `Ctrl+C` 停止。排行榜效果示例：
+按 `Ctrl+C` 停止。
+
+单模块赛事（`--modules npm-security`）排行榜效果示例：
 
 ```
-========================================================================
-  🏆  JFrog Workshop 排行榜   赛事：2026-06-shanghai
-  🕐  更新时间：2026-06-22 10:30:00
-========================================================================
-  排名  昵称                    T1  T2  T3  T4  T5  T6    总分
-------------------------------------------------------------------------
-  🥇   alex                   ✅  ✅  ✅  ⬜  ⬜  ⬜    50分
-  🥈   mary-chen              ✅  ✅  ⬜  ⬜  ⬜  ⬜    30分
-  🥉   bob                    ✅  ⬜  ⬜  ⬜  ⬜  ⬜    10分
-------------------------------------------------------------------------
-  共 3 名学员参赛
-========================================================================
+============================================================
+  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：100 pts
+============================================================
+              [npm-security                    ]
+  Rank  Nickname               T1  T2  T3  T4  T5  T6    Pts
+------------------------------------------------------------
+  🥇   alex                  ✅  ✅  ✅  ⬜  ⬜  ⬜   50pts
+  🥈   mary-chen             ✅  ✅  ⬜  ⬜  ⬜  ⬜   30pts
+  🥉   bob                   ✅  ⬜  ⬜  ⬜  ⬜  ⬜   10pts
+------------------------------------------------------------
+  3 participants / 名学员参赛
+============================================================
 ```
+
+多模块赛事（`--modules npm-security,maven-basic`），任务列按模块分组：
+
+```
+=====================================================================
+  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：160 pts
+=====================================================================
+          [npm-security          ]  [maven-basic    ]
+  Rank  Nickname            T1 T2 T3 T4 T5 T6  T1 T2 T3    Pts
+---------------------------------------------------------------------
+  🥇   alex               ✅ ✅ ✅ ⬜ ⬜ ⬜  ✅ ✅ ⬜   80pts
+  🥈   mary-chen          ✅ ✅ ⬜ ⬜ ⬜ ⬜  ✅ ⬜ ⬜   40pts
+---------------------------------------------------------------------
+  2 participants / 名学员参赛
+=====================================================================
+```
+
+> **说明**：列标签显示任务 ID 的最后一段（如 `npm-security-T1` → `T1`）。
 
 ---
 
@@ -101,8 +135,8 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 在正式开始前确认以下事项：
 
-1. **确认 Curation 已启用**：登录 JFrog UI → Curation，确认功能已开启且支持 npm
-2. **提前走通全流程**：使用测试环境模拟学员完成 T1–T6 的全部操作，确认每个任务的验证逻辑正常工作，避免 Workshop 当天出现意外
+1. **确认模块前置条件**：检查你选择的模块是否需要启用特定 JFrog 功能（如 Curation、Xray）。各模块的前置要求请参阅对应的 `.github/instructions/<module>.instructions.md` 文件
+2. **提前走通全流程**：使用测试环境模拟学员完成所选模块的全部任务，确认每个任务的验证逻辑正常工作，避免 Workshop 当天出现意外
 
 ---
 
@@ -138,17 +172,19 @@ curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
 |------|---------|
 | 排行榜无学员显示 | 检查 Artifactory 中 `workshop-events/{event_id}/participants/` 目录是否有数据 |
 | 学员任务长时间不更新 | 确认 `refresh-leaderboard.sh` 正在运行；检查 Admin Token 是否有效 |
-| Curation 不阻断 axios@1.7.2 | 确认学员 Curation Policy 已激活，Policy Action 下方开启了 **Enforce policy on cached packages**，且 Apply to 选择了 remote 仓库（不是 virtual） |
+| 模块特定功能不工作 | 参阅对应模块的 `.github/instructions/<module>.instructions.md` 中的 Troubleshooting 部分 |
 
 ---
 
 ## 赛事配置自定义
 
-如需调整各任务分值，修改 `automation/setup-event.sh` 中的 `tasks` 数组，然后重新运行初始化脚本即可覆盖 `config.json`：
+如需调整各任务分值，修改对应模块目录下的 `tasks.json`（如 `modules/npm-security/tasks.json`），然后重新运行初始化脚本即可覆盖 `config.json`：
 
 ```bash
-bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
+bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026" --modules npm-security
 ```
+
+如需新增学习模块，请参阅 [CONTRIBUTING-MODULE.md](CONTRIBUTING-MODULE.md)。
 
 ---
 
@@ -159,9 +195,9 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 | 问题 | Codespace 的解法 |
 |------|----------------|
 | 学员环境各异（Windows/Mac/Linux） | 统一的云端 Linux 环境，开箱即用 |
-| 需要预装 Node.js、JFrog CLI、bash | `.devcontainer` 自动配置，学员无需手动安装任何工具 |
+| 需要预装各类构建工具和 JFrog CLI | `.devcontainer/post-create.sh` 自动扫描各模块的 `install-tools.sh` 并安装所需工具 |
 | 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
-| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本 |
+| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，打开模块目录下的文件时自动加载对应模块的 AI 指引 |
 
 如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP_CN.md](SETUP_CN.md)。
 
@@ -169,27 +205,21 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 
 ### 积分与排行榜工作原理
 
-**学员注册（T1）**：
-- 学员运行 `register.sh`，脚本在 Artifactory 中创建三个 npm 仓库（local / remote / virtual），并在 `workshop-events` 仓库写入初始 `progress.json`（T1 标记为完成，得 10 分）
-- 注册成功后，脚本在学员本地写入 `~/.workshop-profile`，保存昵称、赛事 ID、JFrog 地址和 Token，后续脚本（`check-progress.sh`、`clear-remote-cache.sh` 等）均从此文件读取，无需重复输入
+**学员注册（每个模块的第一个任务）**：
+- 学员运行 `register.sh`，脚本从赛事 `config.json` 读取活跃模块，调用各模块的 `create-repo.sh` 创建所需 Artifactory 仓库，并写入初始 `progress.json`（第一个任务标记为完成）
+- 注册成功后，脚本在学员本地写入 `~/.workshop-profile`，保存昵称、赛事 ID、JFrog 地址和 Token，后续脚本均从此文件读取，无需重复输入
 
-**任务验证（T2–T6）**：
-- **验证发生在学员侧**：学员每完成一个任务后运行 `check-progress.sh`，脚本通过 Artifactory/Xray REST API 自动验证并更新进度
+**任务验证**：
+- **验证发生在学员侧**：学员每完成一个任务后运行 `check-progress.sh`，脚本动态加载各模块的 `verify-tasks.sh`，按任务 ID 派发到对应的验证函数
 - 验证通过的任务标记为 `done`，进度上传至 `workshop-events` 仓库供排行榜读取
 - 已完成的任务不重复验证，只验证尚未完成的任务
 
-| 任务 | 验证方式 |
-|------|---------|
-| T1 | `GET /api/repositories/{nickname}-npm-dev-virtual` 返回 200 |
-| T2 | `GET /api/storage/{nickname}-npm-org-remote` 有子目录（有缓存包） |
-| T3 | `GET /api/build/{nickname}-npm-sample/1` 返回 200 |
-| T4 | `GET /xray/api/v1/curation/policies` 列表中有包含昵称的 Policy |
-| T5 | `GET /xray/api/v1/curation/audit/packages` 中有昵称对应仓库 blocked axios@1.7.2 的记录 |
-| T6 | Build #3 存在且依赖中 axios 版本不是 1.7.2 |
+任务 ID 格式为 `<模块名>-T<序号>`，如 `npm-security-T1`。各任务的验证逻辑详见对应模块的 `.github/instructions/<module>.instructions.md`。
 
 **排行榜渲染**：
 - 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒**只读取**所有学员上传的 `progress.json`，不做任何验证
-- 按总分降序、同分按最后任务完成时间升序排列，在终端打印 ASCII 排行榜
+- 积分只计算赛事 `config.json` 中定义的任务，自主学习阶段完成的其他模块任务不计入赛事积分
+- 按总分降序、同分按最后任务完成时间升序排列
 - 组织者将此终端窗口投屏，学员实时可见
 
 > **注意**：排行榜反映的是学员最后一次运行 `check-progress.sh` 时上传的进度。学员完成任务后需主动运行脚本，进度才会更新。
@@ -206,7 +236,7 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 Artifactory Generic 仓库：workshop-events
 │
 └── {event_id}/                        # 赛事目录，例如 2026-06-shanghai
-    ├── config.json                    # 赛事配置（任务分值、时间等）
+    ├── config.json                    # 赛事配置（模块列表、任务分值、时间等）
     └── participants/
         └── {nickname}/                # 每位学员一个目录
             ├── profile.json           # 学员信息（昵称、注册时间）
