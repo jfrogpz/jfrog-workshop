@@ -29,20 +29,17 @@ echo ">>> Clearing Artifactory remote repository cache / 清除 Artifactory 远�
 echo "    Target / 目标：${AXIOS_PATH}"
 echo ""
 
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE \
   -H "Authorization: Bearer ${JFROG_TOKEN}" \
   "${JFROG_URL}/artifactory/${REMOTE_CACHE}/${AXIOS_PATH}" 2>/dev/null || echo "000")
 
-if [ "$STATUS" = "200" ]; then
-  curl -sf -X DELETE \
-    -H "Authorization: Bearer ${JFROG_TOKEN}" \
-    "${JFROG_URL}/artifactory/${REMOTE_CACHE}/${AXIOS_PATH}" >/dev/null
+if [ "$STATUS" = "200" ] || [ "$STATUS" = "204" ]; then
   echo "  ✅ Cache cleared / 缓存已清除：axios@1.7.2"
 elif [ "$STATUS" = "404" ]; then
   echo "  ℹ️  axios@1.7.2 not in cache, nothing to clear / 缓存中不存在 axios@1.7.2，无需清除"
 else
-  echo "  ⚠️  Cannot access repository (HTTP ${STATUS}). Check if JFROG_TOKEN is valid." >&2
-  echo "  ⚠️  无法访问仓库（HTTP ${STATUS}），请检查 JFROG_TOKEN 是否有效" >&2
+  echo "  ⚠️  Delete failed (HTTP ${STATUS}). Check if JFROG_TOKEN is valid." >&2
+  echo "  ⚠️  删除失败（HTTP ${STATUS}），请检查 JFROG_TOKEN 是否有效" >&2
   exit 1
 fi
 
