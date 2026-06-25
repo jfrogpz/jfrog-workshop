@@ -102,9 +102,9 @@ I want to switch to the npm-basic module
 ```
 
 The AI assistant will:
-1. Ask which module you want to learn (if not already registered)
-2. Guide you to log in to JFrog UI and generate your personal access token
-3. Walk you through each task step by step
+1. Guide you to log in to JFrog UI and generate your personal access token
+2. Ask which module you want to learn
+3. Walk you through each task step by step (check your progress, explain concepts, and help diagnose issues)
 
 > 💡 **Tip**: All commands are provided by the AI assistant — just paste them into the terminal.
 >
