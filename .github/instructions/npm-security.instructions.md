@@ -187,8 +187,4 @@ If the file was already loaded earlier, skip the `cat` and say: **"The npm-secur
 
 **Curation Policy not blocking**: Confirm the Policy is Active, **Enforce policy on cached packages** is enabled, and Apply to is set to the remote repository (`{nickname}-npm-org-remote`), not the virtual.
 
-**After Codespace restart**: Re-export environment variables — progress is not lost:
-```bash
-export JFROG_URL="<URL provided by instructor>"
-export JFROG_TOKEN="<your Access Token>"
-```
+

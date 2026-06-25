@@ -111,13 +111,6 @@ bash automation/register.sh <昵称> <EVENT_ID>
 **Q：注册时提示"昵称已被占用"**
 A：换一个独特的昵称（如加数字后缀）。如果是自己之前注册过想重新开始，先按上面步骤重置。
 
-**Q：Codespace 重启后命令报错"未设置 JFROG_URL"**
-A：重新导出变量——进度不会丢失：
-```bash
-export JFROG_URL="<讲师提供的地址>"
-export JFROG_TOKEN="<你的 Access Token>"
-```
-
 **Q：check-and-update-progress.sh 报错 / 找不到 profile**
 A：重新运行 `register.sh` 即可恢复本地配置文件。
 

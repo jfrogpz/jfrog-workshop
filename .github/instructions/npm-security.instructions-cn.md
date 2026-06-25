@@ -187,8 +187,4 @@ applyTo: "modules/npm-security/**"
 
 **Curation Policy 不生效**：确认 Policy 已激活（Enabled），已开启 **Enforce policy on cached packages**，且 Apply to 选择的是远程代理仓库（`{nickname}-npm-org-remote`），而不是 virtual 仓库。
 
-**Codespace 重启后命令报错**：重新导出环境变量——进度不会丢失：
-```bash
-export JFROG_URL="<讲师提供的地址>"
-export JFROG_TOKEN="<你的 Access Token>"
-```
+

@@ -111,13 +111,6 @@ bash automation/register.sh <NICKNAME> <EVENT_ID>
 **Q: Nickname already taken**
 A: Choose a different nickname (add a number suffix). If you registered before, reset first.
 
-**Q: After Codespace restart, "JFROG_URL not set"**
-A: Re-export the variables — your progress is not lost:
-```bash
-export JFROG_URL="<URL provided by instructor>"
-export JFROG_TOKEN="<your Access Token>"
-```
-
 **Q: check-and-update-progress.sh errors / profile not found**
 A: Re-run `register.sh` to restore the local profile.
 
