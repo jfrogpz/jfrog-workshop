@@ -2,11 +2,12 @@
 
 > 🌐 [中文版](./README_CN.md)
 
-This Workshop has three key features:
+This Workshop has four key features:
 
 - **Ready out of the box**: Built on GitHub Codespace — no local tool installation required, just click to enter a unified cloud development environment
 - **AI-guided learning**: Powered by GitHub Copilot Chat, the AI assistant guides you through every step — no prior JFrog knowledge needed
 - **Competitive and fun**: Complete tasks to earn points in real time, with the instructor projecting a live leaderboard
+- **Freely extensible**: Guide an AI to add new learning modules in one shot — customize tasks and auto-verify completion conditions
 
 ---
 
