@@ -56,7 +56,9 @@ Approximately 60 minutes per module
 
 ### Competition Rules
 
-Tasks are organized into **modules** (e.g. `npm-security`, `npm-basic`). Each module has its own task list with individual point values. The instructor chooses which modules are active for the event.
+Tasks are organized into **modules** (e.g. `npm-basic`, `npm-security`). Each module has its own task list with individual point values. The instructor chooses which modules are active for the event.
+
+> 💡 **Self-study is also supported** — no instructor or event required. Just tell the AI assistant "I want to self-study" to get started.
 
 - Complete tasks within the active module(s) to earn points
 - Ties are broken by the time the last task was completed (earlier is better)
