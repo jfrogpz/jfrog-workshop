@@ -94,7 +94,9 @@ def dw(s):
     w = 0
     for c in s:
         cp = ord(c)
-        if cp > 0x2E7F or (0x1F300 <= cp <= 0x1FAFF):
+        if (cp > 0x2E7F or
+                0x1F300 <= cp <= 0x1FAFF or
+                0x2300 <= cp <= 0x2BFF):
             w += 2
         else:
             w += 1
