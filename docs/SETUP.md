@@ -86,7 +86,7 @@ If you don't have Copilot, read the module's AI guide directly. First decide whi
 
 For example, for the `npm-security` module:
 
-**[.github/instructions/npm-security.instructions.md](.github/instructions/npm-security.instructions.md)**
+**[.github/instructions/npm-security.instructions.md](../.github/instructions/npm-security.instructions.md)**
 
 This document contains detailed steps, commands, and success criteria for all tasks — identical to what the AI assistant provides. Just read and follow in order.
 
