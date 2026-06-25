@@ -65,7 +65,7 @@ REPO_ROOT="$(CDPATH= cd -- "${SCRIPT_DIR}/.." && pwd)"
 echo ">>> Deleting Artifactory repositories / 删除 Artifactory 仓库..."
 # Discover all repos to delete by running each module's create-repo.sh in dry-run mode.
 # Fallback: list all repos matching the student ID prefix.
-REPOS=$(curl_jf "${API}/repositories?type=local&packageType=&includeDescription=0" 2>/dev/null \
+REPOS=$(curl_jf "${API}/repositories?includeDescription=0" 2>/dev/null \
   | python3 -c "
 import sys, json
 repos = json.load(sys.stdin)
