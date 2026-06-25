@@ -128,7 +128,7 @@ The participant has already chosen this module. Guide them through the following
 1. `package.json` already has axios `1.7.2` — no changes needed
 2. Clear the Artifactory remote cache:
    ```bash
-   bash automation/clear-remote-cache.sh
+   bash modules/npm-security/clear-remote-cache.sh
    ```
 3. Trigger the block:
    ```bash

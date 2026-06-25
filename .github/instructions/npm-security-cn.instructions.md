@@ -128,7 +128,7 @@ applyTo: "modules/npm-security/**"
 1. `package.json` 中 axios 已是 `1.7.2`，无需修改
 2. 清除 Artifactory 远程仓库缓存：
    ```bash
-   bash automation/clear-remote-cache.sh
+   bash modules/npm-security/clear-remote-cache.sh
    ```
 3. 触发拦截：
    ```bash
