@@ -284,10 +284,10 @@ fi
 
 # ── Step 6: save local profile ────────────────────────────────────────────────
 cat > "$PROFILE_FILE" <<PROF
-NICKNAME=${NICKNAME}
-EVENT_ID=${EVENT_ID:-}
-JFROG_URL=${JFROG_URL}
-JFROG_TOKEN=${JFROG_TOKEN}
+export NICKNAME=${NICKNAME}
+export EVENT_ID=${EVENT_ID:-}
+export JFROG_URL=${JFROG_URL}
+export JFROG_TOKEN=${JFROG_TOKEN}
 PROF
 
 echo ""
