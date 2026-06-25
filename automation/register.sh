@@ -35,6 +35,13 @@ EOF
 NICKNAME="$1"
 EVENT_ID="${2:-}"
 
+# Auto-load saved credentials if not already in environment
+# 如果环境变量未设置，自动从本地 profile 加载
+if [ -z "${JFROG_URL:-}" ] || [ -z "${JFROG_TOKEN:-}" ]; then
+  # shellcheck disable=SC1090
+  [ -f "$PROFILE_FILE" ] && . "$PROFILE_FILE" || true
+fi
+
 if [ -z "${JFROG_URL:-}" ]; then
   echo "❌ JFROG_URL environment variable is not set. Please run:" >&2
   echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" >&2

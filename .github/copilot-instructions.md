@@ -90,10 +90,7 @@ If already loaded, say: **"The [module] task guide is already loaded in this ses
 
 If the participant asks to switch between self-study and event mode at any time:
 
-- Do **not** ask them to re-export variables — source the profile to load credentials into the current session:
-  ```bash
-  source ~/.workshop-profile
-  ```
+- Do **not** ask them to re-export variables — `register.sh` loads credentials from `~/.workshop-profile` automatically.
 - Re-run registration with the appropriate arguments:
 
 ```bash

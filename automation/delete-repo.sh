@@ -25,6 +25,16 @@ if [ -z "$STUDENT_ID" ]; then
   exit 1
 fi
 
+# Auto-load saved credentials if not already in environment
+# 如果环境变量未设置，自动从本地 profile 加载
+if [ -z "$JFROG_URL" ] || [ -z "$JFROG_TOKEN" ]; then
+  PROFILE_FILE="${HOME}/.workshop-profile"
+  # shellcheck disable=SC1090
+  [ -f "$PROFILE_FILE" ] && . "$PROFILE_FILE" || true
+  JFROG_URL="${JFROG_URL:-}"
+  JFROG_TOKEN="${JFROG_TOKEN:-}"
+fi
+
 if [ -z "$JFROG_URL" ] || [ -z "$JFROG_TOKEN" ]; then
   echo "❌ JFROG_URL and JFROG_TOKEN environment variables must be set" >&2
   echo "❌ 需要设置 JFROG_URL 和 JFROG_TOKEN 环境变量" >&2
