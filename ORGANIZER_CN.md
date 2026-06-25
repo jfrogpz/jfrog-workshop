@@ -161,7 +161,7 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 | 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
 | 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，读取 `.github/copilot-instructions.md` 作为任务剧本 |
 
-如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP.md](SETUP.md)。
+如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP_CN.md](SETUP_CN.md)。
 
 ---
 
