@@ -63,6 +63,18 @@ The script will:
 - Upload the event configuration `config.json` (with tasks aggregated from all specified modules)
 - Output the complete command to start the leaderboard
 
+### Adding a Module to a Running Event
+
+Re-run the script with the full updated module list at any time — it overwrites `config.json` with the combined task set. Existing participants' completed tasks are unaffected; the leaderboard will show the new module column on the next refresh.
+
+```bash
+bash automation/setup-event.sh \
+  "2026-06-shanghai" \
+  "JFrog Workshop Shanghai 2026" \
+  --modules npm-security,npm-basic
+```
+
+> **Note**: Participants already registered will need to run the new module's `create-repo.sh` manually before starting its tasks, since repository creation only happens at registration time for the modules active at that moment.
 
 ---
 
