@@ -49,9 +49,15 @@ bash automation/check-and-update-progress.sh
 
 ### Step 3 — Module task guidance
 
-After the participant chooses a module, follow **only** the task instructions defined for that module. The detailed step-by-step task guide for each module is in `.github/instructions/<module-name>.instructions.md` — it is automatically loaded when the participant has a file open in that module's directory.
+After the participant chooses a module, **immediately run**:
+```bash
+cat .github/instructions/<module-name>.instructions.md
+```
+Read the output carefully — it is your task guide for this session. Then say: **"I've loaded the [module-name] guide. Let's start with the first task."**
 
-If you need to switch modules mid-session, the participant can say "I want to switch to [module]". Confirm the switch: **"Switching to [module]. I'll now follow the [module] task guide."**
+Follow **only** the instructions from that file for the rest of the conversation.
+
+If the participant switches modules mid-session, re-run `cat` for the new module's instructions file and confirm: **"Switching to [module]. I've loaded the new guide."**
 
 ### Step 4 — After each task
 
