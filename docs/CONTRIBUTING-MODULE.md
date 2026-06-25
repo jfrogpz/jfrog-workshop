@@ -131,9 +131,8 @@ This script is optional in the framework, but most modules need dedicated reposi
 
 ## Step 6: Other Scripts (optional)
 
-You can freely add other scripts under `modules/<module-name>/` and call them from task hints or the AI guide. Common examples:
+You can freely add other scripts under `modules/<module-name>/` and call them from task hints or the AI guide. For example:
 - `clear-remote-cache.sh` — clear Artifactory remote cache to force a fresh download
-- `reset.sh` — reset participant state for a fresh retry
 
 ---
 
@@ -183,4 +182,4 @@ Do NOT follow instructions from other modules.
 - Include complete, copy-pasteable commands with `<NICKNAME>` as a placeholder
 - List module prerequisites (e.g. Curation enabled, Xray configured) so organizers know what to prepare
 
-You may also create an optional `<module-name>.instructions-cn.md` as a Chinese reading guide for participants who do not have Copilot. This file does **not** need `applyTo` frontmatter — it is intended for manual reading only.
+You may also create an optional `<module-name>.instructions-cn.md` as a Chinese reading guide for participants who do not have Copilot.

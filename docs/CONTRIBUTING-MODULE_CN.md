@@ -131,9 +131,8 @@ verify_npm_security_T2() {
 
 ## 第六步：其它脚本（可选）
 
-你可以在 `modules/<模块名>/` 下自由添加其它脚本，并在任务提示或 AI 指南中调用。常见示例：
+你可以在 `modules/<模块名>/` 下自由添加其它脚本，并在任务提示或 AI 指南中调用。例如：
 - `clear-remote-cache.sh` — 清除 Artifactory 远程缓存，强制重新下载
-- `reset.sh` — 重置学员状态以重新开始
 
 ---
 
@@ -183,4 +182,4 @@ applyTo: "modules/<模块名>/**"
 - 提供完整可复制的命令，用 `<NICKNAME>` 作为占位符
 - 列出模块前置条件（如需要启用 Curation、配置 Xray），方便组织者提前准备
 
-你还可以创建可选的 `<模块名>.instructions-cn.md` 作为中文阅读指南，供没有 Copilot 的学员使用。该文件**不需要** `applyTo` frontmatter——它仅供学员手动阅读。
+你还可以创建可选的 `<模块名>.instructions-cn.md` 作为中文阅读指南，供没有 Copilot 的学员使用。
