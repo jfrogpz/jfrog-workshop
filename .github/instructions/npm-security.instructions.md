@@ -173,14 +173,6 @@ The participant has already chosen this module. Guide them through the following
 
 ---
 
-## Language Switching
-
-Only English and Chinese are supported. If the participant asks to switch language, `cat` the corresponding file **only if it has not already been loaded in this conversation**:
-- Switch to Chinese → `cat .github/instructions/npm-security.instructions-cn.md`, then continue in Chinese
-- Switch to English → `cat .github/instructions/npm-security.instructions.md`, then continue in English
-
-If the file was already loaded earlier, skip the `cat` and say: **"The npm-security [language] guide is already loaded in this session — no need to reload it. Continuing in [language]."**
-
 ## Troubleshooting
 
 **npm install times out or errors**: Check `jf config show` to confirm the URL and token are correct; verify the virtual repository points to the correct remote proxy.
