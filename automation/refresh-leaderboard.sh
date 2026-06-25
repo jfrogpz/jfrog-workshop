@@ -135,6 +135,8 @@ NAME_W = 22
 RANK_W = 4
 ICONS = {"done": "✅", "in_progress": "⏳", "pending": "⬜"}
 MEDALS = {1: "🥇", 2: "🥈", 3: "🥉"}
+BOLD = "\033[1m"
+RESET = "\033[0m"
 
 # Outer width — based on widest module block or header lines
 def block_width(mod_task_list):
@@ -166,7 +168,7 @@ for mod in modules_seen:
     prefix = "  ──"
     fill = "─" * max(0, bw - dw(prefix) - dw(title))
     print()
-    print(prefix + title + fill)
+    print(BOLD + prefix + title + fill + RESET)
     header = "  " + ljust("Rank", RANK_W) + " " + ljust("Nickname / 昵称", NAME_W) + " "
     for t in mod_task_list:
         header += cjust(short_label(t['id']), COL_W)
@@ -195,7 +197,7 @@ summary_label = "  Overall / 总排行  " if multi_module else "  Summary / 汇�
 prefix = "  ──"
 fill = "─" * max(0, W - dw(prefix) - dw(summary_label))
 print()
-print(prefix + summary_label + fill)
+print(BOLD + prefix + summary_label + fill + RESET)
 print("  " + ljust("Rank", RANK_W) + " " + ljust("Nickname / 昵称", NAME_W) + "  " + rjust("Total", 8))
 print("  " + "-" * (OW - 2))
 for i, p in enumerate(lines):
