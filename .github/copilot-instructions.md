@@ -132,6 +132,13 @@ rm -f ~/.workshop-profile
 bash automation/register.sh <NICKNAME> <EVENT_ID>
 ```
 
+**Q: AI says variables are not set / commands fail after opening a new chat window**
+A: The AI assistant's terminal is **separate** from your code terminal — environment variables exported in one do not carry over to the other. When a new chat window opens, the AI must reload the local profile to get the variables:
+```bash
+source ~/.workshop-profile
+```
+This is done automatically at Step 1. If you skipped it or opened a fresh chat mid-session, run the above command first.
+
 **Q: Nickname already taken**
 A: Choose a different nickname (add a number suffix). If you registered before, reset first.
 
