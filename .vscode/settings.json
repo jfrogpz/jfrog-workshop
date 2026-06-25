@@ -8,7 +8,11 @@
             "approve": true,
             "matchCommandLine": true
         },
-        "/^bash automation\\/delete-repo\\.sh/": {
+        "/^bash automation\\/cleanup-participant\\.sh/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^bash automation\\/cleanup-event\\.sh/": {
             "approve": true,
             "matchCommandLine": true
         },
