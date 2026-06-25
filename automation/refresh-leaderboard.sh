@@ -1,20 +1,22 @@
 #!/bin/bash
+# Organizer: continuously read all participant progress and render the leaderboard (refreshes every 30s)
 # 主办者持续运行：只读取所有学员进展并渲染排行榜（每 30 秒刷新一次）
+# Verification logic is on the participant side (check-progress.sh); this script is read-only
 # 验证逻辑已移至学员侧 check-progress.sh，此脚本不做任何验证或更新
 
 set -eu
 
 usage() {
   cat >&2 <<EOF
-使用前请先设置环境变量：
+Set environment variables first / 使用前请先设置环境变量：
   export JFROG_TOKEN="your-admin-token"
   export JFROG_URL="https://mycompany.jfrog.io"
 
 Usage: $0 <EVENT_ID>
 
-  EVENT_ID    赛事 ID，例如 2026-06-shanghai
+  EVENT_ID    Event ID / 赛事 ID，例如 2026-06-shanghai
 
-按 Ctrl+C 停止。
+Press Ctrl+C to stop. / 按 Ctrl+C 停止。
 EOF
   exit 1
 }
@@ -24,12 +26,14 @@ EOF
 EVENT_ID="$1"
 
 if [ -z "${JFROG_TOKEN:-}" ]; then
+  echo "❌ JFROG_TOKEN environment variable is not set. Please run:" >&2
   echo "❌ 未设置 JFROG_TOKEN 环境变量，请先运行：" >&2
   echo "   export JFROG_TOKEN=\"your-admin-token\"" >&2
   exit 1
 fi
 
 if [ -z "${JFROG_URL:-}" ]; then
+  echo "❌ JFROG_URL environment variable is not set. Please run:" >&2
   echo "❌ 未设置 JFROG_URL 环境变量，请先运行：" >&2
   echo "   export JFROG_URL=\"https://mycompany.jfrog.io\"" >&2
   exit 1
@@ -134,12 +138,12 @@ PY
 # ── 主循环 ──────────────────────────────────────────────────────────────────
 echo ""
 echo "=========================================="
-echo "  排行榜服务启动"
-echo "  赛事：${EVENT_ID}  |  刷新间隔：${INTERVAL}秒"
-echo "  按 Ctrl+C 停止"
+echo "  Leaderboard service started / 排行榜服务启动"
+echo "  Event / 赛事：${EVENT_ID}  |  Interval / 刷新间隔：${INTERVAL}s/秒"
+echo "  Press Ctrl+C to stop / 按 Ctrl+C 停止"
 echo "=========================================="
 
-trap 'echo ""; echo "排行榜服务已停止。"; exit 0' INT TERM
+trap 'echo ""; echo "Leaderboard service stopped. / 排行榜服务已停止。"; exit 0' INT TERM
 
 while true; do
   REFRESH_TIME=$(date '+%Y-%m-%d %H:%M:%S')
