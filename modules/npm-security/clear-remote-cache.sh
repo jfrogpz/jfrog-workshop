@@ -29,7 +29,7 @@ echo ">>> Clearing Artifactory remote repository cache / 清除 Artifactory 远�
 echo "    Target / 目标：${AXIOS_PATH}"
 echo ""
 
-STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer ${JFROG_TOKEN}" \
   "${JFROG_URL}/artifactory/${REMOTE_CACHE}/${AXIOS_PATH}" 2>/dev/null || echo "000")
 
