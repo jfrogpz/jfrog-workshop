@@ -203,7 +203,12 @@ for tid, result in verify_map.items():
     tasks[tid] = t
 
 data['tasks'] = tasks
-data['total_points'] = sum(t.get('points', 0) for t in tasks.values())
+# In event mode, total_points only counts tasks in this event's task list
+# to prevent self-study progress from other modules inflating the score
+if mode == 'event':
+    data['total_points'] = sum(tasks.get(t['id'], {}).get('points', 0) for t in tasks_raw)
+else:
+    data['total_points'] = sum(t.get('points', 0) for t in tasks.values())
 if mode == 'self-study':
     data['event_id'] = 'self-study'
 if 'nickname' not in data:

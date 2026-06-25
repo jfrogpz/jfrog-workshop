@@ -79,7 +79,12 @@ def last_completed_at(p):
     times = [t.get('completed_at') or '' for t in p.get('tasks', {}).values() if t.get('status') == 'done']
     return max(times) if times else ''
 
-lines.sort(key=lambda x: (-(x.get('total_points', 0)), last_completed_at(x)))
+def event_points(p):
+    """Sum only tasks that belong to this event's task list."""
+    tasks = p.get('tasks', {})
+    return sum(tasks.get(t['id'], {}).get('points', 0) for t in tasks_raw)
+
+lines.sort(key=lambda x: (-event_points(x), last_completed_at(x)))
 
 def dw(s):
     w = 0
@@ -159,7 +164,7 @@ for i, p in enumerate(lines):
     for t in tasks_raw:
         status = tasks.get(t['id'], {}).get('status', 'pending')
         icons += cjust(ICONS.get(status, '⬜'), COL_W)
-    pts = p.get("total_points", 0)
+    pts = event_points(p)
     nickname = p.get("nickname", "")[:NAME_W]
     row = "  " + ljust(medal, RANK_W) + " " + ljust(nickname, NAME_W) + " " + icons + "  " + rjust(f"{pts}pts", 6)
     print(row)
