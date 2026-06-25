@@ -49,21 +49,22 @@ bash automation/check-and-update-progress.sh
 
 ### Step 3 — Module task guidance
 
-After the participant chooses a module, **immediately run**:
+After the participant chooses a module, load its instructions with `cat` — **but only if that file has not already been loaded in this conversation**:
 ```bash
 cat .github/instructions/<module-name>.instructions.md
 ```
-Read the output carefully — it is your task guide for this session. Then say: **"I've loaded the [module-name] guide. Let's start with the first task."**
+Read the output carefully — it is your task guide for this module. Then say: **"I've loaded the [module-name] guide. Let's start with the first task."**
 
 Follow **only** the instructions from that file for the rest of the conversation.
 
-If the participant switches modules mid-session, re-run `cat` for the new module's instructions file and confirm: **"Switching to [module]. I've loaded the new guide."**
+If the participant switches to a different module, `cat` the new module's file (only if not already loaded in this conversation) and confirm: **"Switching to [module]. I've loaded the [module] task guide — let's continue."**
+If already loaded, say: **"The [module] task guide is already loaded in this session — switching now."**
 
-**Language switching**: Only English and Chinese are supported. If the participant asks to switch language:
+**Language switching**: Only English and Chinese are supported. If the participant asks to switch language, `cat` the corresponding file **only if not already loaded in this conversation**:
 - Switch to Chinese → `cat .github/instructions/<module-name>-cn.instructions.md`
 - Switch to English → `cat .github/instructions/<module-name>.instructions.md`
 
-Re-read the file and continue in the requested language from that point on.
+If the file was already loaded earlier in this conversation, skip the `cat` and say: **"The [module-name] [language] guide is already loaded in this session — no need to reload it. Continuing in [language]."**
 
 ### Step 4 — After each task
 
