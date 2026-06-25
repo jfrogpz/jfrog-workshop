@@ -1,6 +1,9 @@
 #!/bin/bash
+# Participant: verify task progress and upload updates
 # 学员运行：自己验证任务进度，并更新进度
+# Event mode: EVENT_ID set, progress uploaded to Artifactory
 # 赛事模式：EVENT_ID 非空，进度上传至 Artifactory
+# Self-study mode: no EVENT_ID, progress stored locally at ~/.workshop-progress.json
 # 自主学习模式：EVENT_ID 为空，进度存本地 ~/.workshop-progress.json
 
 set -eu
@@ -12,8 +15,9 @@ LOCAL_PROGRESS_FILE="${HOME}/.workshop-progress.json"
 # ── 读取本地 profile ────────────────────────────────────────────────────────
 if [ ! -f "$PROFILE_FILE" ]; then
   echo "" >&2
+  echo "  ❌ Local profile not found: ~/.workshop-profile" >&2
   echo "  ❌ 未找到本地配置文件 ~/.workshop-profile" >&2
-  echo "  请先运行注册脚本：bash automation/register.sh <昵称> [EVENT_ID] <JFROG_URL> <TOKEN>" >&2
+  echo "  Please register first / 请先运行注册脚本：bash automation/register.sh <NICKNAME> [EVENT_ID]" >&2
   echo "" >&2
   exit 1
 fi
@@ -63,7 +67,7 @@ if [ "$MODE" = "event" ]; then
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/progress.json" \
     2>/dev/null || echo "")
   if [ -z "$PROGRESS_RAW" ]; then
-    echo "  ⚠️  Artifactory 中暂无进度记录，初始化本地进度..." >&2
+    echo "  ⚠️  No progress record in Artifactory, initializing... / Artifactory 中暂无进度记录，初始化本地进度..." >&2
     PROGRESS_RAW=$(make_initial_progress "$NICKNAME" "$NOW_INIT" "$EVENT_ID")
   fi
 else
@@ -76,6 +80,7 @@ fi
 
 # 防御：如果 PROGRESS_RAW 仍为空，直接报错退出
 if [ -z "$PROGRESS_RAW" ]; then
+  echo "  ❌ Failed to fetch or initialize progress data. Check network or token validity." >&2
   echo "  ❌ 无法获取或初始化进度数据，请检查网络或 Token 是否有效" >&2
   exit 1
 fi
@@ -305,12 +310,12 @@ event_id_arg = sys.argv[2]
 mode = sys.argv[3]
 
 tasks_meta = [
-    ("T1", "注册昵称并创建个人仓库",          10),
-    ("T2", "完成首次 npm build",              20),
-    ("T3", "发布 Build #1 build-info",        20),
-    ("T4", "创建 Curation Policy",            10),
-    ("T5", "触发 Curation 阻断 axios@1.7.2",  20),
-    ("T6", "修复并完成 Build #3",             20),
+    ("T1", "Register nickname / 注册昵称并创建个人仓库",         10),
+    ("T2", "First npm build / 完成首次 npm build",               20),
+    ("T3", "Publish Build #1 build-info",                        20),
+    ("T4", "Create Curation Policy / 创建 Curation Policy",      10),
+    ("T5", "Block axios@1.7.2 / 触发 Curation 阻断 axios@1.7.2", 20),
+    ("T6", "Fix and Build #3 / 修复并完成 Build #3",             20),
 ]
 
 tasks = data.get("tasks", {})
@@ -319,9 +324,9 @@ display_event = data.get("event_id", event_id_arg)
 
 print("")
 if mode == "self-study":
-    print(f"  学员：{data.get('nickname')}  |  模式：自主学习")
+    print(f"  Participant / 学员：{data.get('nickname')}  |  Mode / 模式：Self-study / 自主学习")
 else:
-    print(f"  学员：{data.get('nickname')}  |  赛事：{display_event}")
+    print(f"  Participant / 学员：{data.get('nickname')}  |  Event / 赛事：{display_event}")
 print("  ─────────────────────────────────────────────────")
 
 next_task = None
@@ -331,38 +336,38 @@ for tid, tname, tpts in tasks_meta:
     pts = t.get("points", 0)
     if status == "done":
         icon = "✅"
-        pts_str = f"+{tpts}分"
+        pts_str = f"+{tpts}pts"
     elif status == "in_progress":
         icon = "⏳"
-        pts_str = "（进行中）"
+        pts_str = "(in progress / 进行中)"
         if next_task is None:
             next_task = (tid, tname)
     else:
         icon = "⬜"
-        pts_str = f"{tpts}分"
+        pts_str = f"{tpts}pts"
         if next_task is None:
             next_task = (tid, tname)
-    print(f"  {icon} {tid}  {tname:<28} {pts_str}")
+    print(f"  {icon} {tid}  {tname:<44} {pts_str}")
 
 print("  ─────────────────────────────────────────────────")
-print(f"  当前总分：{total_points} / 100 分")
+print(f"  Total / 当前总分：{total_points} / 100 pts")
 print("")
 
 hints = {
-    "T2": "进入 npm-sample 目录，配置 npm 指向你的虚拟仓库，然后运行 jf npm install --build-name=<昵称>-npm-sample --build-number=1",
-    "T3": "执行 jf rt build-publish <build-name> <build-number> 发布 build-info",
-    "T4": "在 JFrog UI 中进入 Curation → Policies，创建一条针对 npm 的 Policy",
-    "T5": "在你的项目中使用 axios@1.7.2，触发 npm install，观察 Curation 阻断",
-    "T6": "将 package.json 中 axios 版本改为安全版本（如 1.6.8），重新构建并发布 Build #3",
+    "T2": "cd npm-sample, configure npm to use your virtual repo, then run: jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1\n       进入 npm-sample 目录，配置 npm 指向你的虚拟仓库，然后运行上面的命令",
+    "T3": "Run: jf rt build-publish <build-name> <build-number>\n       执行上面的命令发布 build-info",
+    "T4": "In JFrog UI: Curation → Policies → create a new npm Policy\n       在 JFrog UI 中进入 Curation → Policies，创建一条针对 npm 的 Policy",
+    "T5": "Use axios@1.7.2 in your project and run jf npm install to trigger Curation blocking\n       在你的项目中使用 axios@1.7.2，触发 npm install，观察 Curation 阻断",
+    "T6": "Change axios version in package.json to a safe version (e.g. 1.7.7), rebuild and publish Build #3\n       将 package.json 中 axios 版本改为安全版本（如 1.7.7），重新构建并发布 Build #3",
 }
 
 if next_task:
     tid, tname = next_task
-    print(f"  下一步：{tid} - {tname}")
+    print(f"  Next / 下一步：{tid} - {tname}")
     if tid in hints:
-        print(f"  提示   ：{hints[tid]}")
+        print(f"  Hint / 提示：{hints[tid]}")
     print("")
 else:
-    print("  🏆 恭喜！你已完成所有任务！")
+    print("  🏆 Congratulations! All tasks complete! / 恭喜！你已完成所有任务！")
     print("")
 PY

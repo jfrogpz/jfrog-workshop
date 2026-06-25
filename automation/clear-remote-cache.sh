@@ -1,5 +1,7 @@
 #!/bin/bash
+# Clear the participant's cached axios@1.7.2 from their Artifactory remote repository
 # 清除学员个人 Artifactory 远程仓库中的 axios@1.7.2 缓存
+# Run before T5 install to ensure the Curation Policy can intercept it
 # 在 T5 安装前执行，确保 Curation Policy 能够拦截
 
 set -eu
@@ -7,6 +9,7 @@ set -eu
 PROFILE_FILE="${HOME}/.workshop-profile"
 
 if [ ! -f "$PROFILE_FILE" ]; then
+  echo "❌ ~/.workshop-profile not found. Please complete registration (T1) first." >&2
   echo "❌ 未找到 ~/.workshop-profile，请先完成注册（T1）" >&2
   exit 1
 fi
@@ -21,8 +24,8 @@ REMOTE_REPO="${NICKNAME}-npm-org-remote"
 AXIOS_PATH="axios/-/axios-1.7.2.tgz"
 
 echo ""
-echo ">>> 清除 Artifactory 远程仓库缓存：${REMOTE_REPO}"
-echo "    目标：${AXIOS_PATH}"
+echo ">>> Clearing Artifactory remote repository cache / 清除 Artifactory 远程仓库缓存：${REMOTE_REPO}"
+echo "    Target / 目标：${AXIOS_PATH}"
 echo ""
 
 STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
@@ -33,21 +36,23 @@ if [ "$STATUS" = "200" ]; then
   curl -sf -X DELETE \
     -H "Authorization: Bearer ${JFROG_TOKEN}" \
     "${JFROG_URL}/artifactory/${REMOTE_REPO}/${AXIOS_PATH}" >/dev/null
-  echo "  ✅ 缓存已清除：axios@1.7.2"
+  echo "  ✅ Cache cleared / 缓存已清除：axios@1.7.2"
 elif [ "$STATUS" = "404" ]; then
-  echo "  ℹ️  缓存中不存在 axios@1.7.2，无需清除"
+  echo "  ℹ️  axios@1.7.2 not in cache, nothing to clear / 缓存中不存在 axios@1.7.2，无需清除"
 else
+  echo "  ⚠️  Cannot access repository (HTTP ${STATUS}). Check if JFROG_TOKEN is valid." >&2
   echo "  ⚠️  无法访问仓库（HTTP ${STATUS}），请检查 JFROG_TOKEN 是否有效" >&2
   exit 1
 fi
 
 echo ""
-echo "  现在可以运行以下命令测试 Curation 拦截效果："
+echo "  Now run the following commands to test Curation blocking / 现在可以运行以下命令测试 Curation 拦截效果："
 echo ""
 echo "    cd /workspaces/jfrog-workshop/npm-sample"
 echo "    rm -rf node_modules package-lock.json"
 echo "    npm cache clean --force"
 echo "    jf npm install --build-name=${NICKNAME}-npm-sample --build-number=2"
 echo ""
+echo "  Expected: install blocked by Curation Policy, axios@1.7.2 not allowed."
 echo "  预期结果：安装被 Curation Policy 阻断，提示 axios@1.7.2 不允许下载。"
 echo ""

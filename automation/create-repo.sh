@@ -1,4 +1,5 @@
 #!/bin/bash
+# Create three npm Artifactory repositories for a participant: local, remote, virtual
 # 为学员创建三个 npm Artifactory 仓库：local、remote、virtual
 
 set -eu
@@ -10,6 +11,7 @@ if [ -z "$NICKNAME" ]; then
 fi
 
 if [ -z "${JFROG_URL:-}" ] || [ -z "${JFROG_TOKEN:-}" ]; then
+  echo "❌ JFROG_URL and JFROG_TOKEN environment variables must be set" >&2
   echo "❌ 需要设置 JFROG_URL 和 JFROG_TOKEN 环境变量" >&2
   exit 1
 fi
@@ -27,13 +29,13 @@ create_repo() {
   local s
   s=$(curl_jf -o /dev/null -w "%{http_code}" "${API}/repositories/${key}" 2>/dev/null || echo "000")
   if [ "$s" = "200" ]; then
-    echo "    已存在，跳过：${key}"
+    echo "    Already exists, skipping / 已存在，跳过：${key}"
     return 0
   fi
   curl_jf -X PUT "${API}/repositories/${key}" \
     -H "Content-Type: application/json" \
     -d "$body" >/dev/null
-  echo "    ✅ 创建成功：${key}"
+  echo "    ✅ Created / 创建成功：${key}"
 }
 
 create_repo "${NICKNAME}-npm-dev-local" \
