@@ -41,27 +41,27 @@ Each task in the module must have a unique ID following the pattern `<module-nam
 ```json
 [
   {
-    "id": "npm-basic-T1",
-    "name": "Create personal npm repositories",
-    "name_cn": "创建个人 npm 仓库",
+    "id": "npm-security-T1",
+    "name": "Create personal npm repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 npm 仓库",
     "points": 10,
-    "hint": "Run: bash modules/npm-basic/create-repo.sh <NICKNAME>",
-    "hint_cn": "运行：bash modules/npm-basic/create-repo.sh <NICKNAME>"
+    "hint": "Run: bash modules/npm-security/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/npm-security/create-repo.sh <NICKNAME>"
   },
   {
-    "id": "npm-basic-T2",
-    "name": "Complete first npm publish",
-    "name_cn": "完成首次 npm 发布",
+    "id": "npm-security-T2",
+    "name": "Complete first npm build",
+    "name_cn": "完成首次 npm build",
     "points": 20,
-    "hint": "cd modules/npm-basic/sample-project, configure .npmrc, then run: jf npm publish",
-    "hint_cn": "进入 modules/npm-basic/sample-project，配置 .npmrc，然后运行：jf npm publish"
+    "hint": "cd modules/npm-security/sample-project, configure npm to use your virtual repo, then run: jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1",
+    "hint_cn": "进入 modules/npm-security/sample-project，配置 npm 指向你的虚拟仓库，然后运行：jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1"
   }
 ]
 ```
 
 **Rules**:
 - Task IDs must be unique across **all** modules (use module prefix to guarantee this)
-- The **first task** is typically the **create-repositories** task — if so, mark it `done` in `create-repo.sh` or rely on `register.sh` to set its initial status
+- The **first task** is typically the **create-repositories** task — `register.sh` automatically marks it `done` upon registration
 - `points` values are flexible — no fixed total required
 - `hint` and `hint_cn` are shown in `check-and-update-progress.sh` output to help participants who are stuck
 

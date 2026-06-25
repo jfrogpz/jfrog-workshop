@@ -41,27 +41,27 @@ AI 指南放在 `.github/instructions/`，通过两种方式加载：
 ```json
 [
   {
-    "id": "npm-basic-T1",
-    "name": "Create personal npm repositories",
-    "name_cn": "创建个人 npm 仓库",
+    "id": "npm-security-T1",
+    "name": "Create personal npm repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 npm 仓库",
     "points": 10,
-    "hint": "Run: bash modules/npm-basic/create-repo.sh <NICKNAME>",
-    "hint_cn": "运行：bash modules/npm-basic/create-repo.sh <NICKNAME>"
+    "hint": "Run: bash modules/npm-security/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/npm-security/create-repo.sh <NICKNAME>"
   },
   {
-    "id": "npm-basic-T2",
-    "name": "Complete first npm publish",
-    "name_cn": "完成首次 npm 发布",
+    "id": "npm-security-T2",
+    "name": "Complete first npm build",
+    "name_cn": "完成首次 npm build",
     "points": 20,
-    "hint": "cd modules/npm-basic/sample-project, configure .npmrc, then run: jf npm publish",
-    "hint_cn": "进入 modules/npm-basic/sample-project，配置 .npmrc，然后运行：jf npm publish"
+    "hint": "cd modules/npm-security/sample-project, configure npm to use your virtual repo, then run: jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1",
+    "hint_cn": "进入 modules/npm-security/sample-project，配置 npm 指向你的虚拟仓库，然后运行：jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1"
   }
 ]
 ```
 
 **规则**：
 - 任务 ID 必须在**所有模块中唯一**（使用模块名前缀可保证这一点）
-- **第一个任务**通常是**创建仓库**任务——如果是，在 `create-repo.sh` 中将其标记为 `done`，或由 `register.sh` 设置初始状态
+- **第一个任务**通常是**创建仓库**任务——`register.sh` 在注册时会自动将其标记为 `done`
 - `points` 分值灵活设置，无需固定总分
 - `hint` 和 `hint_cn` 在 `check-and-update-progress.sh` 输出中显示，帮助遇到困难的学员
 
