@@ -153,6 +153,7 @@ Before starting, provide all participants with:
 | Admin Username | JFrog admin username (participants use this to log in to JFrog UI) |
 | Admin Password | JFrog admin password |
 | EVENT_ID | `2026-06-shanghai` (the value you set) |
+| Active Modules | e.g. `npm-basic`, `npm-security` (the modules you specified in `--modules`) |
 | How to start | Open Codespace → in the embedded Copilot Chat on the right, type "I want to start the workshop, my EVENT_ID is xxx" |
 
 > **Note**: All participants share the same admin account to log in to JFrog UI. After logging in, each generates their own token under **Edit Profile → Access Tokens**. Individual tokens are independent and won't conflict. It is recommended to change the admin password after the Workshop.
