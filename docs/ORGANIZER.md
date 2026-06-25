@@ -171,27 +171,36 @@ Confirm the following before the event starts:
 
 ## Post-Event Cleanup
 
+`delete-repo.sh` removes the following for a given participant:
+- All Artifactory repositories prefixed with `<nickname>-`
+- All build-info entries prefixed with `<nickname>-`
+- `profile.json` and `progress.json` from `workshop-events/<event-id>/participants/<nickname>/` (only when `--event-id` is provided)
+
+> **Note**: The participant directory itself (`participants/<nickname>/`) is not removed by this script. Run "Delete the entire event data" afterwards to clean up the full event directory.
+
 ### Clean up a single participant
 
 ```bash
 # JFROG_TOKEN and JFROG_URL were already set in Step 2
-bash automation/delete-repo.sh <nickname> all --event-id "2026-06-shanghai"
+bash automation/delete-repo.sh <nickname> --event-id "2026-06-shanghai"
 ```
 
 ### Bulk cleanup of all participants
 
 ```bash
-# List all registered participants (requires JFROG_TOKEN and JFROG_URL to be set)
 curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
   "${JFROG_URL}/artifactory/api/storage/workshop-events/2026-06-shanghai/participants" \
-  | python3 -c "import sys,json; [print(c['uri'].strip('/')) for c in json.load(sys.stdin).get('children',[])]"
-
-# Run delete-repo.sh for each participant
+  | python3 -c "import sys,json; [print(c['uri'].strip('/')) for c in json.load(sys.stdin).get('children',[])]" \
+  | while IFS= read -r nickname; do
+      bash automation/delete-repo.sh "$nickname" --event-id "2026-06-shanghai"
+    done
 ```
 
 ### Delete the entire event data
 
-Delete the `workshop-events/2026-06-shanghai/` directory in the Artifactory UI.
+After participant cleanup, delete the event directory (config.json + all participant records) in the Artifactory UI:
+
+`workshop-events/2026-06-shanghai/`
 
 ---
 

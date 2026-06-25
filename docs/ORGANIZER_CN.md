@@ -171,27 +171,36 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 ## 赛后清理
 
+`delete-repo.sh` 会删除指定学员的以下内容：
+- 所有以 `<nickname>-` 为前缀的 Artifactory 仓库
+- 所有以 `<nickname>-` 为前缀的 build-info
+- `workshop-events/<event-id>/participants/<nickname>/` 下的 `profile.json` 和 `progress.json`（仅在指定 `--event-id` 时删除）
+
+> **注意**：学员目录本身（`participants/<nickname>/`）不会被此脚本删除。完整清理请在执行完学员清理后，再删除整个赛事目录。
+
 ### 清理单个学员数据
 
 ```bash
 # JFROG_TOKEN 和 JFROG_URL 已在步骤二中设置
-bash automation/delete-repo.sh <nickname> all --event-id "2026-06-shanghai"
+bash automation/delete-repo.sh <nickname> --event-id "2026-06-shanghai"
 ```
 
 ### 批量清理所有学员
 
 ```bash
-# 列出所有已注册学员（需已设置 JFROG_TOKEN 和 JFROG_URL）
 curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
   "${JFROG_URL}/artifactory/api/storage/workshop-events/2026-06-shanghai/participants" \
-  | python3 -c "import sys,json; [print(c['uri'].strip('/')) for c in json.load(sys.stdin).get('children',[])]"
-
-# 对每个学员逐一运行 delete-repo.sh
+  | python3 -c "import sys,json; [print(c['uri'].strip('/')) for c in json.load(sys.stdin).get('children',[])]" \
+  | while IFS= read -r nickname; do
+      bash automation/delete-repo.sh "$nickname" --event-id "2026-06-shanghai"
+    done
 ```
 
 ### 删除整个赛事数据
 
-在 Artifactory UI 中删除 `workshop-events/2026-06-shanghai/` 目录即可。
+学员清理完成后，在 Artifactory UI 中删除整个赛事目录（包含 config.json 和所有学员记录）：
+
+`workshop-events/2026-06-shanghai/`
 
 ---
 
