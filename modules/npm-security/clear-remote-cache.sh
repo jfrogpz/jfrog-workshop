@@ -21,21 +21,22 @@ fi
 JFROG_URL="${JFROG_URL%/}"
 
 REMOTE_REPO="${NICKNAME}-npm-org-remote"
+REMOTE_CACHE="${NICKNAME}-npm-org-remote-cache"
 AXIOS_PATH="axios/-/axios-1.7.2.tgz"
 
 echo ""
-echo ">>> Clearing Artifactory remote repository cache / 清除 Artifactory 远程仓库缓存：${REMOTE_REPO}"
+echo ">>> Clearing Artifactory remote repository cache / 清除 Artifactory 远程仓库缓存：${REMOTE_CACHE}"
 echo "    Target / 目标：${AXIOS_PATH}"
 echo ""
 
 STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer ${JFROG_TOKEN}" \
-  "${JFROG_URL}/artifactory/${REMOTE_REPO}/${AXIOS_PATH}" 2>/dev/null || echo "000")
+  "${JFROG_URL}/artifactory/${REMOTE_CACHE}/${AXIOS_PATH}" 2>/dev/null || echo "000")
 
 if [ "$STATUS" = "200" ]; then
   curl -sf -X DELETE \
     -H "Authorization: Bearer ${JFROG_TOKEN}" \
-    "${JFROG_URL}/artifactory/${REMOTE_REPO}/${AXIOS_PATH}" >/dev/null
+    "${JFROG_URL}/artifactory/${REMOTE_CACHE}/${AXIOS_PATH}" >/dev/null
   echo "  ✅ Cache cleared / 缓存已清除：axios@1.7.2"
 elif [ "$STATUS" = "404" ]; then
   echo "  ℹ️  axios@1.7.2 not in cache, nothing to clear / 缓存中不存在 axios@1.7.2，无需清除"
