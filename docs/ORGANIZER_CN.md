@@ -74,8 +74,6 @@ bash automation/setup-event.sh \
   --modules npm-security,npm-basic
 ```
 
-> **注意**：已注册的学员需要手动运行新模块的 `create-repo.sh` 才能开始该模块的任务，因为仓库创建只在注册时针对当时已激活的模块执行。
-
 ---
 
 ## 步骤三：启动排行榜

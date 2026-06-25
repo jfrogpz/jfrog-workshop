@@ -74,8 +74,6 @@ bash automation/setup-event.sh \
   --modules npm-security,npm-basic
 ```
 
-> **Note**: Participants already registered will need to run the new module's `create-repo.sh` manually before starting its tasks, since repository creation only happens at registration time for the modules active at that moment.
-
 ---
 
 ## Step 3: Start the Leaderboard
