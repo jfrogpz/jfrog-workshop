@@ -49,14 +49,60 @@ delete_repo() {
   echo "    ✅ Deleted / 已删除：${key}"
 }
 
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+REPO_ROOT="$(CDPATH= cd -- "${SCRIPT_DIR}/.." && pwd)"
+
 echo ">>> Deleting Artifactory repositories / 删除 Artifactory 仓库..."
-delete_repo "${STUDENT_ID}-npm-dev-virtual"
-delete_repo "${STUDENT_ID}-npm-org-remote"
-delete_repo "${STUDENT_ID}-npm-dev-local"
+# Discover all repos to delete by running each module's create-repo.sh in dry-run mode.
+# Fallback: list all repos matching the student ID prefix.
+REPOS=$(curl_jf "${API}/repositories?type=local&packageType=&includeDescription=0" 2>/dev/null \
+  | python3 -c "
+import sys, json
+repos = json.load(sys.stdin)
+prefix = '${STUDENT_ID}-'
+for r in repos:
+    if r.get('key','').startswith(prefix):
+        print(r['key'])
+" 2>/dev/null || echo "")
+
+if [ -n "$REPOS" ]; then
+  while IFS= read -r repo; do
+    [ -n "$repo" ] && delete_repo "$repo"
+  done <<EOF
+$REPOS
+EOF
+else
+  echo "    No repositories found for ${STUDENT_ID} / 未找到 ${STUDENT_ID} 的仓库"
+fi
 
 echo ">>> Deleting build-info / 删除 build-info..."
-curl_jf -X DELETE "${API}/build/${STUDENT_ID}-npm-sample?deleteAll=1&artifacts=0" \
-  >/dev/null 2>&1 || echo "    build-info not found or already deleted, skipping / 不存在或已删除，跳过"
+# Delete all build-info entries matching the student ID prefix
+BUILD_NAMES=$(curl_jf "${API}/build" 2>/dev/null \
+  | python3 -c "
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    builds = d.get('builds', [])
+    prefix = '${STUDENT_ID}-'
+    for b in builds:
+        name = b.get('uri','').strip('/')
+        if name.startswith(prefix):
+            print(name)
+except: pass
+" 2>/dev/null || echo "")
+
+if [ -n "$BUILD_NAMES" ]; then
+  while IFS= read -r bname; do
+    [ -n "$bname" ] || continue
+    curl_jf -X DELETE "${API}/build/${bname}?deleteAll=1&artifacts=0" \
+      >/dev/null 2>&1 && echo "    ✅ build-info deleted / 已删除：${bname}" \
+      || echo "    build-info not found / 不存在：${bname}"
+  done <<EOF
+$BUILD_NAMES
+EOF
+else
+  echo "    No build-info found for ${STUDENT_ID} / 未找到 ${STUDENT_ID} 的 build-info"
+fi
 
 if [ -n "$EVENT_ID" ]; then
   echo ">>> Deleting workshop records / 删除 workshop 记录..."

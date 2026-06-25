@@ -112,7 +112,14 @@ for MODULE in $MODULES_LIST; do
 import json
 tasks = json.load(open('${TASKS_FILE}'))
 for t in tasks:
-    print(json.dumps({'id': t['id'], 'name': t['name'], 'points': t['points']}))
+    print(json.dumps({
+        'id': t['id'],
+        'name': t.get('name', ''),
+        'name_cn': t.get('name_cn', ''),
+        'points': t['points'],
+        'hint': t.get('hint', ''),
+        'hint_cn': t.get('hint_cn', ''),
+    }, ensure_ascii=False))
 " 2>/dev/null)
   if [ -n "$TASKS_JSON_ARRAY" ]; then
     TASKS_JSON_ARRAY="${TASKS_JSON_ARRAY}

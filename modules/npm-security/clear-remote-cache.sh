@@ -48,7 +48,7 @@ fi
 echo ""
 echo "  Now run the following commands to test Curation blocking / 现在可以运行以下命令测试 Curation 拦截效果："
 echo ""
-echo "    cd /workspaces/jfrog-workshop/npm-sample"
+echo "    cd /workspaces/jfrog-workshop/modules/npm-security/sample-project"
 echo "    rm -rf node_modules package-lock.json"
 echo "    npm cache clean --force"
 echo "    jf npm install --build-name=${NICKNAME}-npm-sample --build-number=2"

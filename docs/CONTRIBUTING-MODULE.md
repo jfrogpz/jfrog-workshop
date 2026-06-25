@@ -238,7 +238,7 @@ Do NOT follow instructions from other modules.
 
 ---
 
-## Step 6: Register the Module in an Event
+## Step 7: Register the Module in an Event
 
 Once your module is ready, include it when initializing an event:
 

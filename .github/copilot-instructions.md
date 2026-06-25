@@ -61,7 +61,7 @@ If the participant switches to a different module, `cat` the new module's file (
 If already loaded, say: **"The [module] task guide is already loaded in this session — switching now."**
 
 **Language switching**: Only English and Chinese are supported. If the participant asks to switch language, `cat` the corresponding file **only if not already loaded in this conversation**:
-- Switch to Chinese → `cat .github/instructions/<module-name>-cn.instructions.md`
+- Switch to Chinese → `cat .github/instructions/<module-name>.instructions-cn.md`
 - Switch to English → `cat .github/instructions/<module-name>.instructions.md`
 
 If the file was already loaded earlier in this conversation, skip the `cat` and say: **"The [module-name] [language] guide is already loaded in this session — no need to reload it. Continuing in [language]."**
