@@ -188,12 +188,7 @@ bash automation/delete-repo.sh <nickname> --event-id "2026-06-shanghai"
 ### Bulk cleanup of all participants
 
 ```bash
-curl -s -H "Authorization: Bearer $JFROG_TOKEN" \
-  "${JFROG_URL}/artifactory/api/storage/workshop-events/2026-06-shanghai/participants" \
-  | python3 -c "import sys,json; [print(c['uri'].strip('/')) for c in json.load(sys.stdin).get('children',[])]" \
-  | while IFS= read -r nickname; do
-      bash automation/delete-repo.sh "$nickname" --event-id "2026-06-shanghai"
-    done
+bash automation/cleanup-event.sh "2026-06-shanghai"
 ```
 
 ### Delete the entire event data
