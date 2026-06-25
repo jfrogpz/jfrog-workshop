@@ -1,19 +1,19 @@
-# 本地环境配置指南（不使用 Codespace）
+# Local Environment Setup (Without Codespace)
 
-本文档面向不使用 GitHub Codespace 的学员，说明如何在本地机器上配置完成 Workshop 所需的环境。
+This guide is for participants who are not using GitHub Codespace. It explains how to set up the environment needed to complete the Workshop on your local machine.
 
-> 如果你使用 GitHub Codespace，可以跳过本文档——环境已自动配置好，直接打开 Copilot Chat 开始任务即可。
+> If you are using GitHub Codespace, skip this guide — the environment is automatically configured. Just open Copilot Chat and start the tasks.
 
 ---
 
-## 需要安装的工具
+## Tools to Install
 
-### 1. Node.js（v18 或以上）
+### 1. Node.js (v18 or above)
 
-前往 [nodejs.org](https://nodejs.org) 下载安装，或使用包管理器：
+Download and install from [nodejs.org](https://nodejs.org), or use a package manager:
 
 ```bash
-# macOS（Homebrew）
+# macOS (Homebrew)
 brew install node
 
 # Ubuntu / Debian
@@ -21,7 +21,7 @@ curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
-验证：
+Verify:
 ```bash
 node -v
 npm -v
@@ -30,19 +30,19 @@ npm -v
 ### 2. JFrog CLI
 
 ```bash
-# macOS（Homebrew）
+# macOS (Homebrew)
 brew install jfrog-cli
 
-# Linux / macOS（通用）
+# Linux / macOS (universal)
 curl -fL https://install-cli.jfrog.io | sh
 ```
 
-验证：
+Verify:
 ```bash
 jf -v
 ```
 
-### 3. 克隆仓库
+### 3. Clone the Repository
 
 ```bash
 git clone https://github.com/jfrogpz/jfrog-workshop.git
@@ -51,43 +51,43 @@ cd jfrog-workshop
 
 ---
 
-## 设置环境变量
+## Set Environment Variables
 
-讲师会提供以下信息，在终端中设置好环境变量后，后续所有命令都依赖这两个变量：
+The instructor will provide the following information. Set the environment variables in your terminal before running any commands:
 
 ```bash
-export JFROG_URL="https://yourcompany.jfrog.io"   # 讲师提供
-export JFROG_TOKEN="your-access-token"             # 登录 JFrog UI 后自行生成
+export JFROG_URL="https://yourcompany.jfrog.io"   # provided by instructor
+export JFROG_TOKEN="your-access-token"             # generate after logging in to JFrog UI
 ```
 
-获取 Token：用讲师提供的管理员账号登录 JFrog UI → 右上角头像 → **Edit Profile** → **Access Tokens** → **Generate Token**。
+To get a Token: log in to JFrog UI with the admin credentials provided by your instructor → click the avatar in the top-right corner → **Edit Profile** → **Access Tokens** → **Generate Token**.
 
-> 注意：每次打开新终端都需要重新设置环境变量。建议加入 `~/.bashrc` 或 `~/.zshrc` 以持久化。
-
----
-
-## 没有 AI 助理时如何完成任务
-
-Codespace 中内置了 GitHub Copilot Chat，会自动读取任务引导文件并为你提供逐步指引。
-
-如果你没有 Copilot，可以直接阅读同一份任务引导文档自行操作：
-
-**[.github/copilot-instructions.md](.github/copilot-instructions.md)**
-
-该文档包含全部 6 个任务的详细步骤、命令和成功标志，与 AI 引导的内容完全一致，按顺序阅读执行即可。
+> Note: Environment variables are lost when you open a new terminal. Add them to `~/.bashrc` or `~/.zshrc` to make them persistent.
 
 ---
 
-## 示例项目路径
+## Completing Tasks Without AI Assistant
 
-Codespace 中项目路径为 `/workspaces/jfrog-workshop/`，本地克隆后对应你的克隆目录，例如 `~/jfrog-workshop/`。
+Codespace includes GitHub Copilot Chat, which automatically reads the task guide and provides step-by-step instructions.
 
-文档和脚本中出现的 `/workspaces/jfrog-workshop/` 请替换为你的本地路径：
+If you don't have Copilot, read the same task guide directly:
+
+**[.github/copilot-instructions-en.md](.github/copilot-instructions-en.md)**
+
+This document contains detailed steps, commands, and success criteria for all 6 tasks — identical to what the AI assistant provides. Just read and follow in order.
+
+---
+
+## Sample Project Path
+
+In Codespace, the project path is `/workspaces/jfrog-workshop/`. When working locally, replace it with your clone directory, e.g. `~/jfrog-workshop/`.
+
+Wherever the docs or scripts reference `/workspaces/jfrog-workshop/`, substitute your local path:
 
 ```bash
-# Codespace 中
+# In Codespace
 cd /workspaces/jfrog-workshop/npm-sample
 
-# 本地替换为
+# Locally, replace with
 cd ~/jfrog-workshop/npm-sample
 ```

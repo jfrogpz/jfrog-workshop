@@ -1,132 +1,134 @@
-# NPM 供应链安全 Workshop
+# NPM Supply Chain Security Workshop
 
-本 Workshop 有三个特点：
+> 🌐 [中文版](./README_CN.md)
 
-- **开箱即用**：基于 GitHub Codespace，无需在本机安装任何工具，点击即可进入统一的云端开发环境
-- **AI 助理引导**：内置 GitHub Copilot Chat，全程由 AI 助理提供操作指引，无需提前了解 JFrog 工具链
-- **竞赛制，有乐趣**：完成任务实时得分，讲师投屏显示排行榜
+This Workshop has three key features:
 
----
-
-## 背景：npm 开源组件投毒事件
-
-近年来，供应链攻击已成为开发者面临的最隐蔽威胁之一：
-
-- **ua-parser-js（2021）**：npm 账号被劫持，三个版本被植入挖矿程序和密码窃取器，短时间内波及全球
-- **PyTorch（2022）**：恶意包通过依赖混淆攻击（dependency confusion）入侵，窃取敏感数据
-- **polyfill.io（2024）**：cdn.polyfill.io 域名被收购后，CDN 开始向超过 10 万个网站推送恶意脚本，受影响站点毫不知情
-- **lottie-player（2024）**：npm 包维护者账号被劫持，恶意版本自动推送给所有依赖方，植入加密钱包窃取器
-- **tj-actions/changed-files（2025）**：广泛使用的 GitHub Actions 组件被植入后门，导致大量 CI/CD 流水线泄露密钥
-
-这些攻击的共同点：**开发者在不知情的情况下将恶意代码引入了生产环境**。
+- **Ready out of the box**: Built on GitHub Codespace — no local tool installation required, just click to enter a unified cloud development environment
+- **AI-guided learning**: Powered by GitHub Copilot Chat, the AI assistant guides you through every step — no prior JFrog knowledge needed
+- **Competitive and fun**: Complete tasks to earn points in real time, with the instructor projecting a live leaderboard
 
 ---
 
-## 企业中谁会受影响？JFrog 如何解决？
+## Background: npm Supply Chain Attacks
 
-### 受影响的角色
+Supply chain attacks have become one of the most insidious threats facing developers today:
 
-| 角色 | 痛点 |
-|------|------|
-| **开发者** | 不知道用的包是否安全，修复漏洞时不知道影响范围 |
-| **安全团队** | 无法在包进入构建前拦截，只能事后扫描 |
-| **DevOps / 平台团队** | 缺乏统一的制品管控，难以追溯"谁用了什么版本" |
+- **ua-parser-js (2021)**: The npm account was hijacked and three versions were injected with a cryptominer and credential stealer, affecting users globally within hours
+- **PyTorch (2022)**: A malicious package entered via a dependency confusion attack, exfiltrating sensitive data
+- **polyfill.io (2024)**: After cdn.polyfill.io's domain was acquired, the CDN began serving malicious scripts to over 100,000 websites — with affected sites completely unaware
+- **lottie-player (2024)**: The npm package maintainer's account was hijacked, and a malicious version was automatically pushed to all dependents, planting a crypto wallet stealer
+- **tj-actions/changed-files (2025)**: A widely-used GitHub Actions component was backdoored, causing a large number of CI/CD pipelines to leak secrets
 
-### JFrog 的解决方案
-
-- **JFrog Artifactory**：统一的制品代理，所有依赖必须经过 Artifactory 仓库，形成"护城河"
-- **JFrog Curation**：在依赖**下载阶段**自动拦截已知恶意包和高危漏洞——比构建后扫描早一步
-- **JFrog Xray**：深度扫描已有制品和 build-info，提供 CVE 分析、许可证合规检查
-- **Build Info**：记录每次构建的完整依赖树，支持快速溯源和影响范围分析
-
-📖 了解更多：[JFrog Curation 文档](https://jfrog.com/help/r/jfrog-curation) | [JFrog Xray 文档](https://jfrog.com/help/r/jfrog-xray)
+The common thread: **developers unknowingly introduced malicious code into their production environments**.
 
 ---
 
-## 本次 Workshop
+## Who Is Affected? How Does JFrog Help?
 
-### 目标
-通过动手实践，体验从"引入恶意依赖"到"检测 → 阻断 → 修复"的完整供应链安全闭环。
+### Affected Roles
 
-### 时长
-约 60 分钟
+| Role | Pain Point |
+|------|------------|
+| **Developers** | Don't know if the packages they use are safe; can't assess impact when fixing vulnerabilities |
+| **Security Teams** | Can't intercept packages before they enter builds; can only scan after the fact |
+| **DevOps / Platform Teams** | No unified artifact governance; hard to trace "who used which version" |
 
-### 竞赛规则
+### JFrog's Solution
 
-| 任务 | 内容 | 分值 |
-|------|------|------|
-| T1 | 注册昵称并创建个人 Artifactory 仓库 | 10 分 |
-| T2 | 完成首次 npm build | 20 分 |
-| T3 | 发布 Build #1 build-info | 20 分 |
-| T4 | 创建 Curation Policy | 10 分 |
-| T5 | 触发 Curation 阻断 axios@1.7.2 | 20 分 |
-| T6 | 修复并完成 Build #3 | 20 分 |
-| **合计** | | **100 分** |
+- **JFrog Artifactory**: A unified artifact proxy — all dependencies must flow through Artifactory repositories, forming a "moat"
+- **JFrog Curation**: Automatically blocks known malicious packages and high-risk vulnerabilities at the **download stage** — one step earlier than post-build scanning
+- **JFrog Xray**: Deep scanning of existing artifacts and build-info, providing CVE analysis and license compliance checks
+- **Build Info**: Records the complete dependency tree of every build, enabling rapid traceability and impact analysis
 
-同分时，最后一个任务完成越早排名越高。
-
-### 奖励
-> 由讲师现场宣布 🎁
+📖 Learn more: [JFrog Curation Docs](https://jfrog.com/help/r/jfrog-curation) | [JFrog Xray Docs](https://jfrog.com/help/r/jfrog-xray)
 
 ---
 
-## 快速开始
+## This Workshop
 
-### 第一步：在 GitHub Codespace 中打开
+### Goal
+Hands-on practice experiencing the complete supply chain security cycle: from "introducing a malicious dependency" to "detect → block → fix".
 
-点击下方按钮，在云端一键启动开发环境（无需在本机安装任何工具）：
+### Duration
+Approximately 60 minutes
+
+### Competition Rules
+
+| Task | Description | Points |
+|------|-------------|--------|
+| T1 | Register a nickname and create personal Artifactory repositories | 10 |
+| T2 | Complete the first npm build | 20 |
+| T3 | Publish Build #1 build-info | 20 |
+| T4 | Create a Curation Policy | 10 |
+| T5 | Trigger Curation to block axios@1.7.2 | 20 |
+| T6 | Fix the issue and complete Build #3 | 20 |
+| **Total** | | **100** |
+
+Ties are broken by the time the last task was completed (earlier is better).
+
+### Prize
+> To be announced by the instructor on the day 🎁
+
+---
+
+## Quick Start
+
+### Step 1: Open in GitHub Codespace
+
+Click the button below to launch the cloud development environment instantly (no local tool installation needed):
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/alexwang66/jfrog-workshop)
 
-> ⏱️ Codespace 首次启动约需 1-2 分钟，请耐心等待。
+> ⏱️ First-time Codespace startup takes about 1–2 minutes — please be patient.
 >
-> 🆓 GitHub 个人账号每月可免费使用 60 小时 Codespace，本 Workshop 约占用 1 小时。
+> 🆓 GitHub personal accounts get 60 free Codespace hours per month. This Workshop uses approximately 1 hour.
 >
-> 💻 **如果无法使用 Codespace**，请参阅 [SETUP.md](./SETUP.md) 在本地机器上配置所需环境。
+> 💻 **If Codespace is not available**, refer to [SETUP.md](./SETUP.md) to set up the environment on your local machine.
 
-### 第二步：打开 AI 助理
+### Step 2: Open AI Assistant
 
-Codespace 启动完成后，窗口**右侧**已内嵌 **GitHub Copilot Chat** 对话面板，可直接输入消息。
+Once Codespace is ready, the **GitHub Copilot Chat** panel is embedded on the **right side** of the window — type your message directly.
 
-> 🤖 **如果 Copilot Chat 不可用**，可以直接阅读 [.github/copilot-instructions.md](.github/copilot-instructions.md)，其中包含所有任务的完整步骤和命令，按顺序执行即可。
+> 🤖 **If Copilot Chat is unavailable**, you can read [.github/copilot-instructions.md](.github/copilot-instructions.md) directly — it contains complete step-by-step instructions for all tasks.
 
-### 第三步：开始 Workshop
+### Step 3: Start the Workshop
 
-在 Copilot Chat 对话框中输入：
+Type one of the following in the Copilot Chat panel:
 
 ```
-# 参加赛事（有讲师组织）
-我要开始 workshop，EVENT_ID 是 <讲师提供的ID>
+# Joining an event (with an instructor)
+I want to start the workshop, my EVENT_ID is <ID provided by instructor>
 
-# 自主学习（无需讲师，无需 EVENT_ID）
-我要自主学习
+# Self-study (no instructor or EVENT_ID needed)
+I want to self-study
 ```
 
-AI 助理将引导你完成所有任务，包括登录 JFrog UI 生成个人 Token、注册昵称、执行每一步操作。赛事模式使用讲师提供的管理员账号，自主学习模式使用自己的账号。
+The AI assistant will guide you through all tasks, including logging in to JFrog UI to generate your personal token and registering your nickname. Event mode uses the instructor-provided admin account; self-study mode uses your own account.
 
-> 💡 **提示**：整个过程中，所有命令都由 AI 助理提供，你只需在终端中执行即可。
+> 💡 **Tip**: All commands are provided by the AI assistant — just paste them into the terminal.
 >
-> 📊 **排行榜**（赛事模式）：讲师会将终端排行榜投屏，每 30 秒实时刷新。自主学习模式无需排行榜。
+> 📊 **Leaderboard** (event mode): The instructor will project the leaderboard, which refreshes every 30 seconds. No leaderboard in self-study mode.
 
 ---
 
-## 任务概览
+## Task Overview
 
-以下是 6 个任务的简要说明（具体命令由 AI 助理在对话中提供）：
+Here is a brief description of all 6 tasks (exact commands are provided by the AI assistant during the conversation):
 
-| 任务 | 说明 | 验证方式 |
-|------|------|---------|
-| **T1 注册昵称** | 选择一个独特昵称，脚本自动在 Artifactory 上为你创建专属的 npm 仓库组（local / remote / virtual） | Artifactory 中存在 `{昵称}-npm-dev-virtual` 仓库 |
-| **T2 首次安装** | 配置 JFrog CLI 指向你的 Artifactory 虚拟仓库，运行 `jf npm install` | `{昵称}-npm-org-remote` 仓库中有缓存的包 |
-| **T3 发布 Build Info** | 将构建的完整依赖信息发布到 Artifactory，建立可追溯性 | Artifactory 中存在 Build `{昵称}-npm-sample #1` |
-| **T4 创建安全策略** | 在 JFrog Curation 中创建针对你个人 Artifactory 仓库的 npm 风险包拦截策略，命名须包含你的昵称 | Curation Policy 列表中存在名称包含昵称的 Policy |
-| **T5 触发阻断** | 在项目中引入 `axios@1.7.2`（模拟恶意版本），运行 `jf npm install`，观察 Curation 如何拦截 | Curation 审计日志中有昵称对应仓库拦截 `axios@1.7.2` 的记录 |
-| **T6 修复问题** | 将 axios 替换为安全版本，重新运行 `jf npm install` 并发布 Build #3 | Artifactory 中存在 Build `{昵称}-npm-sample #3`，且依赖中 axios 版本不是 `1.7.2` |
+| Task | Description | Verification |
+|------|-------------|--------------|
+| **T1 Register** | Choose a unique nickname; the script automatically creates your personal npm repository group on Artifactory (local / remote / virtual) | Artifactory contains a `{nickname}-npm-dev-virtual` repository |
+| **T2 First Install** | Configure JFrog CLI to point to your Artifactory virtual repository, run `jf npm install` | `{nickname}-npm-org-remote` repository contains cached packages |
+| **T3 Publish Build Info** | Publish the complete dependency information of your build to Artifactory for traceability | Artifactory contains Build `{nickname}-npm-sample #1` |
+| **T4 Create Security Policy** | Create a Curation policy targeting your personal Artifactory repository to block risky npm packages; name must include your nickname | A Curation Policy with your nickname in its name exists in the policy list |
+| **T5 Trigger Block** | Add `axios@1.7.2` (simulated malicious version) to the project, run `jf npm install`, observe Curation blocking it | Curation audit log contains a record of `axios@1.7.2` being blocked for your repository |
+| **T6 Fix Issue** | Replace axios with a safe version, re-run `jf npm install`, and publish Build #3 | Artifactory contains Build `{nickname}-npm-sample #3` with an axios version other than `1.7.2` |
 
 ---
 
-## 主办者指南
+## Organizer Guide
 
-如果你是讲师或活动组织者，请参阅：
+If you are an instructor or event organizer, please refer to:
 
 👉 [ORGANIZER.md](./ORGANIZER.md)
