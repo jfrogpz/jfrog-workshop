@@ -26,7 +26,9 @@ modules/
 └── <module-name>.instructions-cn.md  # Chinese reading guide for participants without an AI assistant (optional)
 ```
 
-The AI guide lives in `.github/instructions/` (not inside the module directory) so that GitHub Copilot Chat auto-attaches it when a participant has a file open under `modules/<module-name>/`.
+The AI guide lives in `.github/instructions/`. It is loaded in two ways:
+- **Auto-load**: the `applyTo: "modules/<module-name>/**"` frontmatter causes Copilot Chat to load it automatically when a participant opens any file under `modules/<module-name>/` in the editor
+- **Explicit load**: `copilot-instructions.md` instructs the AI to run `cat .github/instructions/<module-name>.instructions.md` when a participant selects a module — this works even when no file is open in the editor
 
 **Naming convention**: Module names should describe the technology and focus area, e.g. `npm-security`, `npm-basic`, `pypi-curation`.
 

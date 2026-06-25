@@ -26,7 +26,9 @@ modules/
 └── <模块名>.instructions-cn.md  # 中文阅读指南，供没有 AI 助理的学员使用（可选）
 ```
 
-AI 指南放在 `.github/instructions/`（而不是模块目录内），这样当学员在编辑器中打开 `modules/<模块名>/` 下的文件时，GitHub Copilot Chat 会自动加载该指南。
+AI 指南放在 `.github/instructions/`，通过两种方式加载：
+- **自动加载**：`applyTo: "modules/<模块名>/**"` frontmatter 使 Copilot Chat 在学员编辑器中打开 `modules/<模块名>/` 下任意文件时自动加载
+- **主动加载**：`copilot-instructions.md` 指示 AI 在学员选择模块时执行 `cat .github/instructions/<模块名>.instructions.md`——即使学员没有在编辑器中打开文件也能生效
 
 **命名规范**：模块名应描述技术类型和重点方向，例如 `npm-security`、`npm-basic`、`pypi-curation`。
 
