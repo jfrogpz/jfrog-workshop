@@ -56,7 +56,7 @@ Each task in the module must have a unique ID following the pattern `<module-nam
 
 **Rules**:
 - Task IDs must be unique across **all** modules (use module prefix to guarantee this)
-- The **first task** in the list is always automatically marked `done` upon registration (it represents the registration step itself)
+- The **first task** in the list is typically the registration task — if so, mark it `done` in `create-repo.sh` or rely on `register.sh` to set its initial status
 - `points` values are flexible — no fixed total required
 - `hint` and `hint_cn` are shown in `check-and-update-progress.sh` output to help participants who are stuck
 
@@ -263,7 +263,7 @@ bash automation/setup-event.sh \
 ## Checklist Before Publishing
 
 - [ ] `tasks.json` — all task IDs use `<module-name>-T<n>` format
-- [ ] `tasks.json` — first task represents registration (auto-marked done)
+- [ ] `tasks.json` — first task ID and structure matches what `register.sh` expects
 - [ ] `create-repo.sh` — creates all repositories needed for this module's tasks
 - [ ] `verify-tasks.sh` — one `verify_*` function per task, named correctly
 - [ ] `verify-tasks.sh` — all functions tested against a real JFrog instance
