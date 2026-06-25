@@ -235,7 +235,7 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 ### How Scoring and the Leaderboard Work
 
 **Participant Registration**:
-- The participant runs `register.sh`, which reads the event's `config.json` to discover which modules are active, sets up the required resources, and writes an initial `progress.json`
+- The participant runs `register.sh`, which reads the event's `config.json` to get the task list (or scans the local `modules/` directory in self-study mode), initializes `progress.json` with all tasks set to pending, uploads `profile.json` and `progress.json` to Artifactory (event mode) or saves them locally (self-study mode), and writes `~/.workshop-profile`
 - After successful registration, `~/.workshop-profile` is written locally — all subsequent scripts read from it so credentials don't need to be re-entered
 
 **Task Verification**:

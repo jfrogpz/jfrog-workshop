@@ -235,7 +235,7 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 ### 积分与排行榜工作原理
 
 **学员注册**：
-- 学员运行 `register.sh`，脚本从赛事 `config.json` 读取活跃模块，创建所需资源，并写入初始 `progress.json`
+- 学员运行 `register.sh`，脚本从赛事 `config.json` 读取任务列表（自主学习模式则扫描本地 `modules/` 目录），将所有任务初始化为 pending 状态，将 `profile.json` 和 `progress.json` 上传至 Artifactory（赛事模式）或保存到本地（自主学习模式），最后写入 `~/.workshop-profile`
 - 注册成功后，脚本在学员本地写入 `~/.workshop-profile`，保存昵称、赛事 ID、JFrog 地址和 Token，后续脚本均从此文件读取，无需重复输入
 
 **任务验证**：
