@@ -48,7 +48,7 @@ bash automation/setup-event.sh \
   --modules npm-security
 ```
 
-如果需要同时包含多个模块：
+如果需要同时包含多个模块，或在赛事进行中追加模块，用完整的模块列表重新运行脚本即可——脚本会用合并后的任务集覆盖 `config.json`。已有学员的完成记录不受影响，排行榜下次刷新时会自动出现新模块列。
 
 ```bash
 bash automation/setup-event.sh \
@@ -62,17 +62,6 @@ bash automation/setup-event.sh \
 - 在 Artifactory 中创建 `workshop-events` Generic 仓库（如不存在）
 - 从各模块的 `tasks.json` 聚合任务列表，上传赛事配置 `config.json`
 - 输出启动排行榜的完整命令
-
-### 向进行中的赛事追加模块
-
-随时用完整的模块列表重新运行脚本即可——脚本会用合并后的任务集覆盖 `config.json`。已有学员的完成记录不受影响，排行榜下次刷新时会自动出现新模块列。
-
-```bash
-bash automation/setup-event.sh \
-  "2026-06-shanghai" \
-  "JFrog Workshop Shanghai 2026" \
-  --modules npm-security,npm-basic
-```
 
 ---
 

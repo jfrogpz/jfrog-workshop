@@ -48,7 +48,7 @@ bash automation/setup-event.sh \
   --modules npm-security
 ```
 
-To include multiple modules in one event:
+To include multiple modules, or to add a module to an already-running event, re-run the script with the full module list — it overwrites `config.json` with the combined task set. Existing participants' completed tasks are unaffected; the leaderboard will show the new module column on the next refresh.
 
 ```bash
 bash automation/setup-event.sh \
@@ -62,17 +62,6 @@ The script will:
 - Create the `workshop-events` Generic repository in Artifactory (if it doesn't exist)
 - Upload the event configuration `config.json` (with tasks aggregated from all specified modules)
 - Output the complete command to start the leaderboard
-
-### Adding a Module to a Running Event
-
-Re-run the script with the full updated module list at any time — it overwrites `config.json` with the combined task set. Existing participants' completed tasks are unaffected; the leaderboard will show the new module column on the next refresh.
-
-```bash
-bash automation/setup-event.sh \
-  "2026-06-shanghai" \
-  "JFrog Workshop Shanghai 2026" \
-  --modules npm-security,npm-basic
-```
 
 ---
 
