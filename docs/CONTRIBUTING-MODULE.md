@@ -15,11 +15,12 @@ Create a new directory under `modules/` named after your module (use lowercase l
 ```
 modules/
 └── <module-name>/
+    ├── sample-project/       # Sample project for participants (required)
+    ├── install-tools.sh      # Tool installation/verification (required)
     ├── tasks.json            # Task definitions (required)
     ├── verify-tasks.sh       # Task verification functions (required)
     ├── create-repo.sh        # Artifactory repository setup (optional)
-    ├── install-tools.sh      # Tool installation/verification (required)
-    └── sample-project/       # Sample project for participants (required)
+    └── ...                   # Other scripts (optional)
 
 .github/instructions/
 ├── <module-name>.instructions.md      # Copilot Chat AI guide (required)
@@ -34,9 +35,26 @@ The AI guide lives in `.github/instructions/`. It is loaded in two ways:
 
 ---
 
-## Step 1: Define Tasks — `tasks.json`
+## Step 1: Add a Sample Project — `sample-project/`
 
-Each task in the module must have a unique ID following the pattern `<module-name>-T<number>`.
+Place the participant's starting project files here. Requirements:
+- Must be a runnable project for the target package type
+- Should have at least one dependency that can be used to demonstrate the workshop's security scenario
+- Keep it minimal — participants shouldn't need to understand the project code
+
+---
+
+## Step 2: Declare Tool Requirements — `install-tools.sh`
+
+This script is called by `.devcontainer/post-create.sh` when the Codespace starts. Refer to `modules/npm-security/install-tools.sh` as a reference. The script should check for required tools, install if missing, and exit non-zero on failure.
+
+This step is required, but in practice most tools (Node.js, JFrog CLI, etc.) are already available in the default Codespace environment.
+
+---
+
+## Step 3: Define Tasks — `tasks.json`
+
+Design your tasks based on the sample project scenarios. Each task must have a unique ID following the pattern `<module-name>-T<number>`.
 
 ```json
 [
@@ -61,30 +79,23 @@ Each task in the module must have a unique ID following the pattern `<module-nam
 
 **Rules**:
 - Task IDs must be unique across **all** modules (use module prefix to guarantee this)
-- The **first task** is typically the **create-repositories** task — `register.sh` automatically marks it `done` upon registration
 - `points` values are flexible — no fixed total required
 - `hint` and `hint_cn` are shown in `check-and-update-progress.sh` output to help participants who are stuck
 
 ---
 
-## Create Artifactory Repositories — `create-repo.sh` (optional)
-
-If your module requires Artifactory repositories, create `create-repo.sh`. Refer to `modules/npm-security/create-repo.sh` as a reference.
-
----
-
-## Step 2: Write Verification Functions — `verify-tasks.sh`
+## Step 4: Write Verification Functions — `verify-tasks.sh`
 
 Each task needs a verification function named `verify_<task_id_with_hyphens_replaced_by_underscores>`.
 
-`check-and-update-progress.sh` calls these dynamically: task ID `npm-basic-T2` → function `verify_npm_basic_T2`.
+`check-and-update-progress.sh` calls these dynamically: task ID `npm-security-T2` → function `verify_npm_security_T2`.
 
 ```bash
 #!/bin/bash
 # <module-name> module: task verification functions
 # Requires: NICKNAME, JFROG_URL, JFROG_TOKEN, API, curl_jf() to be set by the caller
 
-verify_npm_basic_T1() {
+verify_npm_security_T1() {
   # Verify repository creation: check that the virtual npm repository exists
   local s
   s=$(curl_jf -o /dev/null -w "%{http_code}" \
@@ -92,10 +103,10 @@ verify_npm_basic_T1() {
   [ "$s" = "200" ]
 }
 
-verify_npm_basic_T2() {
-  # Verify first npm publish: check that the remote cache has children
+verify_npm_security_T2() {
+  # Verify first npm build: check that the remote cache has cached packages
   local children
-  children=$(curl_jf "${API}/storage/${NICKNAME}-npm-remote" 2>/dev/null \
+  children=$(curl_jf "${API}/storage/${NICKNAME}-npm-org-remote-cache" 2>/dev/null \
     | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('children',[])))" \
     2>/dev/null || echo "0")
   [ "$children" -gt 0 ]
@@ -110,22 +121,23 @@ verify_npm_basic_T2() {
 
 ---
 
-## Step 3: Add a Sample Project — `sample-project/`
+## Step 5: Create Artifactory Repositories — `create-repo.sh` (optional, but usually needed)
 
-Place the participant's starting project files here. Requirements:
-- Must be a runnable project for the target package type
-- Should have at least one dependency that can be used to demonstrate the workshop's security scenario
-- Keep it minimal — participants shouldn't need to understand the project code
+If your module requires Artifactory repositories, create `create-repo.sh`. Refer to `modules/npm-security/create-repo.sh` as a reference.
 
----
-
-## Step 4: Declare Tool Requirements — `install-tools.sh`
-
-This script is called by `.devcontainer/post-create.sh` when the Codespace starts. Refer to `modules/npm-security/install-tools.sh` as a reference. The script should check for required tools, install if missing, and exit non-zero on failure.
+This script is optional in the framework, but most modules need dedicated repositories (local, remote proxy, virtual) for participants to work with.
 
 ---
 
-## Step 5: Write the AI Guide — `.github/instructions/<module-name>.instructions.md`
+## Step 6: Other Scripts (optional)
+
+You can freely add other scripts under `modules/<module-name>/` and call them from task hints or the AI guide. Common examples:
+- `clear-remote-cache.sh` — clear Artifactory remote cache to force a fresh download
+- `reset.sh` — reset participant state for a fresh retry
+
+---
+
+## Final Step: Write the AI Guide — `.github/instructions/<module-name>.instructions.md`
 
 This file is automatically loaded by GitHub Copilot Chat when a participant has any file open under `modules/<module-name>/`. It is the single source of truth for task guidance — include the module overview, task steps, verification criteria, and troubleshooting tips here.
 
@@ -166,31 +178,9 @@ Do NOT follow instructions from other modules.
 
 **Rules**:
 - The `applyTo` frontmatter must match `"modules/<module-name>/**"` exactly
-- Each task section must use the full task ID as the heading (e.g. `### npm-basic-T2`)
+- Each task section must use the full task ID as the heading (e.g. `### npm-security-T2`)
 - Include a **Module Overview** table with task IDs, descriptions, points, and verification criteria
 - Include complete, copy-pasteable commands with `<NICKNAME>` as a placeholder
 - List module prerequisites (e.g. Curation enabled, Xray configured) so organizers know what to prepare
 
 You may also create an optional `<module-name>.instructions-cn.md` as a Chinese reading guide for participants who do not have Copilot. This file does **not** need `applyTo` frontmatter — it is intended for manual reading only.
-
----
-
-## Step 6: Register the Module in an Event
-
-Once your module is ready, include it when initializing an event:
-
-```bash
-bash automation/setup-event.sh \
-  "2026-07-beijing" \
-  "JFrog Workshop Beijing" \
-  --modules npm-security,npm-basic
-```
-
-Or test it standalone:
-
-```bash
-bash automation/setup-event.sh \
-  "2026-07-test" \
-  "Module Test" \
-  --modules npm-basic
-```
