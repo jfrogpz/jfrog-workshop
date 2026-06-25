@@ -164,7 +164,7 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 在正式开始前确认以下事项：
 
-1. **确认模块前置条件**：检查你选择的模块是否需要启用特定 JFrog 功能（如 Curation、Xray）。各模块的前置要求请参阅对应的 `.github/instructions/<module>.instructions.md` / `.github/instructions/<module>.instructions-cn.md` 文件
+1. **确认模块前置条件**：检查你选择的模块是否需要启用特定 JFrog 功能（如 Curation、Xray）。各模块的前置要求请参阅对应的 `.github/instructions/<module>.instructions-cn.md` 文件
 2. **提前走通全流程**：使用测试环境模拟学员完成所选模块的全部任务，确认每个任务的验证逻辑正常工作，避免 Workshop 当天出现意外
 
 ---
@@ -205,7 +205,7 @@ bash automation/cleanup-event.sh "2026-06-shanghai"
 |------|---------|
 | 排行榜无学员显示 | 检查 Artifactory 中 `workshop-events/{event_id}/participants/` 目录是否有数据 |
 | 学员任务长时间不更新 | 确认 `refresh-leaderboard.sh` 正在运行；检查 Admin Token 是否有效 |
-| 模块特定功能不工作 | 参阅对应模块的 `.github/instructions/<module>.instructions.md` / `.github/instructions/<module>.instructions-cn.md` 中的 Troubleshooting 部分 |
+| 模块特定功能不工作 | 参阅对应模块的 `.github/instructions/<module>.instructions-cn.md` 中的 Troubleshooting 部分 |
 
 ---
 
@@ -243,7 +243,7 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 - 验证通过的任务标记为 `done`，进度上传至 `workshop-events` 仓库供排行榜读取
 - 已完成的任务不重复验证，只验证尚未完成的任务
 
-任务 ID 格式为 `<模块名>-T<序号>`，如 `npm-security-T1`。各任务的验证逻辑详见对应模块的 `.github/instructions/<module>.instructions.md` / `.github/instructions/<module>.instructions-cn.md`。
+任务 ID 格式为 `<模块名>-T<序号>`，如 `npm-security-T1`。各任务的验证逻辑详见对应模块的 `.github/instructions/<module>.instructions-cn.md`。
 
 **排行榜渲染**：
 - 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒**只读取**所有学员上传的 `progress.json`，不做任何验证
