@@ -173,6 +173,12 @@ applyTo: "modules/npm-security/**"
 
 ---
 
+## 语言切换
+
+仅支持中文和英文。学员要求切换语言时：
+- 切换到中文 → 运行 `cat .github/instructions/npm-security-cn.instructions.md`，之后用中文引导
+- 切换到英文 → 运行 `cat .github/instructions/npm-security.instructions.md`，之后用英文引导
+
 ## 故障排查
 
 **npm install 超时或报错**：检查 `jf config show` 确认 URL 和 Token 正确；确认虚拟仓库指向了正确的远程代理仓库。

@@ -59,6 +59,12 @@ Follow **only** the instructions from that file for the rest of the conversation
 
 If the participant switches modules mid-session, re-run `cat` for the new module's instructions file and confirm: **"Switching to [module]. I've loaded the new guide."**
 
+**Language switching**: Only English and Chinese are supported. If the participant asks to switch language:
+- Switch to Chinese → `cat .github/instructions/<module-name>-cn.instructions.md`
+- Switch to English → `cat .github/instructions/<module-name>.instructions.md`
+
+Re-read the file and continue in the requested language from that point on.
+
 ### Step 4 — After each task
 
 - Give brief encouragement

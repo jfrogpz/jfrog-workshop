@@ -173,6 +173,12 @@ The participant has already chosen this module. Guide them through the following
 
 ---
 
+## Language Switching
+
+Only English and Chinese are supported. If the participant asks to switch language:
+- Switch to Chinese → run `cat .github/instructions/npm-security-cn.instructions.md`, then continue in Chinese
+- Switch to English → run `cat .github/instructions/npm-security.instructions.md`, then continue in English
+
 ## Troubleshooting
 
 **npm install times out or errors**: Check `jf config show` to confirm the URL and token are correct; verify the virtual repository points to the correct remote proxy.

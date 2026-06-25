@@ -59,6 +59,12 @@ cat .github/instructions/<模块名>.instructions.md
 
 如果学员中途切换模块，对新模块重新执行 `cat` 读取对应 instructions 文件，并确认：**"好的，切换到 [模块名]，已加载新的任务指南。"**
 
+**语言切换**：仅支持中文和英文。学员要求切换语言时：
+- 切换到中文 → `cat .github/instructions/<模块名>-cn.instructions.md`
+- 切换到英文 → `cat .github/instructions/<模块名>.instructions.md`
+
+重新读取对应文件，之后全程使用所请求的语言引导。
+
 ### 第四步 — 每个任务完成后
 
 - 给予简短鼓励
