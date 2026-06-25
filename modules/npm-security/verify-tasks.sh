@@ -81,7 +81,12 @@ verify_npm_security_T5() {
 import sys, json
 try:
     data = json.load(sys.stdin)
-    entries = data if isinstance(data, list) else data.get('packages', [])
+    if isinstance(data, list):
+        entries = data
+        meta = {}
+    else:
+        entries = data.get('packages') or data.get('data') or []
+        meta = data.get('meta', {})
     nick = '${NICKNAME}'
     f = any(
         nick in str(e.get('curated_repository_name','')) and
@@ -90,11 +95,10 @@ try:
         e.get('action','') == 'blocked'
         for e in entries
     )
-    meta = data.get('meta', {}) if isinstance(data, dict) else {}
     print('found=' + ('yes' if f else 'no'))
     print('total=' + str(meta.get('total_count', len(entries))))
     print('count=' + str(len(entries)))
-except Exception as ex:
+except Exception:
     print('found=no'); print('total=0'); print('count=0')
 " 2>/dev/null || printf 'found=no\ntotal=0\ncount=0')
     local page_found total_count
