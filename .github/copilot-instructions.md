@@ -34,7 +34,7 @@ bash automation/register.sh <NICKNAME> <EVENT_ID>
    ```bash
    cat ~/.workshop-profile
    ```
-   - If the file exists and contains `JFROG_URL` and `JFROG_TOKEN`, the variables are already configured — no action needed. Scripts source this file automatically.
+   - If the file exists and contains `JFROG_URL` and `JFROG_TOKEN`, proceed directly to the next step — all scripts source this file automatically. Do **not** ask the participant to run `source` or re-export variables.
    - If the file does not exist, guide them to set the variables:
      ```bash
      export JFROG_URL="<URL provided by instructor>"

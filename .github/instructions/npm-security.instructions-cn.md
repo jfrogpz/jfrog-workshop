@@ -38,7 +38,7 @@ applyTo: "modules/npm-security/**"
    ```bash
    cat ~/.workshop-profile
    ```
-   - 如果文件存在且包含 `JFROG_URL` 和 `JFROG_TOKEN`，无需任何操作——脚本会自动读取该文件。
+   - 如果文件存在且包含 `JFROG_URL` 和 `JFROG_TOKEN`，直接进行下一步——**不要**让学员执行 `source` 或重新导出变量，脚本会自动读取该文件。
    - 如果不存在，引导学员设置：
      ```bash
      export JFROG_URL="<讲师提供的地址>"

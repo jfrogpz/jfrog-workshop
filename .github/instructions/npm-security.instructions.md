@@ -38,7 +38,7 @@ The participant has already chosen this module. Guide them through the following
    ```bash
    cat ~/.workshop-profile
    ```
-   - If the file exists and contains `JFROG_URL` and `JFROG_TOKEN`, no action needed — scripts source this file automatically.
+   - If the file exists and contains `JFROG_URL` and `JFROG_TOKEN`, proceed directly to the next step — do **not** ask the participant to run `source` or re-export variables.
    - If not, guide them to set:
      ```bash
      export JFROG_URL="<URL provided by instructor>"
