@@ -78,7 +78,7 @@
 >
 > 🆓 GitHub 个人账号每月可免费使用 60 小时 Codespace，本 Workshop 约占用 1 小时。
 >
-> 💻 **如果无法使用 Codespace**，请参阅 [SETUP_CN.md](./SETUP_CN.md) 在本地机器上配置所需环境。
+> 💻 **如果无法使用 Codespace**，请参阅 [SETUP_CN.md](./docs/SETUP_CN.md) 在本地机器上配置所需环境。
 
 ### 第二步：打开 AI 助理
 
@@ -116,4 +116,4 @@ AI 助理将：
 
 如果你是讲师或活动组织者，请参阅：
 
-👉 [ORGANIZER_CN.md](./ORGANIZER_CN.md)
+👉 [ORGANIZER_CN.md](./docs/ORGANIZER_CN.md)

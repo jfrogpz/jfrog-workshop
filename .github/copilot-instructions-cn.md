@@ -115,7 +115,7 @@ A：重新运行 `register.sh` 即可恢复本地配置文件。
 如果 Copilot Chat 不可用，可以直接阅读对应模块的指令文件：
 - `.github/instructions/<模块名>.instructions.md` — 完整任务步骤和命令
 
-不使用 Codespace 的学员，请参考 [SETUP_CN.md](../SETUP_CN.md) 完成本地环境配置。
+不使用 Codespace 的学员，请参考 [SETUP_CN.md](../docs/SETUP_CN.md) 完成本地环境配置。
 
 ---
 

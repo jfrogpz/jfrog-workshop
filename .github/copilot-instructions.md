@@ -115,7 +115,7 @@ A: Re-run `register.sh` to restore the local profile.
 If Copilot Chat is unavailable, read the module instructions file directly:
 - `.github/instructions/<module-name>.instructions.md` — complete task steps and commands
 
-For environment setup, see [SETUP.md](../SETUP.md).
+For environment setup, see [SETUP.md](../docs/SETUP.md).
 
 ---
 

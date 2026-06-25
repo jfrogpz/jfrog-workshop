@@ -78,7 +78,7 @@ Click the button below to launch the cloud development environment instantly (no
 >
 > 🆓 GitHub personal accounts get 60 free Codespace hours per month. This Workshop uses approximately 1 hour.
 >
-> 💻 **If Codespace is not available**, refer to [SETUP.md](./SETUP.md) to set up the environment on your local machine.
+> 💻 **If Codespace is not available**, refer to [SETUP.md](./docs/SETUP.md) to set up the environment on your local machine.
 
 ### Step 2: Open AI Assistant
 
@@ -116,4 +116,4 @@ The AI assistant will:
 
 If you are an instructor or event organizer, please refer to:
 
-👉 [ORGANIZER.md](./ORGANIZER.md)
+👉 [ORGANIZER.md](./docs/ORGANIZER.md)
