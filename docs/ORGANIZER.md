@@ -217,8 +217,6 @@ To adjust task point values, edit the `tasks.json` file inside the relevant modu
 bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026" --modules npm-security
 ```
 
-To add a new learning module to the workshop, see [CONTRIBUTING-MODULE.md](CONTRIBUTING-MODULE.md).
-
 ---
 
 ## Architecture Notes

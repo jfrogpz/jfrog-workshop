@@ -44,9 +44,7 @@ echo ""
 
 # ── Make scripts executable ───────────────────────────────────────────────────
 chmod +x "${REPO_ROOT}/automation/"*.sh 2>/dev/null || true
-chmod +x "${REPO_ROOT}/modules/"*/install-tools.sh 2>/dev/null || true
-chmod +x "${REPO_ROOT}/modules/"*/create-repo.sh 2>/dev/null || true
-chmod +x "${REPO_ROOT}/modules/"*/verify-tasks.sh 2>/dev/null || true
+find "${REPO_ROOT}/modules" -name "*.sh" -exec chmod +x {} \;
 
 echo "=========================================="
 echo "  🎉 Environment ready! / 环境就绪！"

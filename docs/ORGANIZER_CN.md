@@ -217,8 +217,6 @@ bash automation/cleanup-event.sh "2026-06-shanghai"
 bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026" --modules npm-security
 ```
 
-如需新增学习模块，请参阅 [CONTRIBUTING-MODULE.md](CONTRIBUTING-MODULE.md)。
-
 ---
 
 ## 架构说明
