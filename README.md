@@ -98,7 +98,10 @@ I want to self-study
 I want to start the workshop, my EVENT_ID is <ID provided by instructor>
 
 # Switching modules mid-session
-I want to switch to the npm-basic module
+I want to switch to the npm-security module
+
+# Switching modes mid-session (your progress is preserved)
+I want to switch to event mode
 ```
 
 The AI assistant will:
