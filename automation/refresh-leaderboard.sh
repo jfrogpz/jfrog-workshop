@@ -162,8 +162,11 @@ for mod in modules_seen:
     # Rank participants by this module's points for per-module ordering
     mod_sorted = sorted(lines, key=lambda x: (-module_points(x, mod_task_list), last_completed_at(x)))
 
+    title = f"  {mod}  max: {mod_max} pts  "
+    prefix = "  ──"
+    fill = "─" * max(0, bw - dw(prefix) - dw(title))
     print()
-    print(f"  [{mod}]  (max: {mod_max} pts)")
+    print(prefix + title + fill)
     header = "  " + ljust("Rank", RANK_W) + " " + ljust("Nickname / 昵称", NAME_W) + " "
     for t in mod_task_list:
         header += cjust(short_label(t['id']), COL_W)
@@ -188,11 +191,11 @@ for mod in modules_seen:
 
 # Overall summary (always shown; especially useful for multi-module)
 OW = max(2 + RANK_W + 1 + NAME_W + 2 + 8, 60)
+summary_label = "  Overall / 总排行  " if multi_module else "  Summary / 汇总  "
+prefix = "  ──"
+fill = "─" * max(0, W - dw(prefix) - dw(summary_label))
 print()
-if multi_module:
-    print(f"  [Overall / 总排行]")
-else:
-    print(f"  [Summary / 汇总]")
+print(prefix + summary_label + fill)
 print("  " + ljust("Rank", RANK_W) + " " + ljust("Nickname / 昵称", NAME_W) + "  " + rjust("Total", 8))
 print("  " + "-" * (OW - 2))
 for i, p in enumerate(lines):
