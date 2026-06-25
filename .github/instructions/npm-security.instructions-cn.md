@@ -14,7 +14,7 @@ applyTo: "modules/npm-security/**"
 
 | 任务 | 描述 | 分值 | 验证方式 |
 |------|------|------|---------|
-| npm-security-T1 | 注册昵称并创建个人 npm 仓库 | 10 | Artifactory 中存在 `{nickname}-npm-dev-virtual` 仓库 |
+| npm-security-T1 | 在 Artifactory 中创建个人 npm 仓库 | 10 | Artifactory 中存在 `{nickname}-npm-dev-virtual` 仓库 |
 | npm-security-T2 | 完成首次 npm build | 20 | `{nickname}-npm-org-remote` 中有缓存的包 |
 | npm-security-T3 | 发布 Build #1 build-info | 20 | Artifactory 中 Build `{nickname}-npm-sample #1` 存在 |
 | npm-security-T4 | 创建 Curation Policy | 10 | 系统中存在包含学员昵称的 Curation Policy |
@@ -28,33 +28,18 @@ applyTo: "modules/npm-security/**"
 
 ## 任务详情
 
-### npm-security-T1 — 注册昵称并创建个人 npm 仓库（10 分）
+### npm-security-T1 — 在 Artifactory 中创建个人 npm 仓库（10 分）
 
-**目标**：选择昵称，在 Artifactory 上创建专属的 npm 仓库组。
+**目标**：在 Artifactory 上创建专属的 npm 仓库组（本地仓库、远程代理仓库、虚拟仓库）。
 
 **步骤**：
-1. 询问学员想要的昵称（规则：小写字母、数字、连字符；3-20 个字符；首尾为字母或数字）
-2. 检查环境变量是否已本地保存：
+1. 运行仓库创建脚本：
    ```bash
-   cat ~/.workshop-profile
+   bash modules/npm-security/create-repo.sh <NICKNAME>
    ```
-   - 如果文件存在且包含 `JFROG_URL` 和 `JFROG_TOKEN`，直接进行下一步——**不要**让学员执行 `source` 或重新导出变量，脚本会自动读取该文件。
-   - 如果不存在，引导学员设置：
-     ```bash
-     export JFROG_URL="<讲师提供的地址>"
-     export JFROG_TOKEN="<你的 Access Token>"
-     ```
-3. 运行注册脚本：
-   ```bash
-   # 赛事模式
-   bash automation/register.sh <NICKNAME> <EVENT_ID>
+2. 确认以下三个仓库已创建：`{nickname}-npm-dev-local`、`{nickname}-npm-org-remote`、`{nickname}-npm-dev-virtual`
 
-   # 自主学习模式
-   bash automation/register.sh <NICKNAME>
-   ```
-4. 确认以下三个 Artifactory 仓库已创建：`{nickname}-npm-dev-local`、`{nickname}-npm-org-remote`、`{nickname}-npm-dev-virtual`
-
-**成功标志**：脚本输出"注册成功"。
+**成功标志**：三个仓库在 Artifactory UI 中可见。
 
 ---
 

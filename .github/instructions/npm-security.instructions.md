@@ -14,7 +14,7 @@ The participant has already chosen this module. Guide them through the following
 
 | Task | Description | Points | Verification |
 |------|-------------|--------|--------------|
-| npm-security-T1 | Register nickname and create personal npm repositories | 10 | `{nickname}-npm-dev-virtual` repository exists in Artifactory |
+| npm-security-T1 | Create personal npm repositories in Artifactory | 10 | `{nickname}-npm-dev-virtual` repository exists in Artifactory |
 | npm-security-T2 | Complete first npm build | 20 | `{nickname}-npm-org-remote` has cached packages |
 | npm-security-T3 | Publish Build #1 build-info | 20 | Build `{nickname}-npm-sample #1` exists in Artifactory |
 | npm-security-T4 | Create a Curation Policy | 10 | A Curation Policy with the participant's nickname in its name exists |
@@ -28,33 +28,18 @@ The participant has already chosen this module. Guide them through the following
 
 ## Task Details
 
-### npm-security-T1 — Register Nickname and Create Personal npm Repositories (10 pts)
+### npm-security-T1 — Create Personal npm Repositories in Artifactory (10 pts)
 
-**Goal**: Choose a nickname and create a personal npm repository group on Artifactory.
+**Goal**: Create a personal npm repository group on Artifactory (local, remote proxy, virtual).
 
 **Steps**:
-1. Ask the participant for their desired nickname (rules: lowercase letters, numbers, hyphens; 3–20 characters; must start and end with a letter or number)
-2. Check if environment variables are already saved locally:
+1. Run the repository creation script:
    ```bash
-   cat ~/.workshop-profile
+   bash modules/npm-security/create-repo.sh <NICKNAME>
    ```
-   - If the file exists and contains `JFROG_URL` and `JFROG_TOKEN`, proceed directly to the next step — do **not** ask the participant to run `source` or re-export variables.
-   - If not, guide them to set:
-     ```bash
-     export JFROG_URL="<URL provided by instructor>"
-     export JFROG_TOKEN="<your Access Token>"
-     ```
-3. Run the registration script:
-   ```bash
-   # Event mode
-   bash automation/register.sh <NICKNAME> <EVENT_ID>
+2. Confirm three repositories were created: `{nickname}-npm-dev-local`, `{nickname}-npm-org-remote`, `{nickname}-npm-dev-virtual`
 
-   # Self-study mode
-   bash automation/register.sh <NICKNAME>
-   ```
-4. Confirm three Artifactory repositories were created: `{nickname}-npm-dev-local`, `{nickname}-npm-org-remote`, `{nickname}-npm-dev-virtual`
-
-**Success**: Script outputs "Registration successful".
+**Success**: All three repositories visible in Artifactory UI.
 
 ---
 

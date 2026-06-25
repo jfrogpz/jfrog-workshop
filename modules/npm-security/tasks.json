@@ -1,11 +1,11 @@
 [
   {
     "id": "npm-security-T1",
-    "name": "Register nickname and create personal npm repositories",
-    "name_cn": "注册昵称并创建个人 npm 仓库",
+    "name": "Create personal npm repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 npm 仓库",
     "points": 10,
-    "hint": "Run: bash automation/register.sh <NICKNAME> [EVENT_ID]",
-    "hint_cn": "运行：bash automation/register.sh <NICKNAME> [EVENT_ID]"
+    "hint": "Run: bash modules/npm-security/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/npm-security/create-repo.sh <NICKNAME>"
   },
   {
     "id": "npm-security-T2",
