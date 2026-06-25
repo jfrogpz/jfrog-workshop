@@ -54,7 +54,7 @@ To include multiple modules in one event:
 bash automation/setup-event.sh \
   "2026-06-shanghai" \
   "JFrog Workshop Shanghai 2026" \
-  --modules npm-security,maven-basic
+  --modules npm-security,npm-basic
 ```
 
 The script will:
@@ -108,7 +108,7 @@ Single-module event (`--modules npm-security`):
 ==============================================================
 ```
 
-Multi-module event (`--modules npm-security,maven-basic`), each module has its own ranked block:
+Multi-module event (`--modules npm-security,npm-basic`), each module has its own ranked block:
 
 ```
 ==============================================================
@@ -123,7 +123,7 @@ Multi-module event (`--modules npm-security,maven-basic`), each module has its o
   🥈   mary-chen             ✅  ✅  ⬜  ⬜  ⬜  ⬜   20pts
   ------------------------------------------------------------
 
-  [maven-basic]  (max: 60 pts)
+  [npm-basic]  (max: 60 pts)
   Rank Nickname / 昵称         T1  T2  T3    Pts
   -----------------------------------------------
   🥇   mary-chen             ✅  ✅  ⬜   30pts
@@ -227,8 +227,6 @@ To add a new learning module to the workshop, see [CONTRIBUTING-MODULE.md](CONTR
 | Requires Node.js, JFrog CLI, bash pre-installed | `.devcontainer` auto-configures everything — participants install nothing manually |
 | Sample project needs to be cloned | Codespace auto-checks out at startup; path is always `/workspaces/jfrog-workshop/` |
 | AI guidance needed to lower the barrier | GitHub Copilot Chat is embedded directly in the IDE, reading `.github/copilot-instructions.md` as the task script |
-
-Participants who don't use Codespace need to set up the environment manually — see [SETUP.md](SETUP.md).
 
 ---
 

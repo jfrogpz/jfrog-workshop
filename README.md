@@ -55,7 +55,7 @@ Approximately 60 minutes per module
 
 ### Competition Rules
 
-Tasks are organized into **modules** (e.g. `npm-security`, `maven-basic`). Each module has its own task list with individual point values. The instructor chooses which modules are active for the event.
+Tasks are organized into **modules** (e.g. `npm-security`, `npm-basic`). Each module has its own task list with individual point values. The instructor chooses which modules are active for the event.
 
 - Complete tasks within the active module(s) to earn points
 - Ties are broken by the time the last task was completed (earlier is better)
@@ -98,7 +98,7 @@ I want to self-study
 I want to start the workshop, my EVENT_ID is <ID provided by instructor>
 
 # Switching modules mid-session
-I want to switch to the maven-basic module
+I want to switch to the npm-basic module
 ```
 
 The AI assistant will:
@@ -117,3 +117,7 @@ The AI assistant will:
 If you are an instructor or event organizer, please refer to:
 
 👉 [ORGANIZER.md](./docs/ORGANIZER.md)
+
+To add a new learning module to the workshop:
+
+👉 [CONTRIBUTING-MODULE.md](./docs/CONTRIBUTING-MODULE.md)

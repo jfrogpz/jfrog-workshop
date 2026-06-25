@@ -25,7 +25,7 @@ modules/
 
 The AI guide lives in `.github/instructions/` (not inside the module directory) so that GitHub Copilot Chat auto-attaches it when a participant has a file open under `modules/<module-name>/`.
 
-**Naming convention**: Module names should describe the technology and focus area, e.g. `npm-security`, `maven-basic`, `pypi-curation`.
+**Naming convention**: Module names should describe the technology and focus area, e.g. `npm-security`, `npm-basic`, `pypi-curation`.
 
 ---
 
@@ -36,7 +36,7 @@ Each task in the module must have a unique ID following the pattern `<module-nam
 ```json
 [
   {
-    "id": "maven-basic-T1",
+    "id": "npm-basic-T1",
     "name": "Register nickname and create personal Maven repositories",
     "name_cn": "注册昵称并创建个人 Maven 仓库",
     "points": 10,
@@ -44,12 +44,12 @@ Each task in the module must have a unique ID following the pattern `<module-nam
     "hint_cn": "运行：bash automation/register.sh <NICKNAME> [EVENT_ID]"
   },
   {
-    "id": "maven-basic-T2",
+    "id": "npm-basic-T2",
     "name": "Complete first Maven build",
     "name_cn": "完成首次 Maven 构建",
     "points": 20,
-    "hint": "cd modules/maven-basic/sample-project, configure settings.xml, then run: jf mvn package",
-    "hint_cn": "进入 modules/maven-basic/sample-project，配置 settings.xml，然后运行：jf mvn package"
+    "hint": "cd modules/npm-basic/sample-project, configure settings.xml, then run: jf mvn package",
+    "hint_cn": "进入 modules/npm-basic/sample-project，配置 settings.xml，然后运行：jf mvn package"
   }
 ]
 ```
@@ -111,7 +111,7 @@ create_repo "${NICKNAME}-maven-dev-virtual" \
 
 Each task needs a verification function named `verify_<task_id_with_hyphens_replaced_by_underscores>`.
 
-`check-and-update-progress.sh` calls these dynamically: task ID `maven-basic-T2` → function `verify_maven_basic_T2`.
+`check-and-update-progress.sh` calls these dynamically: task ID `npm-basic-T2` → function `verify_maven_basic_T2`.
 
 ```bash
 #!/bin/bash
@@ -231,7 +231,7 @@ Do NOT follow instructions from other modules.
 
 **Rules**:
 - The `applyTo` frontmatter must match `"modules/<module-name>/**"` exactly
-- Each task section must use the full task ID as the heading (e.g. `### maven-basic-T2`)
+- Each task section must use the full task ID as the heading (e.g. `### npm-basic-T2`)
 - Include a **Module Overview** table with task IDs, descriptions, points, and verification criteria
 - Include complete, copy-pasteable commands with `<NICKNAME>` as a placeholder
 - List module prerequisites (e.g. Curation enabled, Xray configured) so organizers know what to prepare
@@ -246,7 +246,7 @@ Once your module is ready, include it when initializing an event:
 bash automation/setup-event.sh \
   "2026-07-beijing" \
   "JFrog Workshop Beijing" \
-  --modules npm-security,maven-basic
+  --modules npm-security,npm-basic
 ```
 
 Or test it standalone:
@@ -255,7 +255,7 @@ Or test it standalone:
 bash automation/setup-event.sh \
   "2026-07-test" \
   "Module Test" \
-  --modules maven-basic
+  --modules npm-basic
 ```
 
 ---

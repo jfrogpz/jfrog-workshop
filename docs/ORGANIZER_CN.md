@@ -54,7 +54,7 @@ bash automation/setup-event.sh \
 bash automation/setup-event.sh \
   "2026-06-shanghai" \
   "JFrog Workshop Shanghai 2026" \
-  --modules npm-security,maven-basic
+  --modules npm-security,npm-basic
 ```
 
 脚本将：
@@ -108,7 +108,7 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 ==============================================================
 ```
 
-多模块赛事（`--modules npm-security,maven-basic`），每个模块独立排名，最后汇总总分：
+多模块赛事（`--modules npm-security,npm-basic`），每个模块独立排名，最后汇总总分：
 
 ```
 ==============================================================
@@ -123,7 +123,7 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
   🥈   mary-chen             ✅  ✅  ⬜  ⬜  ⬜  ⬜   20pts
   ------------------------------------------------------------
 
-  [maven-basic]  (max: 60 pts)
+  [npm-basic]  (max: 60 pts)
   Rank Nickname / 昵称         T1  T2  T3    Pts
   -----------------------------------------------
   🥇   mary-chen             ✅  ✅  ⬜   30pts
@@ -227,8 +227,6 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 | 需要预装各类构建工具和 JFrog CLI | `.devcontainer/post-create.sh` 自动扫描各模块的 `install-tools.sh` 并安装所需工具 |
 | 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
 | 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，打开模块目录下的文件时自动加载对应模块的 AI 指引 |
-
-如果学员不使用 Codespace，需要自行完成环境安装，参见仓库中的 [SETUP_CN.md](SETUP_CN.md)。
 
 ---
 
