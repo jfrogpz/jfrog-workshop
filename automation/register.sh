@@ -192,11 +192,11 @@ JSON
   echo "$PROFILE_JSON" | curl_jf -X PUT \
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/profile.json" \
     -H "Content-Type: application/json" \
-    -T -
+    -T - >/dev/null
   echo "$PROGRESS_JSON" | curl_jf -X PUT \
     "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/participants/${NICKNAME}/progress.json" \
     -H "Content-Type: application/json" \
-    -T -
+    -T - >/dev/null
   echo "    ✅ Progress uploaded to Artifactory / 进度已上传至 Artifactory"
 else
   echo "$PROGRESS_JSON" > "${HOME}/.workshop-progress.json"
