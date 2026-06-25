@@ -232,8 +232,8 @@ To add a new learning module to the workshop, see [CONTRIBUTING-MODULE.md](CONTR
 
 ### How Scoring and the Leaderboard Work
 
-**Participant Registration (first task of each module)**:
-- The participant runs `register.sh`, which reads the event's `config.json` to discover which modules are active, calls each module's `create-repo.sh` (if provided) to create the necessary Artifactory resources, and writes an initial `progress.json` (first task of each module marked as done)
+**Participant Registration**:
+- The participant runs `register.sh`, which reads the event's `config.json` to discover which modules are active, calls each module's `create-repo.sh` (if provided) to create the necessary Artifactory resources, and writes an initial `progress.json`
 - After successful registration, `~/.workshop-profile` is written locally — all subsequent scripts read from it so credentials don't need to be re-entered
 
 **Task Verification**:
