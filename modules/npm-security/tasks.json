@@ -1,0 +1,50 @@
+[
+  {
+    "id": "npm-security-T1",
+    "name": "Register nickname and create personal npm repositories",
+    "name_cn": "注册昵称并创建个人 npm 仓库",
+    "points": 10,
+    "hint": "Run: bash automation/register.sh <NICKNAME> [EVENT_ID]",
+    "hint_cn": "运行：bash automation/register.sh <NICKNAME> [EVENT_ID]"
+  },
+  {
+    "id": "npm-security-T2",
+    "name": "Complete first npm build",
+    "name_cn": "完成首次 npm build",
+    "points": 20,
+    "hint": "cd modules/npm-security/sample-project, configure npm to use your virtual repo, then run: jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1",
+    "hint_cn": "进入 modules/npm-security/sample-project，配置 npm 指向你的虚拟仓库，然后运行上面的命令"
+  },
+  {
+    "id": "npm-security-T3",
+    "name": "Publish Build #1 build-info",
+    "name_cn": "发布 Build #1 build-info",
+    "points": 20,
+    "hint": "Run: jf rt build-publish <NICKNAME>-npm-sample 1",
+    "hint_cn": "运行：jf rt build-publish <NICKNAME>-npm-sample 1"
+  },
+  {
+    "id": "npm-security-T4",
+    "name": "Create a Curation Policy",
+    "name_cn": "创建 Curation Policy",
+    "points": 10,
+    "hint": "In JFrog UI: Curation → Policies → New Policy (name must contain your nickname)",
+    "hint_cn": "在 JFrog UI 中：Curation → Policies → New Policy（Policy 名称必须包含你的昵称）"
+  },
+  {
+    "id": "npm-security-T5",
+    "name": "Trigger Curation to block axios@1.7.2",
+    "name_cn": "触发 Curation 阻断 axios@1.7.2",
+    "points": 20,
+    "hint": "Clear remote cache then run: jf npm install --build-name=<NICKNAME>-npm-sample --build-number=2",
+    "hint_cn": "清除远程缓存后运行：jf npm install --build-name=<NICKNAME>-npm-sample --build-number=2"
+  },
+  {
+    "id": "npm-security-T6",
+    "name": "Fix the issue and complete Build #3",
+    "name_cn": "修复问题并完成 Build #3",
+    "points": 20,
+    "hint": "Change axios version in package.json to a safe version (e.g. 1.7.7), rebuild and publish Build #3",
+    "hint_cn": "将 package.json 中 axios 版本改为安全版本（如 1.7.7），重新构建并发布 Build #3"
+  }
+]

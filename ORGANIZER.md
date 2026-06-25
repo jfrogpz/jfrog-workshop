@@ -33,18 +33,31 @@ export JFROG_TOKEN="your-admin-token"
 export JFROG_URL="https://yourcompany.jfrog.io"
 ```
 
-Then run the initialization script:
+Then run the initialization script, specifying which learning modules to include:
 
 ```bash
 bash automation/setup-event.sh \
   "2026-06-shanghai" \
-  "JFrog Workshop Shanghai 2026"
+  "JFrog Workshop Shanghai 2026" \
+  --modules npm-security
+```
+
+To include multiple modules in one event:
+
+```bash
+bash automation/setup-event.sh \
+  "2026-06-shanghai" \
+  "JFrog Workshop Shanghai 2026" \
+  --modules npm-security,maven-basic
 ```
 
 The script will:
+- Validate that all specified modules exist under `modules/`
 - Create the `workshop-events` Generic repository in Artifactory (if it doesn't exist)
-- Upload the event configuration `config.json`
+- Upload the event configuration `config.json` (with tasks aggregated from all specified modules)
 - Output the complete command to start the leaderboard
+
+To see available modules, run the script with no arguments.
 
 ---
 
@@ -65,18 +78,21 @@ Press `Ctrl+C` to stop. Example leaderboard output:
 
 ```
 ========================================================================
-  🏆  JFrog Workshop Leaderboard   Event: 2026-06-shanghai
-  🕐  Updated: 2026-06-22 10:30:00
+  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：100 pts
 ========================================================================
-  Rank  Nickname                 T1  T2  T3  T4  T5  T6   Score
+               [npm-security                              ]
+  Rank  Nickname                T1  T2  T3  T4  T5  T6     Pts
 ------------------------------------------------------------------------
   🥇   alex                   ✅  ✅  ✅  ⬜  ⬜  ⬜    50pts
   🥈   mary-chen              ✅  ✅  ⬜  ⬜  ⬜  ⬜    30pts
   🥉   bob                    ✅  ⬜  ⬜  ⬜  ⬜  ⬜    10pts
 ------------------------------------------------------------------------
-  3 participants
+  3 participants / 名学员参赛
 ========================================================================
 ```
+
+With multiple modules, task columns are grouped by module header.
 
 ---
 
@@ -143,11 +159,13 @@ Delete the `workshop-events/2026-06-shanghai/` directory in the Artifactory UI.
 
 ## Customizing Event Configuration
 
-To adjust task point values, edit the `tasks` array in `automation/setup-event.sh`, then re-run the initialization script to overwrite `config.json`:
+To adjust task point values, edit the `tasks.json` file inside the relevant module directory (e.g. `modules/npm-security/tasks.json`), then re-run the initialization script to regenerate `config.json`:
 
 ```bash
-bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
+bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026" --modules npm-security
 ```
+
+To add a new learning module to the workshop, see [CONTRIBUTING-MODULE.md](CONTRIBUTING-MODULE.md).
 
 ---
 
@@ -168,23 +186,25 @@ Participants who don't use Codespace need to set up the environment manually —
 
 ### How Scoring and the Leaderboard Work
 
-**Participant Registration (T1)**:
-- The participant runs `register.sh`, which creates three npm repositories in Artifactory (local / remote / virtual) and writes an initial `progress.json` to the `workshop-events` repository (T1 marked as done, 10 points)
-- After successful registration, the script writes `~/.workshop-profile` locally, storing the nickname, event ID, JFrog URL, and token — all subsequent scripts (`check-progress.sh`, `clear-remote-cache.sh`, etc.) read from this file, so credentials don't need to be entered again
+**Participant Registration (first task of each module)**:
+- The participant runs `register.sh`, which reads the event's `config.json` to discover which modules are active, calls each module's `create-repo.sh` to create the necessary Artifactory repositories, and writes an initial `progress.json` (first task marked as done)
+- After successful registration, `~/.workshop-profile` is written locally — all subsequent scripts read from it so credentials don't need to be re-entered
 
-**Task Verification (T2–T6)**:
-- **Verification happens on the participant side**: After completing each task, participants run `check-progress.sh`, which automatically verifies completion via Artifactory/Xray REST APIs and updates progress
+**Task Verification**:
+- **Verification happens on the participant side**: After completing each task, participants run `check-progress.sh`, which dynamically sources each module's `verify-tasks.sh` and dispatches to the matching `verify_<task_id>()` function
 - Completed tasks are marked `done` and progress is uploaded to the `workshop-events` repository for the leaderboard to read
 - Already-completed tasks are not re-verified — only pending tasks are checked
 
-| Task | Verification Method |
-|------|---------------------|
-| T1 | `GET /api/repositories/{nickname}-npm-dev-virtual` returns 200 |
-| T2 | `GET /api/storage/{nickname}-npm-org-remote` has subdirectories (cached packages present) |
-| T3 | `GET /api/build/{nickname}-npm-sample/1` returns 200 |
-| T4 | `GET /xray/api/v1/curation/policies` list contains a Policy with the participant's nickname |
-| T5 | `GET /xray/api/v1/curation/audit/packages` contains a record of axios@1.7.2 being blocked for the participant's repository |
-| T6 | Build #3 exists and axios in its dependencies is not version 1.7.2 |
+Task IDs use the format `<module>-<sequence>`, e.g. `npm-security-T1`. The verification logic for each task lives in `modules/<module>/verify-tasks.sh`.
+
+| Task (npm-security) | Verification Method |
+|---------------------|---------------------|
+| npm-security-T1 | `GET /api/repositories/{nickname}-npm-dev-virtual` returns 200 |
+| npm-security-T2 | `GET /api/storage/{nickname}-npm-org-remote` has subdirectories (cached packages present) |
+| npm-security-T3 | `GET /api/build/{nickname}-npm-sample/1` returns 200 |
+| npm-security-T4 | `GET /xray/api/v1/curation/policies` list contains a Policy with the participant's nickname |
+| npm-security-T5 | `GET /xray/api/v1/curation/audit/packages` contains a record of axios@1.7.2 blocked for the participant's repository |
+| npm-security-T6 | Build #3 exists and axios in its dependencies is not version 1.7.2 |
 
 **Leaderboard Rendering**:
 - The organizer runs `refresh-leaderboard.sh`, which every 30 seconds **reads only** all participants' uploaded `progress.json` — no verification is performed

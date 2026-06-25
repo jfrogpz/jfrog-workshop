@@ -1,11 +1,12 @@
 #!/bin/bash
-# Participant registration: validate nickname, create personal npm repositories,
+# Participant registration: validate nickname, create personal repositories per module,
 # upload profile/progress to Artifactory
-# 学员注册：验证昵称、创建个人 npm 仓库、上传 profile/progress 到 Artifactory
+# 学员注册：验证昵称、按模块创建个人仓库、上传 profile/progress 到 Artifactory
 
 set -eu
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+REPO_ROOT="$(CDPATH= cd -- "${SCRIPT_DIR}/.." && pwd)"
 PROFILE_FILE="${HOME}/.workshop-profile"
 EVENTS_REPO="workshop-events"
 
@@ -17,8 +18,8 @@ Set environment variables first / 使用前请先设置环境变量：
 
 Usage: $0 <NICKNAME> [EVENT_ID]
 
-  NICKNAME    Your nickname / 你的昵称（lowercase letters, numbers, hyphens, 3-20 chars / 小写字母、数字、连字符，3-20 个字符）
-  EVENT_ID    Event ID provided by instructor / 赛事 ID（由讲师提供）。Omit for self-study mode / 不提供则进入自主学习模式。
+  NICKNAME    Your nickname / 你的昵称（lowercase letters, numbers, hyphens, 3-20 chars）
+  EVENT_ID    Event ID provided by instructor / 赛事 ID（由讲师提供）。Omit for self-study / 不提供则进入自主学习模式。
 
 Example (event mode / 参加赛事):
   $0 alex 2026-06-shanghai
@@ -50,7 +51,6 @@ fi
 
 JFROG_URL="${JFROG_URL%/}"
 GITHUB_USER="${GITHUB_USER:-${GITHUB_ACTOR:-unknown}}"
-
 API="${JFROG_URL}/artifactory/api"
 
 curl_jf() {
@@ -78,19 +78,35 @@ if ! echo "$NICKNAME" | grep -Eq '^[a-z0-9][a-z0-9-]{1,18}[a-z0-9]$'; then
 fi
 echo "    ✅ Nickname valid / 昵称格式正确：${NICKNAME}"
 
-# ── Step 2: event mode — verify event config and nickname availability ─────────
+# ── Step 2: event mode — fetch config and verify nickname availability ─────────
+MODULES_LIST=""
+TASKS_FROM_CONFIG=""
+
 if [ -n "$EVENT_ID" ]; then
   echo ""
   echo ">>> Fetching event configuration / 获取赛事配置..."
-  CONFIG_STATUS=$(curl_jf -o /dev/null -w "%{http_code}" \
-    "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/config.json" 2>/dev/null || echo "000")
+  CONFIG_RAW=$(curl_jf \
+    "${JFROG_URL}/artifactory/${EVENTS_REPO}/${EVENT_ID}/config.json" \
+    2>/dev/null || echo "")
 
-  if [ "$CONFIG_STATUS" != "200" ]; then
+  if [ -z "$CONFIG_RAW" ]; then
     echo "  ❌ Event '${EVENT_ID}' not found. Check EVENT_ID or contact your instructor." >&2
     echo "  ❌ 找不到赛事 ${EVENT_ID}，请确认 EVENT_ID 是否正确，或联系讲师" >&2
     exit 1
   fi
   echo "    ✅ Event configuration confirmed / 赛事配置已确认"
+
+  MODULES_LIST=$(echo "$CONFIG_RAW" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(','.join(d.get('modules', [])))
+" 2>/dev/null || echo "")
+
+  TASKS_FROM_CONFIG=$(echo "$CONFIG_RAW" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(json.dumps(d.get('tasks', []), ensure_ascii=False))
+" 2>/dev/null || echo "[]")
 
   echo ""
   echo ">>> Checking nickname availability / 检查昵称可用性..."
@@ -126,65 +142,114 @@ PROF
   fi
 else
   echo "    ℹ️  Self-study mode, skipping event validation / 自主学习模式，跳过赛事验证"
+  # In self-study mode, load tasks from all available modules
+  MODULES_LIST=$(find "${REPO_ROOT}/modules" -name "tasks.json" 2>/dev/null \
+    | sed "s|${REPO_ROOT}/modules/||;s|/tasks.json||" \
+    | sort | tr '\n' ',' | sed 's/,$//')
+  TASKS_FROM_CONFIG="[]"
 fi
 
-# ── Step 3: create personal npm repositories ──────────────────────────────────
+# ── Step 3: create repositories for each module ───────────────────────────────
 echo ""
-echo ">>> Creating personal npm repositories / 创建个人 npm 仓库（昵称: ${NICKNAME}）..."
-echo "    Will create / 将创建：${NICKNAME}-npm-dev-local, ${NICKNAME}-npm-org-remote, ${NICKNAME}-npm-dev-virtual"
+echo ">>> Creating personal repositories / 创建个人仓库（昵称: ${NICKNAME}）..."
 
-if bash "${SCRIPT_DIR}/create-repo.sh" "$NICKNAME"; then
-  echo "    ✅ Repositories ready / 仓库就绪"
+if [ -z "$MODULES_LIST" ]; then
+  echo "  ⚠️  No modules found, skipping repository creation / 未找到模块，跳过仓库创建"
 else
-  echo "  ❌ Repository creation failed. Check JFROG_URL and JFROG_TOKEN, then re-run." >&2
-  echo "  ❌ 仓库创建失败，请检查 JFROG_URL 和 JFROG_TOKEN 是否正确，然后重新运行注册脚本" >&2
-  exit 1
+  for MODULE in $(echo "$MODULES_LIST" | tr ',' ' '); do
+    CREATE_REPO_SCRIPT="${REPO_ROOT}/modules/${MODULE}/create-repo.sh"
+    if [ -f "$CREATE_REPO_SCRIPT" ]; then
+      echo "    Module / 模块：${MODULE}"
+      bash "$CREATE_REPO_SCRIPT" "$NICKNAME"
+    else
+      echo "    ⚠️  No create-repo.sh for module ${MODULE}, skipping / 模块 ${MODULE} 无 create-repo.sh，跳过"
+    fi
+  done
+fi
+echo "    ✅ Repositories ready / 仓库就绪"
+
+# ── Step 4: build task list for progress initialization ───────────────────────
+if [ "$TASKS_FROM_CONFIG" = "[]" ] || [ -z "$TASKS_FROM_CONFIG" ]; then
+  TASKS_FROM_CONFIG=$(python3 -c "
+import json, os
+modules_dir = '${REPO_ROOT}/modules'
+tasks = []
+for module in sorted(os.listdir(modules_dir)):
+    tf = os.path.join(modules_dir, module, 'tasks.json')
+    if os.path.isfile(tf):
+        mt = json.load(open(tf))
+        tasks.extend([{'id': t['id'], 'name': t['name'], 'points': t['points']} for t in mt])
+print(json.dumps(tasks, ensure_ascii=False))
+" 2>/dev/null || echo "[]")
 fi
 
-# ── Step 4: initialize progress data ──────────────────────────────────────────
+# ── Step 5: initialize progress data ──────────────────────────────────────────
 echo ""
 echo ">>> Initializing progress data / 初始化进度数据..."
 NOW=$(date -u +"%Y-%m-%dT%H:%M:%S+00:00")
 
-# If local self-study progress exists, migrate it to event mode when switching
-# 如果本地有自主学习模式的进度文件，切换赛事模式时保留已完成的任务进度
 LOCAL_PROGRESS_FILE="${HOME}/.workshop-progress.json"
+PROGRESS_JSON=""
+
 if [ -n "${EVENT_ID:-}" ] && [ -f "$LOCAL_PROGRESS_FILE" ]; then
   echo "    Local self-study progress detected, migrating to event mode..."
   echo "    检测到本地自主学习进度，将迁移至赛事模式..."
   PROGRESS_JSON=$(EVENT_ID="$EVENT_ID" NICKNAME="$NICKNAME" NOW="$NOW" \
+    TASKS_JSON="$TASKS_FROM_CONFIG" \
     python3 -c "
-import json, os, sys
+import json, os
 with open(os.path.expanduser('~/.workshop-progress.json')) as f:
     existing = json.load(f)
 existing['nickname'] = os.environ['NICKNAME']
 existing['event_id'] = os.environ['EVENT_ID']
-t1 = existing.setdefault('tasks', {}).setdefault('T1', {})
-if t1.get('status') != 'done':
-    t1.update({'status': 'done', 'completed_at': os.environ['NOW'], 'points': 10})
+tasks = json.loads(os.environ['TASKS_JSON'])
+existing_tasks = existing.setdefault('tasks', {})
+for t in tasks:
+    if t['id'] not in existing_tasks:
+        existing_tasks[t['id']] = {'status': 'pending', 'completed_at': None, 'points': 0}
 print(json.dumps(existing, ensure_ascii=False))
 " 2>/dev/null || echo "")
 fi
 
 if [ -z "${PROGRESS_JSON:-}" ]; then
-  PROGRESS_JSON=$(cat <<JSON
-{
-  "nickname": "${NICKNAME}",
-  "event_id": "${EVENT_ID:-self-study}",
-  "registered_at": "${NOW}",
-  "tasks": {
-    "T1": { "status": "done",    "completed_at": "${NOW}", "points": 10 },
-    "T2": { "status": "pending", "completed_at": null,     "points": 0  },
-    "T3": { "status": "pending", "completed_at": null,     "points": 0  },
-    "T4": { "status": "pending", "completed_at": null,     "points": 0  },
-    "T5": { "status": "pending", "completed_at": null,     "points": 0  },
-    "T6": { "status": "pending", "completed_at": null,     "points": 0  }
-  },
-  "total_points": 10
-}
-JSON
-)
+  PROGRESS_JSON=$(NICKNAME="$NICKNAME" EVENT_ID="${EVENT_ID:-self-study}" NOW="$NOW" \
+    TASKS_JSON="$TASKS_FROM_CONFIG" \
+    python3 -c "
+import json, os
+nickname = os.environ['NICKNAME']
+event_id = os.environ['EVENT_ID']
+now = os.environ['NOW']
+tasks_raw = json.loads(os.environ['TASKS_JSON'])
+tasks = {}
+first = True
+for t in tasks_raw:
+    if first:
+        tasks[t['id']] = {'status': 'done', 'completed_at': now, 'points': t['points']}
+        first = False
+    else:
+        tasks[t['id']] = {'status': 'pending', 'completed_at': None, 'points': 0}
+total = sum(v.get('points', 0) for v in tasks.values())
+print(json.dumps({
+    'nickname': nickname,
+    'event_id': event_id,
+    'registered_at': now,
+    'tasks': tasks,
+    'total_points': total
+}, ensure_ascii=False))
+")
 fi
+
+FIRST_TASK_ID=$(echo "$TASKS_FROM_CONFIG" | python3 -c "
+import sys, json
+tasks = json.load(sys.stdin)
+print(tasks[0]['id'] if tasks else 'T1')
+" 2>/dev/null || echo "T1")
+
+FIRST_TASK_POINTS=$(echo "$TASKS_FROM_CONFIG" | python3 -c "
+import sys, json
+tasks = json.load(sys.stdin)
+print(tasks[0]['points'] if tasks else 10)
+" 2>/dev/null || echo "10")
 
 if [ -n "$EVENT_ID" ]; then
   PROFILE_JSON=$(cat <<JSON
@@ -210,7 +275,7 @@ else
   echo "    ✅ Progress saved locally / 进度已保存至本地（~/.workshop-progress.json）"
 fi
 
-# ── Step 5: save local profile ────────────────────────────────────────────────
+# ── Step 6: save local profile ────────────────────────────────────────────────
 cat > "$PROFILE_FILE" <<PROF
 NICKNAME=${NICKNAME}
 EVENT_ID=${EVENT_ID:-}
@@ -228,12 +293,11 @@ if [ -n "${EVENT_ID:-}" ]; then
 else
   echo "  Mode / 模式     : Self-study / 自主学习"
 fi
-echo "  Points / 得分   : 10 (T1 complete / 完成)"
+echo "  Points / 得分   : ${FIRST_TASK_POINTS} (${FIRST_TASK_ID} complete / 完成)"
 echo ""
 echo "  Check your progress / 查看当前进度："
 echo "  bash automation/check-progress.sh"
 echo ""
-echo "  Next task / 下一个任务：T2 - First npm build / 完成首次 npm build"
 echo "  Tell the AI assistant you have registered and it will guide you through the next step. ✨"
 echo "  请告诉 AI 助理你已完成注册，让它引导你进行下一步 ✨"
 echo ""
