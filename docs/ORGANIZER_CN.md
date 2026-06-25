@@ -171,7 +171,7 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 ## 赛后清理
 
-`delete-repo.sh` 会删除指定学员的以下内容：
+`cleanup-participant.sh` 会删除指定学员的以下内容：
 - 所有以 `<nickname>-` 为前缀的 Artifactory 仓库
 - 所有以 `<nickname>-` 为前缀的 build-info
 - `workshop-events/<event-id>/participants/<nickname>/` 下的 `profile.json` 和 `progress.json`（仅在指定 `--event-id` 时删除）
@@ -182,7 +182,7 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 ```bash
 # JFROG_TOKEN 和 JFROG_URL 已在步骤二中设置
-bash automation/delete-repo.sh <nickname> --event-id "2026-06-shanghai"
+bash automation/cleanup-participant.sh <nickname> --event-id "2026-06-shanghai"
 ```
 
 ### 批量清理所有学员

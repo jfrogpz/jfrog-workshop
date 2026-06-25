@@ -171,7 +171,7 @@ Confirm the following before the event starts:
 
 ## Post-Event Cleanup
 
-`delete-repo.sh` removes the following for a given participant:
+`cleanup-participant.sh` removes the following for a given participant:
 - All Artifactory repositories prefixed with `<nickname>-`
 - All build-info entries prefixed with `<nickname>-`
 - `profile.json` and `progress.json` from `workshop-events/<event-id>/participants/<nickname>/` (only when `--event-id` is provided)
@@ -182,7 +182,7 @@ Confirm the following before the event starts:
 
 ```bash
 # JFROG_TOKEN and JFROG_URL were already set in Step 2
-bash automation/delete-repo.sh <nickname> --event-id "2026-06-shanghai"
+bash automation/cleanup-participant.sh <nickname> --event-id "2026-06-shanghai"
 ```
 
 ### Bulk cleanup of all participants

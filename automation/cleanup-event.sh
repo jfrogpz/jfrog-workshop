@@ -66,7 +66,7 @@ echo ""
 while IFS= read -r nickname; do
   [ -n "$nickname" ] || continue
   echo ">>> Cleaning up / 清理学员：${nickname}"
-  bash "${SCRIPT_DIR}/delete-repo.sh" "$nickname" --event-id "$EVENT_ID"
+  bash "${SCRIPT_DIR}/cleanup-participant.sh" "$nickname" --event-id "$EVENT_ID"
   echo ""
 done <<EOF
 $PARTICIPANTS
