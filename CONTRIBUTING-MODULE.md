@@ -16,6 +16,7 @@ modules/
     ├── tasks.json            # Task definitions (required)
     ├── verify-tasks.sh       # Task verification functions (required)
     ├── create-repo.sh        # Artifactory repository setup (required)
+    ├── install-tools.sh      # Tool installation/verification (required)
     ├── sample-project/       # Sample project for participants (required)
     └── instructions.md       # Copilot Chat AI guide (required)
 ```
@@ -148,7 +149,44 @@ Place the participant's starting project files here. Requirements:
 
 ---
 
-## Step 5: Write the AI Guide — `instructions.md`
+## Step 5: Declare Tool Requirements — `install-tools.sh`
+
+This script is called by `.devcontainer/post-create.sh` when the Codespace starts. It should check for each tool required by the module, and install it if missing.
+
+```bash
+#!/bin/bash
+# <module-name> module: verify or install required tools
+
+set -e
+
+# ── maven ─────────────────────────────────────────────────────────────────────
+if command -v mvn >/dev/null 2>&1; then
+  echo "  ✅ mvn $(mvn --version 2>&1 | head -1)"
+else
+  echo "  Installing Maven / 安装 Maven..."
+  sudo apt-get update -qq && sudo apt-get install -y maven
+  echo "  ✅ mvn $(mvn --version 2>&1 | head -1)"
+fi
+
+# ── java ──────────────────────────────────────────────────────────────────────
+if command -v java >/dev/null 2>&1; then
+  echo "  ✅ java $(java --version 2>&1 | head -1)"
+else
+  echo "  ❌ java not found after Maven install — check apt output above" >&2
+  exit 1
+fi
+```
+
+**Rules**:
+- Use `command -v <tool>` to check before installing — avoid reinstalling tools already in the base image
+- Exit with non-zero on failure so `post-create.sh` surfaces the error immediately
+- Keep output concise: one `✅` line per tool when present, install progress when not
+
+The GitHub Codespace default base image (`mcr.microsoft.com/devcontainers/universal`) includes many common tools (Node.js, Python, Java, Go, etc.). Always check first — only install if missing.
+
+---
+
+## Step 6: Write the AI Guide — `instructions.md`
 
 This file is loaded by GitHub Copilot Chat when participants are working in this module's directory.
 
@@ -204,6 +242,8 @@ bash automation/setup-event.sh \
 - [ ] `create-repo.sh` — creates all repositories needed for this module's tasks
 - [ ] `verify-tasks.sh` — one `verify_*` function per task, named correctly
 - [ ] `verify-tasks.sh` — all functions tested against a real JFrog instance
+- [ ] `install-tools.sh` — checks before installing, exits non-zero on failure
+- [ ] `install-tools.sh` — tested in a fresh Codespace (not just locally)
 - [ ] `sample-project/` — project runs successfully after repository setup
 - [ ] `instructions.md` — `applyTo` frontmatter set correctly
 - [ ] `instructions.md` — all commands use `<NICKNAME>` placeholder

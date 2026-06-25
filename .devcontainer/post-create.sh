@@ -1,36 +1,52 @@
 #!/bin/bash
 set -e
 
+REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+
 echo ""
 echo "=========================================="
 echo "  JFrog Workshop Environment Setup / 环境初始化"
 echo "=========================================="
 echo ""
 
-# 安装 JFrog CLI
-echo "Installing JFrog CLI / 正在安装 JFrog CLI..."
+# ── Install JFrog CLI ─────────────────────────────────────────────────────────
+echo ">>> Installing JFrog CLI / 安装 JFrog CLI..."
 curl -fL https://install-cli.jfrog.io | sh
+echo "  ✅ jf $(jf --version 2>&1 | head -1)"
 echo ""
 
-# 验证必要工具
-check_tool() {
-  if command -v "$1" >/dev/null 2>&1; then
-    echo "  ✅ $1 $($1 --version 2>&1 | head -1)"
-  else
-    echo "  ❌ $1 not found, please contact your instructor / 未找到，请联系讲师" >&2
-    exit 1
+# ── Run each module's install-tools.sh ────────────────────────────────────────
+echo ">>> Installing module tools / 安装模块工具..."
+FOUND=0
+for INSTALL_SCRIPT in "${REPO_ROOT}"/modules/*/install-tools.sh; do
+  if [ -f "$INSTALL_SCRIPT" ]; then
+    MODULE=$(basename "$(dirname "$INSTALL_SCRIPT")")
+    echo "  Module / 模块：${MODULE}"
+    bash "$INSTALL_SCRIPT"
+    FOUND=$((FOUND + 1))
   fi
-}
+done
 
-echo "Checking required tools / 正在检查工具..."
-check_tool jf
-check_tool node
-check_tool npm
-check_tool git
+if [ "$FOUND" -eq 0 ]; then
+  echo "  (no module install-tools.sh found / 未找到模块安装脚本)"
+fi
 echo ""
 
-# 确保脚本可执行
-chmod +x "$(dirname "$0")/../automation/"*.sh 2>/dev/null || true
+# ── Verify git (always required) ──────────────────────────────────────────────
+echo ">>> Checking git / 检查 git..."
+if command -v git >/dev/null 2>&1; then
+  echo "  ✅ git $(git --version)"
+else
+  echo "  ❌ git not found / 未找到 git" >&2
+  exit 1
+fi
+echo ""
+
+# ── Make scripts executable ───────────────────────────────────────────────────
+chmod +x "${REPO_ROOT}/automation/"*.sh 2>/dev/null || true
+chmod +x "${REPO_ROOT}/modules/"*/install-tools.sh 2>/dev/null || true
+chmod +x "${REPO_ROOT}/modules/"*/create-repo.sh 2>/dev/null || true
+chmod +x "${REPO_ROOT}/modules/"*/verify-tasks.sh 2>/dev/null || true
 
 echo "=========================================="
 echo "  🎉 Environment ready! / 环境就绪！"
