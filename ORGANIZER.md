@@ -33,6 +33,12 @@ export JFROG_TOKEN="your-admin-token"
 export JFROG_URL="https://yourcompany.jfrog.io"
 ```
 
+To see which modules are currently available, run the script with no arguments:
+
+```bash
+bash automation/setup-event.sh
+```
+
 Then run the initialization script, specifying which learning modules to include:
 
 ```bash
@@ -57,7 +63,6 @@ The script will:
 - Upload the event configuration `config.json` (with tasks aggregated from all specified modules)
 - Output the complete command to start the leaderboard
 
-To see available modules, run the script with no arguments.
 
 ---
 
@@ -80,7 +85,7 @@ Single-module event (`--modules npm-security`):
 
 ```
 ============================================================
-  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🏆  JFrog Workshop  |  Event ID / 赛事 ID：2026-06-shanghai
   🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：100 pts
 ============================================================
               [npm-security                    ]
@@ -98,7 +103,7 @@ Multi-module event (`--modules npm-security,maven-basic`), task columns are grou
 
 ```
 =====================================================================
-  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🏆  JFrog Workshop  |  Event ID / 赛事 ID：2026-06-shanghai
   🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：160 pts
 =====================================================================
           [npm-security          ]  [maven-basic    ]
@@ -206,11 +211,11 @@ Participants who don't use Codespace need to set up the environment manually —
 ### How Scoring and the Leaderboard Work
 
 **Participant Registration (first task of each module)**:
-- The participant runs `register.sh`, which reads the event's `config.json` to discover which modules are active, calls each module's `create-repo.sh` to create the necessary Artifactory repositories, and writes an initial `progress.json` (first task marked as done)
+- The participant runs `register.sh`, which reads the event's `config.json` to discover which modules are active, calls each module's `create-repo.sh` (if provided) to create the necessary Artifactory resources, and writes an initial `progress.json` (first task of each module marked as done)
 - After successful registration, `~/.workshop-profile` is written locally — all subsequent scripts read from it so credentials don't need to be re-entered
 
 **Task Verification**:
-- **Verification happens on the participant side**: After completing each task, participants run `check-progress.sh`, which dynamically sources each module's `verify-tasks.sh` and dispatches to the matching `verify_<task_id>()` function
+- **Verification happens on the participant side**: After completing each task, participants run `check-and-update-progress.sh`, which dynamically sources each module's `verify-tasks.sh` and dispatches to the matching `verify_<task_id>()` function
 - Completed tasks are marked `done` and progress is uploaded to the `workshop-events` repository for the leaderboard to read
 - Already-completed tasks are not re-verified — only pending tasks are checked
 
@@ -221,7 +226,7 @@ Task IDs use the format `<module>-<sequence>`, e.g. `npm-security-T1`. The verif
 - Sorted by total score descending; ties broken by the time of the last completed task (ascending)
 - The organizer projects this terminal window; participants can see it in real time
 
-> **Note**: The leaderboard reflects progress from the last time a participant ran `check-progress.sh`. Participants must actively run the script after completing a task to update their progress.
+> **Note**: The leaderboard reflects progress from the last time a participant ran `check-and-update-progress.sh`. Participants must actively run the script after completing a task to update their progress.
 
 ---
 

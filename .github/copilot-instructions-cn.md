@@ -12,7 +12,7 @@
 
 每次对话开始时，先运行：
 ```bash
-bash automation/check-progress.sh
+bash automation/check-and-update-progress.sh
 ```
 - 输出显示任务进度 → 学员已注册，从上次中断处继续
 - 输出报错"未找到本地配置文件" → 学员尚未注册，进入第二步
@@ -105,14 +105,14 @@ export JFROG_URL="<讲师提供的地址>"
 export JFROG_TOKEN="<你的 Access Token>"
 ```
 
-**Q：check-progress.sh 报错 / 找不到 profile**
+**Q：check-and-update-progress.sh 报错 / 找不到 profile**
 A：重新运行 `register.sh` 即可恢复本地配置文件。
 
 ---
 
 ## 不使用 AI 助理时
 
-如果 Copilot Chat 不可用，可以直接阅读模块的指令文件：
+如果 Copilot Chat 不可用，可以直接阅读对应模块的指令文件：
 - `.github/instructions/<模块名>.instructions.md` — 完整任务步骤和命令
 
 不使用 Codespace 的学员，请参考 [SETUP_CN.md](../SETUP_CN.md) 完成本地环境配置。

@@ -131,7 +131,7 @@ JFROG_TOKEN=${JFROG_TOKEN}
 PROF
       echo ""
       echo "  ✅ Registration restored! / 注册信息已恢复！"
-      echo "  Run / 运行: bash automation/check-progress.sh"
+      echo "  Run / 运行: bash automation/check-and-update-progress.sh"
       echo ""
       exit 0
     else
@@ -296,7 +296,7 @@ fi
 echo "  Points / 得分   : ${FIRST_TASK_POINTS} (${FIRST_TASK_ID} complete / 完成)"
 echo ""
 echo "  Check your progress / 查看当前进度："
-echo "  bash automation/check-progress.sh"
+echo "  bash automation/check-and-update-progress.sh"
 echo ""
 echo "  Tell the AI assistant you have registered and it will guide you through the next step. ✨"
 echo "  请告诉 AI 助理你已完成注册，让它引导你进行下一步 ✨"

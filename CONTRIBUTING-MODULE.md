@@ -58,7 +58,7 @@ Each task in the module must have a unique ID following the pattern `<module-nam
 - Task IDs must be unique across **all** modules (use module prefix to guarantee this)
 - The **first task** in the list is always automatically marked `done` upon registration (it represents the registration step itself)
 - `points` values are flexible — no fixed total required
-- `hint` and `hint_cn` are shown in `check-progress.sh` output to help participants who are stuck
+- `hint` and `hint_cn` are shown in `check-and-update-progress.sh` output to help participants who are stuck
 
 ---
 
@@ -111,7 +111,7 @@ create_repo "${NICKNAME}-maven-dev-virtual" \
 
 Each task needs a verification function named `verify_<task_id_with_hyphens_replaced_by_underscores>`.
 
-`check-progress.sh` calls these dynamically: task ID `maven-basic-T2` → function `verify_maven_basic_T2`.
+`check-and-update-progress.sh` calls these dynamically: task ID `maven-basic-T2` → function `verify_maven_basic_T2`.
 
 ```bash
 #!/bin/bash
@@ -139,7 +139,7 @@ verify_maven_basic_T2() {
 **Rules**:
 - Function names must exactly match the task ID with hyphens replaced by underscores
 - Each function must return exit code `0` for pass, non-zero for fail
-- Functions can use `NICKNAME`, `JFROG_URL`, `JFROG_TOKEN`, `API`, and `curl_jf` — these are set by `check-progress.sh` before sourcing this file
+- Functions can use `NICKNAME`, `JFROG_URL`, `JFROG_TOKEN`, `API`, and `curl_jf` — these are set by `check-and-update-progress.sh` before sourcing this file
 - Keep each function independent — do not rely on state from other verify functions
 
 ---
@@ -276,4 +276,4 @@ bash automation/setup-event.sh \
 - [ ] `.github/instructions/<module>.instructions.md` — prerequisites section lists required JFrog features
 - [ ] Run `bash automation/setup-event.sh` — new module appears in available list
 - [ ] Run `bash automation/register.sh` — repositories created successfully
-- [ ] Run `bash automation/check-progress.sh` — all tasks verified correctly
+- [ ] Run `bash automation/check-and-update-progress.sh` — all tasks verified correctly

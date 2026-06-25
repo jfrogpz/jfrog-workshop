@@ -10,26 +10,7 @@ This guide is for participants who are not using GitHub Codespace. It explains h
 
 ## Tools to Install
 
-### 1. Node.js (v18 or above)
-
-Download and install from [nodejs.org](https://nodejs.org), or use a package manager:
-
-```bash
-# macOS (Homebrew)
-brew install node
-
-# Ubuntu / Debian
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-Verify:
-```bash
-node -v
-npm -v
-```
-
-### 2. JFrog CLI
+### 1. JFrog CLI
 
 ```bash
 # macOS (Homebrew)
@@ -42,6 +23,31 @@ curl -fL https://install-cli.jfrog.io | sh
 Verify:
 ```bash
 jf -v
+```
+
+### 2. Module-Specific Tools
+
+Each module requires different tools. To see what a module needs, read the comments at the top of its `install-tools.sh`:
+
+```bash
+cat modules/npm-security/install-tools.sh
+```
+
+Then install each listed tool using its instructions. For example, the `npm-security` module requires **Node.js (v18+)**:
+
+```bash
+# macOS (Homebrew)
+brew install node
+
+# Ubuntu / Debian
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+Verify:
+```bash
+node -v
+npm -v
 ```
 
 ### 3. Clone the Repository
@@ -72,11 +78,17 @@ To get a Token: log in to JFrog UI with the admin credentials provided by your i
 
 Codespace includes GitHub Copilot Chat, which automatically reads the task guide and provides step-by-step instructions.
 
-If you don't have Copilot, read the same task guide directly:
+If you don't have Copilot, read the module's AI guide directly. First decide which module you are working on, then open the corresponding file:
 
-**[.github/copilot-instructions.md](.github/copilot-instructions.md)**
+```
+.github/instructions/<module-name>.instructions.md
+```
 
-This document contains detailed steps, commands, and success criteria for all 6 tasks — identical to what the AI assistant provides. Just read and follow in order.
+For example, for the `npm-security` module:
+
+**[.github/instructions/npm-security.instructions.md](.github/instructions/npm-security.instructions.md)**
+
+This document contains detailed steps, commands, and success criteria for all tasks — identical to what the AI assistant provides. Just read and follow in order.
 
 ---
 
@@ -88,8 +100,8 @@ Wherever the docs or scripts reference `/workspaces/jfrog-workshop/`, substitute
 
 ```bash
 # In Codespace
-cd /workspaces/jfrog-workshop/npm-sample
+cd /workspaces/jfrog-workshop/modules/npm-security/sample-project
 
 # Locally, replace with
-cd ~/jfrog-workshop/npm-sample
+cd ~/jfrog-workshop/modules/npm-security/sample-project
 ```

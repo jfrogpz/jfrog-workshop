@@ -1,8 +1,8 @@
 #!/bin/bash
 # Organizer: continuously read all participant progress and render the leaderboard (refreshes every 30s)
 # 主办者持续运行：只读取所有学员进展并渲染排行榜（每 30 秒刷新一次）
-# Verification logic is on the participant side (check-progress.sh); this script is read-only
-# 验证逻辑已移至学员侧 check-progress.sh，此脚本不做任何验证或更新
+# Verification logic is on the participant side (check-and-update-progress.sh); this script is read-only
+# 验证逻辑已移至学员侧 check-and-update-progress.sh，此脚本不做任何验证或更新
 
 set -eu
 
@@ -79,8 +79,12 @@ def last_completed_at(p):
     times = [t.get('completed_at') or '' for t in p.get('tasks', {}).values() if t.get('status') == 'done']
     return max(times) if times else ''
 
+def module_points(p, mod_tasks):
+    """Sum points for tasks in a specific module."""
+    tasks = p.get('tasks', {})
+    return sum(tasks.get(t['id'], {}).get('points', 0) for t in mod_tasks)
+
 def event_points(p):
-    """Sum only tasks that belong to this event's task list."""
     tasks = p.get('tasks', {})
     return sum(tasks.get(t['id'], {}).get('points', 0) for t in tasks_raw)
 
@@ -106,70 +110,91 @@ def cjust(s, width):
     pad = max(0, width - dw(s))
     return ' ' * (pad // 2) + s + ' ' * (pad - pad // 2)
 
-# Group tasks by module prefix (e.g. "npm-security" from "npm-security-T1")
-# A task belongs to a module if its ID matches <module>-<suffix>
-# We derive short column labels from task IDs
-task_ids = [t['id'] for t in tasks_raw]
-max_points = sum(t['points'] for t in tasks_raw)
-
-# Shorten task IDs for column headers: npm-security-T1 → T1, maven-basic-T1 → T1
-# Use last segment after final '-T' pattern, fallback to full id
 def short_label(tid):
     parts = tid.rsplit('-', 1)
     return parts[-1] if len(parts) > 1 else tid
 
+# Build ordered module list preserving task order
+modules_seen = []
+module_tasks = {}
+for t in tasks_raw:
+    parts = t['id'].rsplit('-', 1)
+    mod = parts[0] if len(parts) > 1 else '_unknown'
+    if mod not in modules_seen:
+        modules_seen.append(mod)
+        module_tasks[mod] = []
+    module_tasks[mod].append(t)
+
+max_points = sum(t['points'] for t in tasks_raw)
+multi_module = len(modules_seen) > 1
+
 COL_W = 4
 NAME_W = 22
 RANK_W = 4
-# Compute total width dynamically
-W = 2 + RANK_W + 1 + NAME_W + 1 + COL_W * len(task_ids) + 2 + 6
-W = max(W, 60)
-
 ICONS = {"done": "✅", "in_progress": "⏳", "pending": "⬜"}
 MEDALS = {1: "🥇", 2: "🥈", 3: "🥉"}
 
+# Outer width — based on widest module block
+def block_width(mod_task_list):
+    w = 2 + RANK_W + 1 + NAME_W + 1 + COL_W * len(mod_task_list) + 2 + 6
+    return max(w, 60)
+
+W = max((block_width(module_tasks[m]) for m in modules_seen), default=60)
+
 print("=" * W)
-print(f"  🏆  JFrog Workshop  |  Event / 赛事：{event_id}")
+print(f"  🏆  JFrog Workshop  |  Event ID / 赛事 ID：{event_id}")
 print(f"  🕐  Updated / 更新时间：{refresh_time}  |  Max / 满分：{max_points} pts")
 print("=" * W)
 
-# Header: show module groups
-modules_seen = []
-for t in tasks_raw:
-    parts = t['id'].rsplit('-', 1)
-    mod = parts[0] if len(parts) > 1 else ''
-    if mod and mod not in modules_seen:
-        modules_seen.append(mod)
+for mod in modules_seen:
+    mod_task_list = module_tasks[mod]
+    mod_max = sum(t['points'] for t in mod_task_list)
+    bw = block_width(mod_task_list)
 
-if len(modules_seen) > 1:
-    mod_header = "  " + " " * (RANK_W + 1 + NAME_W + 1)
-    for mod in modules_seen:
-        mod_task_ids = [t['id'] for t in tasks_raw if t['id'].startswith(mod + '-')]
-        mod_label = mod[:max(COL_W * len(mod_task_ids) - 1, 4)]
-        mod_header += cjust(f"[{mod_label}]", COL_W * len(mod_task_ids))
-    print(mod_header)
+    # Rank participants by this module's points for per-module ordering
+    mod_sorted = sorted(lines, key=lambda x: (-module_points(x, mod_task_list), last_completed_at(x)))
 
-header = "  " + ljust("Rank", RANK_W) + " " + ljust("Nickname / 昵称", NAME_W) + " "
-for t in tasks_raw:
-    header += cjust(short_label(t['id']), COL_W)
-header += "  " + rjust("Pts", 6)
-print(header)
-print("-" * W)
+    print()
+    print(f"  [{mod}]  (max: {mod_max} pts)")
+    header = "  " + ljust("Rank", RANK_W) + " " + ljust("Nickname / 昵称", NAME_W) + " "
+    for t in mod_task_list:
+        header += cjust(short_label(t['id']), COL_W)
+    header += "  " + rjust("Pts", 6)
+    print(header)
+    print("  " + "-" * (bw - 2))
 
+    for i, p in enumerate(mod_sorted):
+        rank = i + 1
+        medal = MEDALS.get(rank, f"#{rank:<3}")
+        tasks = p.get("tasks", {})
+        icons = ""
+        for t in mod_task_list:
+            status = tasks.get(t['id'], {}).get('status', 'pending')
+            icons += cjust(ICONS.get(status, '⬜'), COL_W)
+        pts = module_points(p, mod_task_list)
+        nickname = p.get("nickname", "")[:NAME_W]
+        row = "  " + ljust(medal, RANK_W) + " " + ljust(nickname, NAME_W) + " " + icons + "  " + rjust(f"{pts}pts", 6)
+        print(row)
+
+    print("  " + "-" * (bw - 2))
+
+# Overall summary (always shown; especially useful for multi-module)
+OW = max(2 + RANK_W + 1 + NAME_W + 2 + 8, 60)
+print()
+if multi_module:
+    print(f"  [Overall / 总排行]")
+else:
+    print(f"  [Summary / 汇总]")
+print("  " + ljust("Rank", RANK_W) + " " + ljust("Nickname / 昵称", NAME_W) + "  " + rjust("Total", 8))
+print("  " + "-" * (OW - 2))
 for i, p in enumerate(lines):
     rank = i + 1
     medal = MEDALS.get(rank, f"#{rank:<3}")
-    tasks = p.get("tasks", {})
-    icons = ""
-    for t in tasks_raw:
-        status = tasks.get(t['id'], {}).get('status', 'pending')
-        icons += cjust(ICONS.get(status, '⬜'), COL_W)
     pts = event_points(p)
     nickname = p.get("nickname", "")[:NAME_W]
-    row = "  " + ljust(medal, RANK_W) + " " + ljust(nickname, NAME_W) + " " + icons + "  " + rjust(f"{pts}pts", 6)
+    row = "  " + ljust(medal, RANK_W) + " " + ljust(nickname, NAME_W) + "  " + rjust(f"{pts}pts", 8)
     print(row)
-
-print("-" * W)
+print("  " + "-" * (OW - 2))
 print(f"  {len(lines)} participants / 名学员参赛")
 print("=" * W)
 print()

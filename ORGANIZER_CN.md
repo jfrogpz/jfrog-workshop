@@ -33,6 +33,12 @@ export JFROG_TOKEN="your-admin-token"
 export JFROG_URL="https://yourcompany.jfrog.io"
 ```
 
+运行不带参数的命令可查看当前所有可用模块：
+
+```bash
+bash automation/setup-event.sh
+```
+
 然后运行初始化脚本，指定本场赛事要使用的学习模块：
 
 ```bash
@@ -57,7 +63,6 @@ bash automation/setup-event.sh \
 - 从各模块的 `tasks.json` 聚合任务列表，上传赛事配置 `config.json`
 - 输出启动排行榜的完整命令
 
-运行脚本时不带参数可查看当前可用模块列表。
 
 ---
 
@@ -80,7 +85,7 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 ```
 ============================================================
-  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🏆  JFrog Workshop  |  Event ID / 赛事 ID：2026-06-shanghai
   🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：100 pts
 ============================================================
               [npm-security                    ]
@@ -98,7 +103,7 @@ bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 
 ```
 =====================================================================
-  🏆  JFrog Workshop  |  Event / 赛事：2026-06-shanghai
+  🏆  JFrog Workshop  |  Event ID / 赛事 ID：2026-06-shanghai
   🕐  Updated / 更新时间：2026-06-22 10:30:00  |  Max / 满分：160 pts
 =====================================================================
           [npm-security          ]  [maven-basic    ]
@@ -206,11 +211,11 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 ### 积分与排行榜工作原理
 
 **学员注册（每个模块的第一个任务）**：
-- 学员运行 `register.sh`，脚本从赛事 `config.json` 读取活跃模块，调用各模块的 `create-repo.sh` 创建所需 Artifactory 仓库，并写入初始 `progress.json`（第一个任务标记为完成）
+- 学员运行 `register.sh`，脚本从赛事 `config.json` 读取活跃模块，调用各模块的 `create-repo.sh`（如有）创建所需 Artifactory 资源，并写入初始 `progress.json`（每个模块的第一个任务标记为完成）
 - 注册成功后，脚本在学员本地写入 `~/.workshop-profile`，保存昵称、赛事 ID、JFrog 地址和 Token，后续脚本均从此文件读取，无需重复输入
 
 **任务验证**：
-- **验证发生在学员侧**：学员每完成一个任务后运行 `check-progress.sh`，脚本动态加载各模块的 `verify-tasks.sh`，按任务 ID 派发到对应的验证函数
+- **验证发生在学员侧**：学员每完成一个任务后运行 `check-and-update-progress.sh`，脚本动态加载各模块的 `verify-tasks.sh`，按任务 ID 派发到对应的验证函数
 - 验证通过的任务标记为 `done`，进度上传至 `workshop-events` 仓库供排行榜读取
 - 已完成的任务不重复验证，只验证尚未完成的任务
 
@@ -222,7 +227,7 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 - 按总分降序、同分按最后任务完成时间升序排列
 - 组织者将此终端窗口投屏，学员实时可见
 
-> **注意**：排行榜反映的是学员最后一次运行 `check-progress.sh` 时上传的进度。学员完成任务后需主动运行脚本，进度才会更新。
+> **注意**：排行榜反映的是学员最后一次运行 `check-and-update-progress.sh` 时上传的进度。学员完成任务后需主动运行脚本，进度才会更新。
 
 ---
 

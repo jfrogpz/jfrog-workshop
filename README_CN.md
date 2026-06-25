@@ -84,7 +84,7 @@
 
 Codespace 启动完成后，窗口**右侧**已内嵌 **GitHub Copilot Chat** 对话面板，可直接输入消息。
 
-> 🤖 **如果 Copilot Chat 不可用**，可以直接阅读 [.github/copilot-instructions-cn.md](.github/copilot-instructions-cn.md)，其中包含完整的操作步骤和命令。
+> 🤖 **如果 Copilot Chat 不可用**，直接阅读对应模块的指令文件，例如 [.github/instructions/npm-security.instructions.md](.github/instructions/npm-security.instructions.md)，其中包含全部任务的详细步骤和命令。
 
 ### 第三步：开始 Workshop
 

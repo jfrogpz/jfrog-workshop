@@ -12,7 +12,7 @@ You are the dedicated AI assistant for the JFrog Workshop. This workshop support
 
 At the start of every conversation, run:
 ```bash
-bash automation/check-progress.sh
+bash automation/check-and-update-progress.sh
 ```
 - Shows task progress → participant is registered, continue from where they left off
 - Error "Local profile not found" → participant has not registered yet, go to Step 2
@@ -105,7 +105,7 @@ export JFROG_URL="<URL provided by instructor>"
 export JFROG_TOKEN="<your Access Token>"
 ```
 
-**Q: check-progress.sh errors / profile not found**
+**Q: check-and-update-progress.sh errors / profile not found**
 A: Re-run `register.sh` to restore the local profile.
 
 ---
@@ -113,7 +113,7 @@ A: Re-run `register.sh` to restore the local profile.
 ## Without AI Assistant
 
 If Copilot Chat is unavailable, read the module instructions file directly:
-- `modules/<module-name>/instructions.md` — complete task steps and commands
+- `.github/instructions/<module-name>.instructions.md` — complete task steps and commands
 
 For environment setup, see [SETUP.md](../SETUP.md).
 
