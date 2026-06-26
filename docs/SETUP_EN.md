@@ -81,12 +81,12 @@ Codespace includes GitHub Copilot Chat, which automatically reads the task guide
 If you don't have Copilot, read the module's AI guide directly. First decide which module you are working on, then open the corresponding file:
 
 ```
-.github/instructions/<module-name>.instructions.md
+.github/instructions/<module-name>.instructions-en.md
 ```
 
 For example, for the `npm-security` module:
 
-**[.github/instructions/npm-security.instructions.md](../.github/instructions/npm-security.instructions.md)**
+**[.github/instructions/npm-security.instructions-en.md](../.github/instructions/npm-security.instructions-en.md)**
 
 This document contains detailed steps, commands, and success criteria for all tasks — identical to what the AI assistant provides. Just read and follow in order.
 

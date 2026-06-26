@@ -86,7 +86,7 @@ Click the button below to launch the cloud development environment instantly (no
 
 Once Codespace is ready, the **GitHub Copilot Chat** panel is embedded on the **right side** of the window — type your message directly.
 
-> 🤖 **If Copilot Chat is unavailable**, read the module instructions file directly — e.g. [.github/instructions/npm-security.instructions.md](.github/instructions/npm-security.instructions.md) — it contains complete step-by-step instructions for all tasks.
+> 🤖 **If Copilot Chat is unavailable**, read the module instructions file directly — e.g. [.github/instructions/npm-security.instructions-en.md](.github/instructions/npm-security.instructions-en.md) — it contains complete step-by-step instructions for all tasks.
 
 ### Step 3: Start the Workshop
 
