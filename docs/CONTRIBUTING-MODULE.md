@@ -1,60 +1,60 @@
-# How to Add a New Workshop Module
+# 如何添加新的 Workshop 模块
 
-> 🌐 [中文版](./CONTRIBUTING-MODULE_CN.md)
+> 🌐 [English version](./CONTRIBUTING-MODULE_EN.md)
 
-This document is designed to be used with an AI assistant (e.g. GitHub Copilot Chat) to develop new workshop modules — share this document with the AI and describe the module you want to build.
+本文档旨在配合 AI 助理（如 GitHub Copilot Chat）使用，帮助你开发新的 Workshop 模块——将本文档分享给 AI，描述你想构建的模块，即可开始协作。
 
-This guide explains how to create a new learning module for the JFrog Workshop. Each module is a self-contained unit with its own task definitions, verification logic, sample project, and AI guide.
+本文档说明如何为 JFrog Workshop 创建新的学习模块。每个模块是一个独立单元，包含自己的任务定义、验证逻辑、示例项目和 AI 指南。
 
 ---
 
-## Module Directory Structure
+## 模块目录结构
 
-Create a new directory under `modules/` named after your module (use lowercase letters, numbers, and hyphens):
+在 `modules/` 下创建以模块命名的目录（使用小写字母、数字和连字符）：
 
 ```
 modules/
-└── <module-name>/
-    ├── sample-project/       # Sample project for participants (required)
-    ├── install-tools.sh      # Tool installation/verification (required)
-    ├── tasks.json            # Task definitions (required)
-    ├── verify-tasks.sh       # Task verification functions (required)
-    ├── create-repo.sh        # Artifactory repository setup (optional)
-    └── ...                   # Other scripts (optional)
+└── <模块名>/
+    ├── sample-project/       # 学员示例项目（必须）
+    ├── install-tools.sh      # 工具安装/验证（必须）
+    ├── tasks.json            # 任务定义（必须）
+    ├── verify-tasks.sh       # 任务验证函数（必须）
+    ├── create-repo.sh        # Artifactory 仓库初始化（可选）
+    └── ...                   # 其它脚本（可选）
 
 .github/instructions/
-├── <module-name>.instructions.md      # Copilot Chat AI guide (required)
-└── <module-name>.instructions-cn.md  # Chinese reading guide for participants without an AI assistant (optional)
+├── <模块名>.instructions.md      # Copilot Chat AI 指南（中文，必须）
+└── <模块名>.instructions-en.md  # 英文版 AI 指南（可选）
 ```
 
-The AI guide lives in `.github/instructions/`. It is loaded in two ways:
-- **Auto-load**: the `applyTo: "modules/<module-name>/**"` frontmatter causes Copilot Chat to load it automatically when a participant opens any file under `modules/<module-name>/` in the editor
-- **Explicit load**: `copilot-instructions.md` instructs the AI to run `cat .github/instructions/<module-name>.instructions.md` when a participant selects a module — this works even when no file is open in the editor
+AI 指南放在 `.github/instructions/`，通过两种方式加载：
+- **自动加载**：`applyTo: "modules/<模块名>/**"` frontmatter 使 Copilot Chat 在学员编辑器中打开 `modules/<模块名>/` 下任意文件时自动加载
+- **主动加载**：`copilot-instructions.md` 指示 AI 在学员选择模块时执行 `cat .github/instructions/<模块名>.instructions.md`（中文版）——即使学员没有在编辑器中打开文件也能生效
 
-**Naming convention**: Module names should describe the technology and focus area, e.g. `npm-security`, `npm-basic`, `pypi-curation`.
-
----
-
-## Step 1: Add a Sample Project — `sample-project/`
-
-Place the participant's starting project files here. Requirements:
-- Must be a runnable project for the target package type
-- Should have at least one dependency that can be used to demonstrate the workshop's security scenario
-- Keep it minimal — participants shouldn't need to understand the project code
+**命名规范**：模块名应描述技术类型和重点方向，例如 `npm-security`、`npm-basic`、`pypi-curation`。
 
 ---
 
-## Step 2: Declare Tool Requirements — `install-tools.sh`
+## 第一步：添加示例项目 — `sample-project/`
 
-This script is called by `.devcontainer/post-create.sh` when the Codespace starts. Refer to `modules/npm-security/install-tools.sh` as a reference. The script should check for required tools, install if missing, and exit non-zero on failure.
-
-This step is required, but in practice most tools (Node.js, JFrog CLI, etc.) are already available in the default Codespace environment.
+将学员的起始项目文件放在这里。要求：
+- 必须是目标包类型的可运行项目
+- 至少包含一个能演示 Workshop 安全场景的依赖
+- 保持简洁——学员不需要理解项目代码本身
 
 ---
 
-## Step 3: Define Tasks — `tasks.json`
+## 第二步：声明工具依赖 — `install-tools.sh`
 
-Design your tasks based on the sample project scenarios. Each task must have a unique ID following the pattern `<module-name>-T<number>`.
+该脚本由 `.devcontainer/post-create.sh` 在 Codespace 启动时调用。可参考 `modules/npm-security/install-tools.sh` 作为示例。脚本应检查所需工具是否存在，不存在则安装，失败时以非零退出码退出。
+
+此步骤为必须，但在实践中大多数工具（Node.js、JFrog CLI 等）在默认 Codespace 环境中已可用。
+
+---
+
+## 第三步：定义任务 — `tasks.json`
+
+根据示例项目的场景设计任务。模块中的每个任务必须有唯一 ID，格式为 `<模块名>-T<序号>`。
 
 ```json
 [
@@ -77,26 +77,26 @@ Design your tasks based on the sample project scenarios. Each task must have a u
 ]
 ```
 
-**Rules**:
-- Task IDs must be unique across **all** modules (use module prefix to guarantee this)
-- `points` values are flexible — no fixed total required
-- `hint` and `hint_cn` are shown in `check-and-update-progress.sh` output to help participants who are stuck
+**规则**：
+- 任务 ID 必须在**所有模块中唯一**（使用模块名前缀可保证这一点）
+- `points` 分值灵活设置，无需固定总分
+- `hint` 和 `hint_cn` 在 `check-and-update-progress.sh` 输出中显示，帮助遇到困难的学员
 
 ---
 
-## Step 4: Write Verification Functions — `verify-tasks.sh`
+## 第四步：编写验证函数 — `verify-tasks.sh`
 
-Each task needs a verification function named `verify_<task_id_with_hyphens_replaced_by_underscores>`.
+每个任务需要一个对应的验证函数，命名规则：`verify_<任务ID中的连字符替换为下划线>`。
 
-`check-and-update-progress.sh` calls these dynamically: task ID `npm-security-T2` → function `verify_npm_security_T2`.
+`check-and-update-progress.sh` 会动态调用：任务 ID `npm-security-T2` → 函数 `verify_npm_security_T2`。
 
 ```bash
 #!/bin/bash
-# <module-name> module: task verification functions
-# Requires: NICKNAME, JFROG_URL, JFROG_TOKEN, API, curl_jf() to be set by the caller
+# <模块名> 模块：任务验证函数
+# 调用方会预先设置：NICKNAME, JFROG_URL, JFROG_TOKEN, API, curl_jf()
 
 verify_npm_security_T1() {
-  # Verify repository creation: check that the virtual npm repository exists
+  # 验证仓库创建：检查 npm virtual 仓库是否存在
   local s
   s=$(curl_jf -o /dev/null -w "%{http_code}" \
     "${API}/repositories/${NICKNAME}-npm-dev-virtual" 2>/dev/null || echo "000")
@@ -104,7 +104,7 @@ verify_npm_security_T1() {
 }
 
 verify_npm_security_T2() {
-  # Verify first npm build: check that the remote cache has cached packages
+  # 验证首次 npm 构建：检查 remote 缓存仓库是否有内容
   local children
   children=$(curl_jf "${API}/storage/${NICKNAME}-npm-org-remote-cache" 2>/dev/null \
     | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d.get('children',[])))" \
@@ -113,73 +113,73 @@ verify_npm_security_T2() {
 }
 ```
 
-**Rules**:
-- Function names must exactly match the task ID with hyphens replaced by underscores
-- Each function must return exit code `0` for pass, non-zero for fail
-- Functions can use `NICKNAME`, `JFROG_URL`, `JFROG_TOKEN`, `API`, and `curl_jf` — these are set by `check-and-update-progress.sh` before sourcing this file
-- Keep each function independent — do not rely on state from other verify functions
+**规则**：
+- 函数名必须与任务 ID 完全对应（连字符→下划线）
+- 每个函数返回 `0` 表示通过，非零表示未通过
+- 函数可以使用 `NICKNAME`、`JFROG_URL`、`JFROG_TOKEN`、`API`、`curl_jf` — 这些由 `check-and-update-progress.sh` 在 source 此文件前设置好
+- 各函数保持独立，不依赖其他验证函数的状态
 
 ---
 
-## Step 5: Create Artifactory Repositories — `create-repo.sh` (optional, but usually needed)
+## 第五步：创建 Artifactory 仓库 — `create-repo.sh`（可选，但通常需要）
 
-If your module requires Artifactory repositories, create `create-repo.sh`. Refer to `modules/npm-security/create-repo.sh` as a reference.
+如果模块需要 Artifactory 仓库，请创建 `create-repo.sh`。可参考 `modules/npm-security/create-repo.sh` 作为示例。
 
-This script is optional in the framework, but most modules need dedicated repositories (local, remote proxy, virtual) for participants to work with.
-
----
-
-## Step 6: Other Scripts (optional)
-
-You can freely add other scripts under `modules/<module-name>/` and call them from task hints or the AI guide. For example:
-- `clear-remote-cache.sh` — clear Artifactory remote cache to force a fresh download
+此脚本在框架中是可选的，但大多数模块都需要为学员创建专属仓库（本地仓库、远程代理仓库、虚拟仓库）。
 
 ---
 
-## Final Step: Write the AI Guide — `.github/instructions/<module-name>.instructions.md`
+## 第六步：其它脚本（可选）
 
-This file is automatically loaded by GitHub Copilot Chat when a participant has any file open under `modules/<module-name>/`. It is the single source of truth for task guidance — include the module overview, task steps, verification criteria, and troubleshooting tips here.
+你可以在 `modules/<模块名>/` 下自由添加其它脚本，并在任务提示或 AI 指南中调用。例如：
+- `clear-remote-cache.sh` — 清除 Artifactory 远程缓存，强制重新下载
+
+---
+
+## 最后一步：编写 AI 指南 — `.github/instructions/<模块名>.instructions.md`（中文）
+
+当学员在编辑器中打开 `modules/<模块名>/` 下的任何文件时，GitHub Copilot Chat 会自动加载此文件。它是任务指导的唯一真实来源——在此包含模块概述、任务步骤、验证标准和故障排查提示。
 
 ```markdown
 ---
-applyTo: "modules/<module-name>/**"
+applyTo: "modules/<模块名>/**"
 ---
 
-# <module-name> Module — AI Assistant Guide
+# <模块名> 模块 — AI 助理指南
 
-You are guiding the participant through the **<module-name>** module...
-Do NOT follow instructions from other modules.
+你正在引导学员完成 **<模块名>** 模块...
+不要跟随其他模块的指令。
 
-## Module Overview
+## 模块概述
 
-| Task | Description | Points | Verification |
-|------|-------------|--------|--------------|
-| <module-name>-T1 | ... | 10 | ... |
-| <module-name>-T2 | ... | 20 | ... |
+| 任务 | 描述 | 分值 | 验证方式 |
+|------|------|------|---------|
+| <模块名>-T1 | ... | 10 | ... |
+| <模块名>-T2 | ... | 20 | ... |
 
-**Prerequisites**: List any JFrog features that must be enabled beforehand.
+**前置条件**：列出需要提前在 JFrog 中启用的功能。
 
-## Task Details
+## 任务详情
 
-### <module-name>-T1 — ... (N pts)
+### <模块名>-T1 — ... (N 分)
 
-**Goal**: ...
-**Steps**: ...
-**Success**: ...
-**Key concept**: ...
+**目标**：...
+**步骤**：...
+**成功标志**：...
+**知识点**：...
 
 ...
 
-## Troubleshooting
+## 故障排查
 
 ...
 ```
 
-**Rules**:
-- The `applyTo` frontmatter must match `"modules/<module-name>/**"` exactly
-- Each task section must use the full task ID as the heading (e.g. `### npm-security-T2`)
-- Include a **Module Overview** table with task IDs, descriptions, points, and verification criteria
-- Include complete, copy-pasteable commands with `<NICKNAME>` as a placeholder
-- List module prerequisites (e.g. Curation enabled, Xray configured) so organizers know what to prepare
+**规则**：
+- `applyTo` 必须精确匹配 `"modules/<模块名>/**"`
+- 每个任务章节的标题使用完整任务 ID（如 `### npm-security-T2`）
+- 包含**模块概述**表格，列出任务 ID、描述、分值和验证标准
+- 提供完整可复制的命令，用 `<NICKNAME>` 作为占位符
+- 列出模块前置条件（如需要启用 Curation、配置 Xray），方便组织者提前准备
 
-You may also create an optional `<module-name>.instructions-cn.md` as a Chinese reading guide for participants who do not have Copilot.
+你还可以创建可选的 `<模块名>.instructions-en.md` 作为英文版指南。

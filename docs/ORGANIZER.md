@@ -1,45 +1,45 @@
-# Organizer's Guide
+# 主办者操作手册
 
-> 🌐 [中文版](./ORGANIZER_CN.md)
+> 🌐 [English version](./ORGANIZER_EN.md)
 
-This document is for instructors and event organizers, explaining how to prepare and run the JFrog Workshop.
+本文档面向讲师和活动组织者，说明如何准备和运行 JFrog Workshop。
 
-> If you are not running a competitive event, participants can self-study directly — **no organizer setup is required**. This document only applies to events that use a leaderboard.
-
----
-
-## Prerequisites
-
-| Item | Requirement |
-|------|-------------|
-| JFrog Instance | JFrog Cloud (SaaS), domain format `xxx.jfrog.io` |
-| Admin Token | Access Token with permissions to create Artifactory repositories, manage permissions, and read build-info |
-| Number of Participants | No hard limit; recommended ≤ 50 (Codespace concurrency) |
+> 如果不举办竞赛活动，学员可直接自主学习，**不需要组织者做任何初始化操作**。本文档仅适用于需要排行榜的赛事场景。
 
 ---
 
-## Step 1: Open Codespace (Organizer)
+## 前置要求
 
-Open this GitHub repository page, click **Code → Codespaces → New codespace**, and wait for the environment to be ready.
+| 项目 | 要求 |
+|------|------|
+| JFrog 实例 | JFrog Cloud（SaaS），域名格式 `xxx.jfrog.io` |
+| Admin Token | 具有创建 Artifactory 仓库、管理权限、读取 build-info 的 Access Token |
+| 学员人数 | 无硬性限制，建议 ≤ 50 人（Codespace 并发） |
 
 ---
 
-## Step 2: Set Environment Variables and Initialize the Event
+## 步骤一：打开 Codespace（主办者）
 
-Set environment variables in the terminal (**only needs to be done once per session** — all subsequent scripts will read these):
+打开本 GitHub 代码仓库页面，点击 **Code → Codespaces → New codespace**，等待环境就绪。
+
+---
+
+## 步骤二：设置环境变量并初始化赛事
+
+先在终端中设置环境变量（**本次 Session 只需设置一次**，后续所有脚本都会读取）：
 
 ```bash
 export JFROG_TOKEN="your-admin-token"
 export JFROG_URL="https://yourcompany.jfrog.io"
 ```
 
-To see which modules are currently available, run the script with no arguments:
+运行不带参数的命令可查看当前所有可用模块：
 
 ```bash
 bash automation/setup-event.sh
 ```
 
-Then run the initialization script, specifying which learning modules to include:
+然后运行初始化脚本，指定本场赛事要使用的学习模块：
 
 ```bash
 bash automation/setup-event.sh \
@@ -48,7 +48,7 @@ bash automation/setup-event.sh \
   --modules npm-security
 ```
 
-To include multiple modules, or to add a module to an already-running event, re-run the script with the full module list — it overwrites `config.json` with the combined task set. Existing participants' completed tasks are unaffected; the leaderboard will show the new module column on the next refresh.
+如果需要同时包含多个模块，或在赛事进行中追加模块，用完整的模块列表重新运行脚本即可——脚本会用合并后的任务集覆盖 `config.json`。已有学员的完成记录不受影响，排行榜下次刷新时会自动出现新模块列。
 
 ```bash
 bash automation/setup-event.sh \
@@ -57,30 +57,30 @@ bash automation/setup-event.sh \
   --modules npm-security,npm-basic
 ```
 
-The script will:
-- Validate that all specified modules exist under `modules/`
-- Create the `workshop-events` Generic repository in Artifactory (if it doesn't exist)
-- Upload the event configuration `config.json` (with tasks aggregated from all specified modules)
-- Output the complete command to start the leaderboard
+脚本将：
+- 验证所有指定模块在 `modules/` 目录中存在
+- 在 Artifactory 中创建 `workshop-events` Generic 仓库（如不存在）
+- 从各模块的 `tasks.json` 聚合任务列表，上传赛事配置 `config.json`
+- 输出启动排行榜的完整命令
 
 ---
 
-## Step 3: Start the Leaderboard
+## 步骤三：启动排行榜
 
-Run the following command in the terminal (**keep it running throughout the Workshop and project this terminal window**):
+在终端中运行以下命令（**Workshop 期间保持运行，将此终端窗口投屏**）：
 
 ```bash
-# JFROG_TOKEN and JFROG_URL were already set in Step 2 — no need to set them again
+# JFROG_TOKEN 和 JFROG_URL 已在步骤二中设置，无需重复设置
 bash automation/refresh-leaderboard.sh "2026-06-shanghai"
 ```
 
-The script automatically every 30 seconds:
-- Reads all participants' progress from Artifactory
-- Clears the screen and refreshes the leaderboard
+脚本每 30 秒自动：
+- 读取所有学员上传的 `progress.json`
+- 清屏并刷新终端排行榜
 
-Press `Ctrl+C` to stop. Example leaderboard output:
+按 `Ctrl+C` 停止。
 
-Single-module event (`--modules npm-security`):
+单模块赛事（`--modules npm-security`）排行榜效果示例：
 
 ```
 ==============================================================
@@ -107,7 +107,7 @@ Single-module event (`--modules npm-security`):
 ==============================================================
 ```
 
-Multi-module event (`--modules npm-security,npm-basic`), each module has its own ranked block:
+多模块赛事（`--modules npm-security,npm-basic`），每个模块独立排名，最后汇总总分：
 
 ```
 ==============================================================
@@ -139,79 +139,79 @@ Multi-module event (`--modules npm-security,npm-basic`), each module has its own
 ==============================================================
 ```
 
-> **Note**: Column labels show the last segment of the task ID (e.g. `npm-security-T1` → `T1`). Each module block ranks participants independently by their module score.
+> **说明**：列标签显示任务 ID 的最后一段（如 `npm-security-T1` → `T1`）。每个模块区块按该模块得分独立排名。
 
 ---
 
-## Step 4: Share the Following Information with Participants
+## 步骤四：向学员提供以下信息
 
-Before starting, provide all participants with:
+开始前，告知所有学员：
 
-| Information | Value |
-|-------------|-------|
-| JFROG_URL | `https://yourcompany.jfrog.io` (the value of `$JFROG_URL`) |
-| Admin Username | JFrog admin username (participants use this to log in to JFrog UI) |
-| Admin Password | JFrog admin password |
-| EVENT_ID | `2026-06-shanghai` (the value you set) |
-| Active Modules | e.g. `npm-basic`, `npm-security` (the modules you specified in `--modules`) |
-| How to start | Open Codespace → in the embedded Copilot Chat on the right, type "I want to start the workshop, my EVENT_ID is xxx" |
+| 信息 | 值 |
+|------|-----|
+| JFROG_URL | `https://yourcompany.jfrog.io`（即 `$JFROG_URL` 的值） |
+| 管理员账号 | JFrog 管理员用户名（学员用此账号登录 JFrog UI） |
+| 管理员密码 | JFrog 管理员密码 |
+| EVENT_ID | `2026-06-shanghai`（你设置的值） |
+| 本场启用模块 | 如 `npm-basic`、`npm-security`（即 `--modules` 中指定的模块） |
+| 开始方式 | 打开 Codespace → 在右侧内嵌的 Copilot Chat 中输入"我要开始 workshop，EVENT_ID 是 xxx" |
 
-> **Note**: All participants share the same admin account to log in to JFrog UI. After logging in, each generates their own token under **Edit Profile → Access Tokens**. Individual tokens are independent and won't conflict. It is recommended to change the admin password after the Workshop.
-
----
-
-## Pre-Event Checklist
-
-Confirm the following before the event starts:
-
-1. **Verify module prerequisites**: Check the module(s) you selected require specific JFrog features (e.g. Curation, Xray). Refer to each module's `instructions.md` or the module author's notes for what needs to be enabled in JFrog UI beforehand
-2. **Run through the full flow**: Using a test environment, simulate a participant completing all tasks in the active module(s) and confirm each task's verification logic works correctly — avoid surprises on the day
+> **说明**：所有学员共用同一个管理员账号登录 JFrog UI，登录后各自在 **Edit Profile → Access Tokens** 生成自己的 Token。各自的 Token 互相独立，不会冲突。Workshop 结束后建议修改管理员密码。
 
 ---
 
-## Post-Event Cleanup
+## 赛前飞行检查
 
-`cleanup-participant.sh` removes the following for a given participant:
-- All Artifactory repositories prefixed with `<nickname>-`
-- All build-info entries prefixed with `<nickname>-`
-- `profile.json` and `progress.json` from `workshop-events/<event-id>/participants/<nickname>/` (only when `--event-id` is provided)
+在正式开始前确认以下事项：
 
-> **Note**: The participant directory itself (`participants/<nickname>/`) is not removed by this script. Run "Delete the entire event data" afterwards to clean up the full event directory.
+1. **确认模块前置条件**：检查你选择的模块是否需要启用特定 JFrog 功能（如 Curation、Xray）。各模块的前置要求请参阅对应的 `.github/instructions/<module>.instructions.md` 文件
+2. **提前走通全流程**：使用测试环境模拟学员完成所选模块的全部任务，确认每个任务的验证逻辑正常工作，避免 Workshop 当天出现意外
 
-### Clean up a single participant
+---
+
+## 赛后清理
+
+`cleanup-participant.sh` 会删除指定学员的以下内容：
+- 所有以 `<nickname>-` 为前缀的 Artifactory 仓库
+- 所有以 `<nickname>-` 为前缀的 build-info
+- `workshop-events/<event-id>/participants/<nickname>/` 下的 `profile.json` 和 `progress.json`（仅在指定 `--event-id` 时删除）
+
+> **注意**：学员目录本身（`participants/<nickname>/`）不会被此脚本删除。完整清理请在执行完学员清理后，再删除整个赛事目录。
+
+### 清理单个学员数据
 
 ```bash
-# JFROG_TOKEN and JFROG_URL were already set in Step 2
+# JFROG_TOKEN 和 JFROG_URL 已在步骤二中设置
 bash automation/cleanup-participant.sh <nickname> --event-id "2026-06-shanghai"
 ```
 
-### Bulk cleanup of all participants
+### 批量清理所有学员
 
 ```bash
 bash automation/cleanup-event.sh "2026-06-shanghai"
 ```
 
-### Delete the entire event data
+### 删除整个赛事数据
 
-After participant cleanup, delete the event directory (config.json + all participant records) in the Artifactory UI:
+学员清理完成后，在 Artifactory UI 中删除整个赛事目录（包含 config.json 和所有学员记录）：
 
 `workshop-events/2026-06-shanghai/`
 
 ---
 
-## Troubleshooting
+## 故障排查
 
-| Problem | How to Investigate |
-|---------|--------------------|
-| Leaderboard shows no participants | Check if the `workshop-events/{event_id}/participants/` directory has data in Artifactory |
-| Participant tasks not updating | Confirm `refresh-leaderboard.sh` is running; check if the Admin Token is still valid |
-| Module-specific feature not working | Refer to the module's `.github/instructions/<module>.instructions.md` for troubleshooting tips specific to that module |
+| 问题 | 排查方法 |
+|------|---------|
+| 排行榜无学员显示 | 检查 Artifactory 中 `workshop-events/{event_id}/participants/` 目录是否有数据 |
+| 学员任务长时间不更新 | 确认 `refresh-leaderboard.sh` 正在运行；检查 Admin Token 是否有效 |
+| 模块特定功能不工作 | 参阅对应模块的 `.github/instructions/<module>.instructions.md` 中的 Troubleshooting 部分 |
 
 ---
 
-## Customizing Event Configuration
+## 赛事配置自定义
 
-To adjust task point values, edit the `tasks.json` file inside the relevant module directory (e.g. `modules/npm-security/tasks.json`), then re-run the initialization script to regenerate `config.json`:
+如需调整各任务分值，修改对应模块目录下的 `tasks.json`（如 `modules/npm-security/tasks.json`），然后重新运行初始化脚本即可覆盖 `config.json`：
 
 ```bash
 bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026" --modules npm-security
@@ -219,54 +219,55 @@ bash automation/setup-event.sh "2026-06-shanghai" "JFrog Workshop Shanghai 2026"
 
 ---
 
-## Architecture Notes
+## 架构说明
 
-### Why GitHub Codespace as the Participant Environment
+### 为什么使用 GitHub Codespace 作为学员环境
 
-| Problem | Codespace Solution |
-|---------|--------------------|
-| Participants have different environments (Windows/Mac/Linux) | A unified cloud Linux environment, ready out of the box |
-| Requires Node.js, JFrog CLI, bash pre-installed | `.devcontainer` auto-configures everything — participants install nothing manually |
-| Sample project needs to be cloned | Codespace auto-checks out at startup; path is always `/workspaces/jfrog-workshop/` |
-| AI guidance needed to lower the barrier | GitHub Copilot Chat is embedded directly in the IDE, reading `.github/copilot-instructions.md` as the task script |
-
----
-
-### How Scoring and the Leaderboard Work
-
-**Participant Registration**:
-- The participant runs `register.sh`, which reads the event's `config.json` to get the task list (or scans the local `modules/` directory in self-study mode), initializes `progress.json` with all tasks set to pending, uploads `profile.json` and `progress.json` to Artifactory (event mode) or saves them locally (self-study mode), and writes `~/.workshop-profile`
-- After successful registration, `~/.workshop-profile` is written locally — all subsequent scripts read from it so credentials don't need to be re-entered
-
-**Task Verification**:
-- **Verification happens on the participant side**: After completing each task, participants run `check-and-update-progress.sh`, which dynamically sources each module's `verify-tasks.sh` and dispatches to the matching `verify_<task_id>()` function
-- Completed tasks are marked `done` and progress is uploaded to the `workshop-events` repository for the leaderboard to read
-- Already-completed tasks are not re-verified — only pending tasks are checked
-
-Task IDs use the format `<module>-<sequence>`, e.g. `npm-security-T1`. The verification logic for each task lives in `modules/<module>/verify-tasks.sh`. For task-level details, refer to the module's `.github/instructions/<module>.instructions.md`.
-
-**Leaderboard Rendering**:
-- The organizer runs `refresh-leaderboard.sh`, which every 30 seconds **reads only** all participants' uploaded `progress.json` — no verification is performed
-- Sorted by total score descending; ties broken by the time of the last completed task (ascending)
-- The organizer projects this terminal window; participants can see it in real time
-
-> **Note**: The leaderboard reflects progress from the last time a participant ran `check-and-update-progress.sh`. Participants must actively run the script after completing a task to update their progress.
+| 问题 | Codespace 的解法 |
+|------|----------------|
+| 学员环境各异（Windows/Mac/Linux） | 统一的云端 Linux 环境，开箱即用 |
+| 需要预装各类构建工具和 JFrog CLI | `.devcontainer/post-create.sh` 自动扫描各模块的 `install-tools.sh` 并安装所需工具 |
+| 示例项目需要克隆仓库 | Codespace 启动时自动 checkout，路径固定为 `/workspaces/jfrog-workshop/` |
+| 需要 AI 引导降低上手门槛 | GitHub Copilot Chat 直接内嵌在 IDE 中，打开模块目录下的文件时自动加载对应模块的 AI 指引 |
 
 ---
 
-### Why Use Artifactory for Data Storage
+### 积分与排行榜工作原理
 
-- **Zero extra dependencies**: Participants are already working with Artifactory — no additional database or API service needed
-- **Complete REST API**: Upload, download, and list directories all have standard APIs, drivable with bash + curl + python3
-- **Visual debugging**: Organizers can view or modify any participant's JSON files directly in the Artifactory UI
+**学员注册**：
+- 学员运行 `register.sh`，脚本从赛事 `config.json` 读取任务列表（自主学习模式则扫描本地 `modules/` 目录），将所有任务初始化为 pending 状态，将 `profile.json` 和 `progress.json` 上传至 Artifactory（赛事模式）或保存到本地（自主学习模式），最后写入 `~/.workshop-profile`
+- 注册成功后，脚本在学员本地写入 `~/.workshop-profile`，保存昵称、赛事 ID、JFrog 地址和 Token，后续脚本均从此文件读取，无需重复输入
+
+**任务验证**：
+- **验证发生在学员侧**：学员每完成一个任务后运行 `check-and-update-progress.sh`，脚本动态加载各模块的 `verify-tasks.sh`，按任务 ID 派发到对应的验证函数
+- 验证通过的任务标记为 `done`，进度上传至 `workshop-events` 仓库供排行榜读取
+- 已完成的任务不重复验证，只验证尚未完成的任务
+
+任务 ID 格式为 `<模块名>-T<序号>`，如 `npm-security-T1`。各任务的验证逻辑详见对应模块的 `.github/instructions/<module>.instructions.md`。
+
+**排行榜渲染**：
+- 组织者运行 `refresh-leaderboard.sh`，脚本每 30 秒**只读取**所有学员上传的 `progress.json`，不做任何验证
+- 积分只计算赛事 `config.json` 中定义的任务，自主学习阶段完成的其他模块任务不计入赛事积分
+- 按总分降序、同分按最后任务完成时间升序排列
+- 组织者将此终端窗口投屏，学员实时可见
+
+> **注意**：排行榜反映的是学员最后一次运行 `check-and-update-progress.sh` 时上传的进度。学员完成任务后需主动运行脚本，进度才会更新。
+
+---
+
+### 为什么用 Artifactory 存数据
+
+- **零额外依赖**：学员本来就要操作 Artifactory，不需要额外搭建数据库或 API 服务
+- **REST API 完备**：上传、下载、列目录都有标准 API，bash + curl + python3 即可驱动
+- **可视化调试**：组织者可以直接在 Artifactory UI 中查看或修改任何学员的 JSON 文件
 
 ```
-Artifactory Generic Repository: workshop-events
+Artifactory Generic 仓库：workshop-events
 │
-└── {event_id}/                        # Event directory, e.g. 2026-06-shanghai
-    ├── config.json                    # Event config (task points, timing, etc.)
+└── {event_id}/                        # 赛事目录，例如 2026-06-shanghai
+    ├── config.json                    # 赛事配置（模块列表、任务分值、时间等）
     └── participants/
-        └── {nickname}/                # One directory per participant
-            ├── profile.json           # Participant info (nickname, registration time)
-            └── progress.json          # Participant progress (task status and score)
+        └── {nickname}/                # 每位学员一个目录
+            ├── profile.json           # 学员信息（昵称、注册时间）
+            └── progress.json          # 学员进展（各任务状态和得分）
 ```

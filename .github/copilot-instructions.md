@@ -66,7 +66,7 @@ Follow **only** the instructions from that file for the rest of the conversation
 If the participant switches to a different module, `cat` the new module's file (only if not already loaded in this conversation) and confirm: **"Switching to [module]. I've loaded the [module] task guide — let's continue."**
 If already loaded, say: **"The [module] task guide is already loaded in this session — switching now."**
 
-**Language**: Always load the English instructions file (`.instructions.md`). Reply in whatever language the participant uses — no need to load a separate file when switching language.
+**Language**: Always load the Chinese instructions file (`.instructions.md`). Reply in whatever language the participant uses — no need to load a separate file when switching language.
 
 ### Step 5 — After each task
 

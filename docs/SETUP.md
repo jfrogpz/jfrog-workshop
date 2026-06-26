@@ -1,42 +1,42 @@
-# Local Environment Setup (Without Codespace)
+# 本地环境配置指南（不使用 Codespace）
 
-> 🌐 [中文版](./SETUP_CN.md)
+> 🌐 [English version](./SETUP_EN.md)
 
-This guide is for participants who are not using GitHub Codespace. It explains how to set up the environment needed to complete the Workshop on your local machine.
+本文档面向不使用 GitHub Codespace 的学员，说明如何在本地机器上配置完成 Workshop 所需的环境。
 
-> If you are using GitHub Codespace, skip this guide — the environment is automatically configured. Just open Copilot Chat and start the tasks.
+> 如果你使用 GitHub Codespace，可以跳过本文档——环境已自动配置好，直接打开 Copilot Chat 开始任务即可。
 
 ---
 
-## Tools to Install
+## 需要安装的工具
 
 ### 1. JFrog CLI
 
 ```bash
-# macOS (Homebrew)
+# macOS（Homebrew）
 brew install jfrog-cli
 
-# Linux / macOS (universal)
+# Linux / macOS（通用）
 curl -fL https://install-cli.jfrog.io | sh
 ```
 
-Verify:
+验证：
 ```bash
 jf -v
 ```
 
-### 2. Module-Specific Tools
+### 2. 模块专属工具
 
-Each module requires different tools. To see what a module needs, read the comments at the top of its `install-tools.sh`:
+每个模块需要不同的工具。阅读模块 `install-tools.sh` 顶部的注释，了解需要安装哪些工具：
 
 ```bash
 cat modules/npm-security/install-tools.sh
 ```
 
-Then install each listed tool using its instructions. For example, the `npm-security` module requires **Node.js (v18+)**:
+按照注释中的说明逐一安装。例如，`npm-security` 模块需要 **Node.js（v18+）**：
 
 ```bash
-# macOS (Homebrew)
+# macOS（Homebrew）
 brew install node
 
 # Ubuntu / Debian
@@ -44,13 +44,13 @@ curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
-Verify:
+验证：
 ```bash
 node -v
 npm -v
 ```
 
-### 3. Clone the Repository
+### 3. 克隆仓库
 
 ```bash
 git clone https://github.com/jfrogpz/jfrog-workshop.git
@@ -59,49 +59,49 @@ cd jfrog-workshop
 
 ---
 
-## Set Environment Variables
+## 设置环境变量
 
-The instructor will provide the following information. Set the environment variables in your terminal before running any commands:
+讲师会提供以下信息，在终端中设置好环境变量后，后续所有命令都依赖这两个变量：
 
 ```bash
-export JFROG_URL="https://yourcompany.jfrog.io"   # provided by instructor
-export JFROG_TOKEN="your-access-token"             # generate after logging in to JFrog UI
+export JFROG_URL="https://yourcompany.jfrog.io"   # 讲师提供
+export JFROG_TOKEN="your-access-token"             # 登录 JFrog UI 后自行生成
 ```
 
-To get a Token: log in to JFrog UI with the admin credentials provided by your instructor → click the avatar in the top-right corner → **Edit Profile** → **Access Tokens** → **Generate Token**.
+获取 Token：用讲师提供的管理员账号登录 JFrog UI → 右上角头像 → **Edit Profile** → **Access Tokens** → **Generate Token**。
 
-> Note: Environment variables are lost when you open a new terminal. Add them to `~/.bashrc` or `~/.zshrc` to make them persistent.
+> 注意：每次打开新终端都需要重新设置环境变量。建议加入 `~/.bashrc` 或 `~/.zshrc` 以持久化。
 
 ---
 
-## Completing Tasks Without AI Assistant
+## 没有 AI 助理时如何完成任务
 
-Codespace includes GitHub Copilot Chat, which automatically reads the task guide and provides step-by-step instructions.
+Codespace 中内置了 GitHub Copilot Chat，会自动读取任务引导文件并为你提供逐步指引。
 
-If you don't have Copilot, read the module's AI guide directly. First decide which module you are working on, then open the corresponding file:
+如果你没有 Copilot，可以直接阅读模块的 AI 指南。先确定你要学习的模块，然后打开对应文件：
 
 ```
-.github/instructions/<module-name>.instructions.md
+.github/instructions/<模块名>.instructions-cn.md
 ```
 
-For example, for the `npm-security` module:
+例如，`npm-security` 模块：
 
-**[.github/instructions/npm-security.instructions.md](../.github/instructions/npm-security.instructions.md)**
+**[.github/instructions/npm-security.instructions-cn.md](../.github/instructions/npm-security.instructions-cn.md)**
 
-This document contains detailed steps, commands, and success criteria for all tasks — identical to what the AI assistant provides. Just read and follow in order.
+该文档包含全部任务的详细步骤、命令和成功标志，与 AI 引导的内容完全一致，按顺序阅读执行即可。
 
 ---
 
-## Sample Project Path
+## 示例项目路径
 
-In Codespace, the project path is `/workspaces/jfrog-workshop/`. When working locally, replace it with your clone directory, e.g. `~/jfrog-workshop/`.
+Codespace 中项目路径为 `/workspaces/jfrog-workshop/`，本地克隆后对应你的克隆目录，例如 `~/jfrog-workshop/`。
 
-Wherever the docs or scripts reference `/workspaces/jfrog-workshop/`, substitute your local path:
+文档和脚本中出现的 `/workspaces/jfrog-workshop/` 请替换为你的本地路径：
 
 ```bash
-# In Codespace
+# Codespace 中
 cd /workspaces/jfrog-workshop/modules/npm-security/sample-project
 
-# Locally, replace with
+# 本地替换为
 cd ~/jfrog-workshop/modules/npm-security/sample-project
 ```

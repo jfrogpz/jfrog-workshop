@@ -1,128 +1,126 @@
-# JFrog Supply Chain Security Workshop
+# JFrog 软件供应链安全 Workshop
 
-> 🌐 [中文版](./README_CN.md)
+> 🌐 [English version](./README_EN.md)
 
-This Workshop has the following features:
+本 Workshop 有以下特点：
 
-- **Ready out of the box**: Built on GitHub Codespace — no local tool installation required, just click to enter a unified cloud development environment
-- **AI-guided learning**: Powered by GitHub Copilot Chat, the AI assistant guides you through every step — no prior JFrog knowledge needed
-- **Self-study mode**: Start anytime without an instructor — work at your own pace with the AI assistant by your side
-- **Competitive mode**: Fun guaranteed, complete tasks to earn points in real time, with the instructor projecting a live leaderboard
-- **Freely extensible**: Guide an AI to add new learning modules in one shot — customize tasks and auto-verify completion conditions
-
----
-
-## Background: Software Supply Chain Attacks
-
-Supply chain attacks have become one of the most insidious threats facing developers today:
-
-- **ua-parser-js (2021)**: The npm account was hijacked and three versions were injected with a cryptominer and credential stealer, affecting users globally within hours
-- **PyTorch (2022)**: A malicious package entered via a dependency confusion attack, exfiltrating sensitive data
-- **polyfill.io (2024)**: After cdn.polyfill.io's domain was acquired, the CDN began serving malicious scripts to over 100,000 websites — with affected sites completely unaware
-- **lottie-player (2024)**: The npm package maintainer's account was hijacked, and a malicious version was automatically pushed to all dependents, planting a crypto wallet stealer
-- **tj-actions/changed-files (2025)**: A widely-used GitHub Actions component was backdoored, causing a large number of CI/CD pipelines to leak secrets
-
-The common thread: **developers unknowingly introduced malicious code into their production environments**.
+- **开箱即用**：基于 GitHub Codespace，无需在本机安装任何工具，点击即可进入统一的云端开发环境
+- **AI 助理引导**：内置 GitHub Copilot Chat，全程由 AI 助理提供操作指引，无需提前了解 JFrog 工具链
+- **自主学习模式**：无需讲师组织，随时开始，按自己节奏完成任务，AI 助理全程陪伴
+- **竞赛模式**：有乐趣，完成任务实时得分，讲师投屏显示排行榜
+- **自由扩展**：指引 AI 一键扩展学习模块，灵活定制任务，自动验证成功条件
 
 ---
 
-## Who Is Affected? How Does JFrog Help?
+## 背景：软件供应链攻击
 
-### Affected Roles
+近年来，供应链攻击已成为开发者面临的最隐蔽威胁之一：
 
-| Role | Pain Point |
-|------|------------|
-| **Developers** | Don't know if the packages they use are safe; can't assess impact when fixing vulnerabilities |
-| **Security Teams** | Can't intercept packages before they enter builds; can only scan after the fact |
-| **DevOps / Platform Teams** | No unified artifact governance; hard to trace "who used which version" |
+- **ua-parser-js（2021）**：npm 账号被劫持，三个版本被植入挖矿程序和密码窃取器，短时间内波及全球
+- **PyTorch（2022）**：恶意包通过依赖混淆攻击（dependency confusion）入侵，窃取敏感数据
+- **polyfill.io（2024）**：cdn.polyfill.io 域名被收购后，CDN 开始向超过 10 万个网站推送恶意脚本，受影响站点毫不知情
+- **lottie-player（2024）**：npm 包维护者账号被劫持，恶意版本自动推送给所有依赖方，植入加密钱包窃取器
+- **tj-actions/changed-files（2025）**：广泛使用的 GitHub Actions 组件被植入后门，导致大量 CI/CD 流水线泄露密钥
 
-### JFrog's Solution
-
-- **JFrog Artifactory**: A unified artifact proxy — all dependencies must flow through Artifactory repositories, forming a "moat"
-- **JFrog Curation**: Automatically blocks known malicious packages and high-risk vulnerabilities at the **download stage** — one step earlier than post-build scanning
-- **JFrog Xray**: Deep scanning of existing artifacts and build-info, providing CVE analysis and license compliance checks
-- **Build Info**: Records the complete dependency tree of every build, enabling rapid traceability and impact analysis
-
-📖 Learn more: [JFrog Curation Docs](https://jfrog.com/help/r/jfrog-curation) | [JFrog Xray Docs](https://jfrog.com/help/r/jfrog-xray)
+这些攻击的共同点：**开发者在不知情的情况下将恶意代码引入了生产环境**。
 
 ---
 
-## This Workshop
+## 企业中谁会受影响？JFrog 如何解决？
 
-### Goal
-Hands-on practice experiencing the complete supply chain security cycle: from "introducing a malicious dependency" to "detect → block → fix".
+### 受影响的角色
 
-### Duration
-Approximately 60 minutes per module
+| 角色 | 痛点 |
+|------|------|
+| **开发者** | 不知道用的包是否安全，修复漏洞时不知道影响范围 |
+| **安全团队** | 无法在包进入构建前拦截，只能事后扫描 |
+| **DevOps / 平台团队** | 缺乏统一的制品管控，难以追溯"谁用了什么版本" |
 
-### Competitive Mode Rules
+### JFrog 的解决方案
 
-Tasks are organized into **modules** (e.g. `npm-basic`, `npm-security`). Each module has its own task list with individual point values. The instructor chooses which modules are active for the event.
+- **JFrog Artifactory**：统一的制品代理，所有依赖必须经过 Artifactory 仓库，形成"护城河"
+- **JFrog Curation**：在依赖**下载阶段**自动拦截已知恶意包和高危漏洞——比构建后扫描早一步
+- **JFrog Xray**：深度扫描已有制品和 build-info，提供 CVE 分析、许可证合规检查
+- **Build Info**：记录每次构建的完整依赖树，支持快速溯源和影响范围分析
 
-- Complete tasks within the active module(s) to earn points
-- Ties are broken by the time the last task was completed (earlier is better)
-- Task details and commands are provided by the AI assistant during the session
-
-### Prize
-> To be announced by the instructor on the day 🎁
+📖 了解更多：[JFrog Curation 文档](https://jfrog.com/help/r/jfrog-curation) | [JFrog Xray 文档](https://jfrog.com/help/r/jfrog-xray)
 
 ---
 
-## Quick Start
+## 本次 Workshop
 
-### Step 1: Open in GitHub Codespace
+### 目标
+通过动手实践，体验从"引入恶意依赖"到"检测 → 阻断 → 修复"的完整供应链安全闭环。
 
-Click the button below to launch the cloud development environment instantly (no local tool installation needed):
+### 时长
+每个模块约 10 分钟
+
+### 竞赛模式规则
+
+任务以**模块**为单位组织（如 `npm-basic`、`npm-security`），每个模块有独立的任务列表和分值。讲师在创建赛事时指定本场活跃的模块。
+
+- 完成活跃模块中的任务即可得分
+- 同分时，最后一个任务完成越早排名越高
+- 任务详情和操作命令由 AI 助理在对话中提供
+
+### 奖励
+> 由讲师现场宣布 🎁
+
+---
+
+## 快速开始
+
+### 第一步：在 GitHub Codespace 中打开
+
+点击下方按钮，在云端一键启动开发环境（无需在本机安装任何工具）：
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/jfrogpz/jfrog-workshop)
 
-> ⏱️ First-time Codespace startup takes about 1–2 minutes — please be patient.
+> ⏱️ Codespace 首次启动约需 1-2 分钟，请耐心等待。
 >
-> 🆓 GitHub personal accounts get 60 free Codespace hours per month. This Workshop uses approximately 1 hour.
->
-> 💻 **If Codespace is not available**, refer to [SETUP.md](./docs/SETUP.md) to set up the environment on your local machine.
+> 💻 **如果无法使用 Codespace**，请参阅 [SETUP.md](./docs/SETUP.md) 在本地机器上配置所需环境。
 
-### Step 2: Open AI Assistant
+### 第二步：打开 AI 助理
 
-Once Codespace is ready, the **GitHub Copilot Chat** panel is embedded on the **right side** of the window — type your message directly.
+Codespace 启动完成后，窗口**右侧**已内嵌 **GitHub Copilot Chat** 对话面板，可直接输入消息。
 
-> 🤖 **If Copilot Chat is unavailable**, read the module instructions file directly — e.g. [.github/instructions/npm-security.instructions.md](.github/instructions/npm-security.instructions.md) — it contains complete step-by-step instructions for all tasks.
+> 🤖 **如果 Copilot Chat 不可用**，直接阅读对应模块的中文指令文件：`.github/instructions/<module>.instructions-cn.md`，其中包含全部任务的详细步骤和命令。例如 npm-security 模块对应 [.github/instructions/npm-security.instructions-cn.md](.github/instructions/npm-security.instructions-cn.md)。
 
-### Step 3: Start the Workshop
+### 第三步：开始 Workshop
 
-Type one of the following in the Copilot Chat panel:
+在 Copilot Chat 对话框中输入：
 
 ```
-# Self-study mode (no instructor or EVENT_ID needed)
-I want to self-study
+# 自主学习模式（无需讲师，无需 EVENT_ID）
+我要自主学习
 
-# Event mode (joining an instructor-led session)
-I want to start the workshop, my EVENT_ID is <ID provided by instructor>
+# 赛事模式（有讲师组织）
+我要开始 workshop，EVENT_ID 是 <讲师提供的ID>
 
-# Switching modules mid-session
-I want to switch to the npm-security module
+# 中途切换模块
+我想切换到 npm-security 模块
 
-# Switching modes mid-session (your progress is preserved)
-I want to switch to event mode
+# 中途切换模式（会保留当前学习进度）
+我想切换到比赛模式
 ```
 
-The AI assistant will:
-1. Guide you to log in to JFrog UI and generate your personal access token
-2. Ask which module you want to learn
-3. Walk you through each task step by step (check your progress, explain concepts, and help diagnose issues)
+AI 助理将：
+1. 引导你登录 JFrog UI 并生成个人 Access Token
+2. 询问你想学习哪个模块
+3. 逐步引导你完成每一个任务（可以为你检查学习进度，讲解知识点，分析遇到的问题）
 
-> 💡 **Tip**: All commands are provided by the AI assistant — just paste them into the terminal.
+> 💡 **提示**：所有命令都由 AI 助理提供，你只需在终端中执行即可。
 >
-> 📊 **Leaderboard** (event mode only): The instructor will project the leaderboard, which refreshes every 30 seconds.
+> 📊 **排行榜**（仅赛事模式）：讲师会将终端排行榜投屏，每 30 秒实时刷新。
 
 ---
 
-## Organizer Guide
+## 主办者指南
 
-If you are an instructor or event organizer, please refer to:
+如果你是讲师或活动组织者，请参阅：
 
 👉 [ORGANIZER.md](./docs/ORGANIZER.md)
 
-To add a new learning module to the workshop:
+如需新增 Workshop 学习模块，请参阅：
 
 👉 [CONTRIBUTING-MODULE.md](./docs/CONTRIBUTING-MODULE.md)
