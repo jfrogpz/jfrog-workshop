@@ -1,0 +1,43 @@
+[
+  {
+    "id": "xray-docker-T1",
+    "name": "Create personal Docker repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 Docker 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/xray-docker/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/xray-docker/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "xray-docker-T2",
+    "name": "Build and push Docker image through Artifactory",
+    "name_cn": "通过 Artifactory 构建并推送 Docker 镜像",
+    "points": 20,
+    "hint": "cd modules/xray-docker/sample-project, build: docker build -t <JFROG_URL>/docker/<NICKNAME>-docker-local/xray-demo:1.0 ., push via: jf docker push <JFROG_URL>/docker/<NICKNAME>-docker-local/xray-demo:1.0 --build-name=<NICKNAME>-xray-docker-build --build-number=1",
+    "hint_cn": "进入 modules/xray-docker/sample-project，构建镜像后通过 jf docker push 推送，带上 --build-name 和 --build-number"
+  },
+  {
+    "id": "xray-docker-T3",
+    "name": "Publish Docker Build Info to Artifactory",
+    "name_cn": "发布 Docker Build Info 到 Artifactory",
+    "points": 20,
+    "hint": "Run: jf rt build-publish <NICKNAME>-xray-docker-build 1",
+    "hint_cn": "运行：jf rt build-publish <NICKNAME>-xray-docker-build 1"
+  },
+  {
+    "id": "xray-docker-T4",
+    "name": "Create an Xray Security Policy and Watch for Docker",
+    "name_cn": "为 Docker 创建 Xray 安全策略和 Watch",
+    "points": 20,
+    "hint": "In JFrog UI: Xray → Policies → New Policy (Security type, name contains your nickname), then Xray → Watches → New Watch (name contains your nickname, add Docker repos, attach policy)",
+    "hint_cn": "在 JFrog UI 中：Xray → Policies 创建安全策略（名称含昵称），再到 Xray → Watches 创建 Watch（名称含昵称，添加 Docker 仓库，关联策略）"
+  },
+  {
+    "id": "xray-docker-T5",
+    "name": "View container image CVE scan results",
+    "name_cn": "查看容器镜像 CVE 扫描结果",
+    "points": 20,
+    "verify": false,
+    "hint": "In JFrog UI: Xray → Scans List → find your build or image, explore CVE details and layer-level vulnerability breakdown",
+    "hint_cn": "在 JFrog UI 中：Xray → Scans List → 找到你的构建或镜像，查看 CVE 详情及镜像层级漏洞分析"
+  }
+]

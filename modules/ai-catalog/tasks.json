@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ai-catalog-T1",
+    "name": "Create a Hugging Face repository in Artifactory",
+    "name_cn": "在 Artifactory 中创建 Hugging Face 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/ai-catalog/create-repo.sh <NICKNAME> — creates local/remote/virtual repositories with Hugging Face package type",
+    "hint_cn": "运行：bash modules/ai-catalog/create-repo.sh <NICKNAME>，创建 Hugging Face 类型的三层仓库"
+  },
+  {
+    "id": "ai-catalog-T2",
+    "name": "Browse AI Catalog and discover available models",
+    "name_cn": "浏览 AI Catalog 并发现可用模型",
+    "points": 20,
+    "verify": false,
+    "hint": "In JFrog UI: navigate to AI Catalog (left sidebar). Browse available models from Hugging Face. Note any models you want to use in your project.",
+    "hint_cn": "在 JFrog UI 中：进入 AI Catalog（左侧导航）。浏览 Hugging Face 上的可用模型，记录你感兴趣的模型"
+  },
+  {
+    "id": "ai-catalog-T3",
+    "name": "Download an AI model through Artifactory",
+    "name_cn": "通过 Artifactory 下载 AI 模型",
+    "points": 20,
+    "hint": "Install huggingface_hub: pip install huggingface_hub. Then download a tiny model: python3 modules/ai-catalog/sample-project/download_model.py <NICKNAME>",
+    "hint_cn": "安装 huggingface_hub：pip install huggingface_hub。运行：python3 modules/ai-catalog/sample-project/download_model.py <NICKNAME>"
+  },
+  {
+    "id": "ai-catalog-T4",
+    "name": "Scan the AI model with Xray and view the security report",
+    "name_cn": "使用 Xray 扫描 AI 模型并查看安全报告",
+    "points": 20,
+    "verify": false,
+    "hint": "In JFrog UI: Artifactory → Repositories → <NICKNAME>-hf-remote → browse to the downloaded model file → click Xray tab to view scan results for malicious code, CVEs, and license issues",
+    "hint_cn": "在 JFrog UI：Artifactory → Repositories → <NICKNAME>-hf-remote → 找到下载的模型文件 → 点击 Xray 标签查看恶意代码、CVE 和许可证扫描结果"
+  },
+  {
+    "id": "ai-catalog-T5",
+    "name": "Create a Curation Policy to govern AI model downloads",
+    "name_cn": "创建 Curation Policy 管控 AI 模型下载",
+    "points": 20,
+    "hint": "In JFrog UI: Curation → Policies → New Policy (name must contain your nickname, apply to your HuggingFace remote repo, set rule to block models with malicious indicators or high CVEs)",
+    "hint_cn": "在 JFrog UI 中：Curation → Policies → New Policy（名称必须含昵称，应用到你的 HuggingFace remote 仓库，设置规则阻断含恶意指标或高危 CVE 的模型）"
+  }
+]

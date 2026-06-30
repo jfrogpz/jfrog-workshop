@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    environment {
+        JFROG_URL      = credentials('jfrog-url')
+        JFROG_TOKEN    = credentials('jfrog-token')
+        NICKNAME       = credentials('jfrog-nickname')
+        BUILD_NAME     = "${NICKNAME}-jenkins-build"
+        VIRTUAL_REPO   = "${NICKNAME}-jenkins-npm-virtual"
+    }
+
+    stages {
+        stage('Configure JFrog CLI') {
+            steps {
+                sh '''
+                    jf config add workshop \
+                        --url "${JFROG_URL}" \
+                        --access-token "${JFROG_TOKEN}" \
+                        --interactive=false
+                    jf config use workshop
+                    jf rt ping
+                '''
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('modules/ci-jenkins/sample-project') {
+                    sh '''
+                        jf npm install \
+                            --repo "${VIRTUAL_REPO}" \
+                            --build-name "${BUILD_NAME}" \
+                            --build-number "${BUILD_NUMBER}"
+                    '''
+                }
+            }
+        }
+
+        stage('Publish Build Info') {
+            steps {
+                sh '''
+                    jf rt build-collect-env "${BUILD_NAME}" "${BUILD_NUMBER}"
+                    jf rt build-publish "${BUILD_NAME}" "${BUILD_NUMBER}"
+                '''
+            }
+        }
+
+        stage('Xray Scan') {
+            steps {
+                sh '''
+                    jf rt build-scan \
+                        --fail=false \
+                        "${BUILD_NAME}" "${BUILD_NUMBER}"
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Build ${BUILD_NAME} #${BUILD_NUMBER} complete"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "artifactory-npm-T1",
+    "name": "Create personal npm repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 npm 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/artifactory-npm/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/artifactory-npm/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "artifactory-npm-T2",
+    "name": "Complete first npm build",
+    "name_cn": "完成首次 npm build",
+    "points": 20,
+    "hint": "cd modules/artifactory-npm/sample-project, configure npm to use your virtual repo, then run: jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1",
+    "hint_cn": "进入 modules/artifactory-npm/sample-project，配置 npm 指向你的虚拟仓库，然后运行：jf npm install --build-name=<NICKNAME>-npm-sample --build-number=1"
+  }
+]

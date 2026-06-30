@@ -1,0 +1,46 @@
+name: JFrog Build and Publish
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  BUILD_NAME: ${{ secrets.NICKNAME }}-gha-build
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ secrets.JFROG_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JFROG_ACCESS_TOKEN }}
+
+      - name: Configure npm to use Artifactory
+        run: |
+          jf npmc \
+            --repo-resolve=${{ secrets.NICKNAME }}-npm-gha-virtual \
+            --repo-deploy=${{ secrets.NICKNAME }}-npm-gha-local
+
+      - name: Install dependencies
+        run: |
+          jf npm install \
+            --build-name=${{ env.BUILD_NAME }} \
+            --build-number=${{ env.BUILD_NUMBER }}
+
+      - name: Collect environment variables
+        run: jf rt build-collect-env ${{ env.BUILD_NAME }} ${{ env.BUILD_NUMBER }}
+
+      - name: Publish Build Info
+        run: jf rt build-publish ${{ env.BUILD_NAME }} ${{ env.BUILD_NUMBER }}
+
+      - name: Trigger Xray Scan
+        run: |
+          jf rt build-scan ${{ env.BUILD_NAME }} ${{ env.BUILD_NUMBER }} || true

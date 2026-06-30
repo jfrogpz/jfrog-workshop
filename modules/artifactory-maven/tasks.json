@@ -1,0 +1,26 @@
+[
+  {
+    "id": "artifactory-maven-T1",
+    "name": "Create personal Maven repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 Maven 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/artifactory-maven/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/artifactory-maven/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "artifactory-maven-T2",
+    "name": "Complete first Maven build through Artifactory",
+    "name_cn": "通过 Artifactory 完成首次 Maven 构建",
+    "points": 20,
+    "hint": "cd modules/artifactory-maven/sample-project, configure Maven to resolve dependencies through your virtual repo, then run: jf mvn clean install --build-name=<NICKNAME>-maven-build --build-number=1",
+    "hint_cn": "进入 modules/artifactory-maven/sample-project，配置 Maven 通过虚拟仓库解析依赖，然后运行：jf mvn clean install --build-name=<NICKNAME>-maven-build --build-number=1"
+  },
+  {
+    "id": "artifactory-maven-T3",
+    "name": "Publish Maven Build Info to Artifactory",
+    "name_cn": "发布 Maven Build Info 到 Artifactory",
+    "points": 20,
+    "hint": "Run: jf rt build-publish <NICKNAME>-maven-build 1",
+    "hint_cn": "运行：jf rt build-publish <NICKNAME>-maven-build 1"
+  }
+]

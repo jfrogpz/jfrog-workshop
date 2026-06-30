@@ -1,0 +1,687 @@
+{
+  "version": "1",
+  "updated": "2026-06-30",
+  "items": [
+    {
+      "id": "artifactory-npm",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "artifactory-npm",
+      "title_zh": "artifactory-npm",
+      "desc_en": "npm artifact proxy and Artifactory routing setup: local, remote cache, and virtual repo",
+      "desc_zh": "npm 制品代理，Artifactory 路由配置：本地仓库、远端缓存与虚拟仓库",
+      "duration_min": 10,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "onboarding"
+        ],
+        "role": [
+          "developer",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "npm"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "artifactory-npm-T1",
+          "name_en": "Create personal npm repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 npm 仓库",
+          "points": 10
+        },
+        {
+          "id": "artifactory-npm-T2",
+          "name_en": "Complete first npm build",
+          "name_zh": "完成首次 npm build",
+          "points": 20
+        }
+      ],
+      "product_line": "artifactory"
+    },
+    {
+      "id": "curation-npm",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "curation-npm",
+      "title_zh": "curation-npm",
+      "desc_en": "npm supply chain protection: Curation policy blocking, Build Info traceability, and remediation",
+      "desc_zh": "npm 供应链防护：Curation 策略拦截、Build Info 溯源与漏洞修复",
+      "duration_min": 60,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "poc",
+          "adoption"
+        ],
+        "role": [
+          "security",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "npm"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "curation-npm-T1",
+          "name_en": "Create personal npm repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 npm 仓库",
+          "points": 10
+        },
+        {
+          "id": "curation-npm-T2",
+          "name_en": "Complete first npm build",
+          "name_zh": "完成首次 npm build",
+          "points": 20
+        },
+        {
+          "id": "curation-npm-T3",
+          "name_en": "Publish Build #1 build-info",
+          "name_zh": "发布 Build #1 build-info",
+          "points": 20
+        },
+        {
+          "id": "curation-npm-T4",
+          "name_en": "Create a Curation Policy",
+          "name_zh": "创建 Curation Policy",
+          "points": 10
+        },
+        {
+          "id": "curation-npm-T5",
+          "name_en": "Trigger Curation to block axios@1.7.2",
+          "name_zh": "触发 Curation 阻断 axios@1.7.2",
+          "points": 20
+        },
+        {
+          "id": "curation-npm-T6",
+          "name_en": "Fix the issue and complete Build #3",
+          "name_zh": "修复问题并完成 Build #3",
+          "points": 20
+        }
+      ],
+      "product_line": "curation"
+    },
+    {
+      "id": "artifactory-maven",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "artifactory-maven",
+      "title_zh": "artifactory-maven",
+      "desc_en": "Maven artifact proxy — local, remote, and virtual repo setup for Java ecosystem",
+      "desc_zh": "Maven 制品代理——Java 生态本地、远端与虚拟仓库配置",
+      "duration_min": 10,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "onboarding"
+        ],
+        "role": [
+          "developer",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "maven"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "artifactory-maven-T1",
+          "name_en": "Create personal Maven repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 Maven 仓库",
+          "points": 10
+        },
+        {
+          "id": "artifactory-maven-T2",
+          "name_en": "Complete first Maven build through Artifactory",
+          "name_zh": "通过 Artifactory 完成首次 Maven 构建",
+          "points": 20
+        },
+        {
+          "id": "artifactory-maven-T3",
+          "name_en": "Publish Maven Build Info to Artifactory",
+          "name_zh": "发布 Maven Build Info 到 Artifactory",
+          "points": 20
+        }
+      ],
+      "product_line": "artifactory"
+    },
+    {
+      "id": "artifactory-docker",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "artifactory-docker",
+      "title_zh": "artifactory-docker",
+      "desc_en": "Docker image registry: push, pull, and cache container images via Artifactory",
+      "desc_zh": "Docker 镜像仓库：通过 Artifactory push、pull 与缓存容器镜像",
+      "duration_min": 15,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "onboarding"
+        ],
+        "role": [
+          "developer",
+          "admin"
+        ],
+        "ecosystem": [
+          "docker"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "artifactory-docker-T1",
+          "name_en": "Create personal Docker repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 Docker 仓库",
+          "points": 10
+        },
+        {
+          "id": "artifactory-docker-T2",
+          "name_en": "Pull a Docker image through Artifactory",
+          "name_zh": "通过 Artifactory 拉取 Docker 镜像",
+          "points": 20
+        },
+        {
+          "id": "artifactory-docker-T3",
+          "name_en": "Build and push a Docker image to Artifactory",
+          "name_zh": "构建 Docker 镜像并推送到 Artifactory",
+          "points": 20
+        },
+        {
+          "id": "artifactory-docker-T4",
+          "name_en": "Publish Docker Build Info to Artifactory",
+          "name_zh": "发布 Docker Build Info 到 Artifactory",
+          "points": 20
+        }
+      ],
+      "product_line": "artifactory"
+    },
+    {
+      "id": "xray-npm",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "xray-npm",
+      "title_zh": "xray-npm",
+      "desc_en": "npm dependency vulnerability scanning: Xray policies, CVE triage, and build gate",
+      "desc_zh": "npm 依赖漏洞扫描：Xray 策略配置、CVE 处理与构建阻断",
+      "duration_min": 45,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "poc",
+          "adoption"
+        ],
+        "role": [
+          "security",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "npm"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "xray-npm-T1",
+          "name_en": "Create personal npm repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 npm 仓库",
+          "points": 10
+        },
+        {
+          "id": "xray-npm-T2",
+          "name_en": "Complete npm build and publish Build Info",
+          "name_zh": "完成 npm 构建并发布 Build Info",
+          "points": 20
+        },
+        {
+          "id": "xray-npm-T3",
+          "name_en": "Create an Xray Security Policy",
+          "name_zh": "创建 Xray 安全策略",
+          "points": 20
+        },
+        {
+          "id": "xray-npm-T4",
+          "name_en": "Create an Xray Watch targeting your build",
+          "name_zh": "创建 Xray Watch 监控你的构建",
+          "points": 20
+        },
+        {
+          "id": "xray-npm-T5",
+          "name_en": "Trigger Xray scan and explore CVE results",
+          "name_zh": "触发 Xray 扫描并查看 CVE 结果",
+          "points": 20
+        }
+      ],
+      "product_line": "xray"
+    },
+    {
+      "id": "curation-docker",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "curation-docker",
+      "title_zh": "curation-docker",
+      "desc_en": "Docker image supply chain protection: block non-compliant base images at pull time",
+      "desc_zh": "Docker 镜像供应链防护：Curation 阻断不合规基础镜像拉取",
+      "duration_min": 45,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "poc",
+          "adoption"
+        ],
+        "role": [
+          "security",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "docker"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "curation-docker-T1",
+          "name_en": "Create personal Docker repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 Docker 仓库",
+          "points": 10
+        },
+        {
+          "id": "curation-docker-T2",
+          "name_en": "Pull a Docker image through Artifactory Curation",
+          "name_zh": "通过 Artifactory Curation 拉取 Docker 镜像",
+          "points": 20
+        },
+        {
+          "id": "curation-docker-T3",
+          "name_en": "Create a Docker Curation Policy",
+          "name_zh": "创建 Docker Curation 策略",
+          "points": 20
+        },
+        {
+          "id": "curation-docker-T4",
+          "name_en": "Trigger Curation to block a non-compliant image",
+          "name_zh": "触发 Curation 阻断不合规镜像",
+          "points": 20
+        },
+        {
+          "id": "curation-docker-T5",
+          "name_en": "View blocked image in Curation Audit",
+          "name_zh": "在 Curation Audit 中查看被阻断的镜像",
+          "points": 20
+        }
+      ],
+      "product_line": "curation"
+    },
+    {
+      "id": "xray-docker",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "xray-docker",
+      "title_zh": "xray-docker",
+      "desc_en": "Container image CVE scanning: Xray vulnerability analysis and policy enforcement",
+      "desc_zh": "容器镜像 CVE 扫描：Xray 漏洞分析与策略执行",
+      "duration_min": 45,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "poc",
+          "adoption"
+        ],
+        "role": [
+          "security",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "docker"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "xray-docker-T1",
+          "name_en": "Create personal Docker repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 Docker 仓库",
+          "points": 10
+        },
+        {
+          "id": "xray-docker-T2",
+          "name_en": "Build and push Docker image through Artifactory",
+          "name_zh": "通过 Artifactory 构建并推送 Docker 镜像",
+          "points": 20
+        },
+        {
+          "id": "xray-docker-T3",
+          "name_en": "Publish Docker Build Info to Artifactory",
+          "name_zh": "发布 Docker Build Info 到 Artifactory",
+          "points": 20
+        },
+        {
+          "id": "xray-docker-T4",
+          "name_en": "Create an Xray Security Policy and Watch for Docker",
+          "name_zh": "为 Docker 创建 Xray 安全策略和 Watch",
+          "points": 20
+        },
+        {
+          "id": "xray-docker-T5",
+          "name_en": "View container image CVE scan results",
+          "name_zh": "查看容器镜像 CVE 扫描结果",
+          "points": 20
+        }
+      ],
+      "product_line": "xray"
+    },
+    {
+      "id": "jas-maven",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "jas-maven",
+      "title_zh": "jas-maven",
+      "desc_en": "JFrog Advanced Security for Maven: SAST, secrets detection, and contextual CVE analysis with Log4Shell demo",
+      "desc_zh": "JFrog 高级安全（Maven）：SAST 静态分析、密钥检测与 Log4Shell CVE 上下文可达性分析",
+      "duration_min": 45,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "poc",
+          "adoption",
+          "feature-demo"
+        ],
+        "role": [
+          "security",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "maven"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "jas-maven-T1",
+          "name_en": "Create personal Maven repositories in Artifactory",
+          "name_zh": "在 Artifactory 中创建个人 Maven 仓库",
+          "points": 10
+        },
+        {
+          "id": "jas-maven-T2",
+          "name_en": "Build Maven project through Artifactory and publish Build Info",
+          "name_zh": "通过 Artifactory 构建 Maven 项目并发布 Build Info",
+          "points": 20
+        },
+        {
+          "id": "jas-maven-T3",
+          "name_en": "Run JFrog CLI audit to scan Maven CVEs",
+          "name_zh": "运行 JFrog CLI audit 扫描 Maven CVE",
+          "points": 20
+        },
+        {
+          "id": "jas-maven-T4",
+          "name_en": "Detect hardcoded secrets with JAS",
+          "name_zh": "使用 JAS 检测硬编码密钥",
+          "points": 20
+        },
+        {
+          "id": "jas-maven-T5",
+          "name_en": "View contextual analysis results in JFrog UI",
+          "name_zh": "在 JFrog UI 中查看上下文分析结果",
+          "points": 20
+        }
+      ],
+      "product_line": "jas"
+    },
+    {
+      "id": "ai-catalog",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "ai-catalog",
+      "title_zh": "ai-catalog",
+      "desc_en": "JFrog AI Catalog: discover, proxy, and govern Hugging Face AI models through Artifactory with Xray scanning",
+      "desc_zh": "JFrog AI Catalog：通过 Artifactory 发现、代理和管控 Hugging Face AI 模型，集成 Xray 安全扫描",
+      "duration_min": 30,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "poc",
+          "adoption",
+          "feature-demo"
+        ],
+        "role": [
+          "security",
+          "devsecops"
+        ],
+        "ecosystem": []
+      },
+      "tasks": [
+        {
+          "id": "ai-catalog-T1",
+          "name_en": "Create a Hugging Face repository in Artifactory",
+          "name_zh": "在 Artifactory 中创建 Hugging Face 仓库",
+          "points": 10
+        },
+        {
+          "id": "ai-catalog-T2",
+          "name_en": "Browse AI Catalog and discover available models",
+          "name_zh": "浏览 AI Catalog 并发现可用模型",
+          "points": 20
+        },
+        {
+          "id": "ai-catalog-T3",
+          "name_en": "Download an AI model through Artifactory",
+          "name_zh": "通过 Artifactory 下载 AI 模型",
+          "points": 20
+        },
+        {
+          "id": "ai-catalog-T4",
+          "name_en": "Scan the AI model with Xray and view the security report",
+          "name_zh": "使用 Xray 扫描 AI 模型并查看安全报告",
+          "points": 20
+        },
+        {
+          "id": "ai-catalog-T5",
+          "name_en": "Create a Curation Policy to govern AI model downloads",
+          "name_zh": "创建 Curation Policy 管控 AI 模型下载",
+          "points": 20
+        }
+      ],
+      "product_line": "ai-catalog"
+    },
+    {
+      "id": "ci-github-actions",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "ci-github-actions",
+      "title_zh": "ci-github-actions",
+      "desc_en": "Integrate JFrog CLI into GitHub Actions: build, publish artifacts, and scan with Xray in CI",
+      "desc_zh": "在 GitHub Actions 中集成 JFrog CLI：CI 中构建、发布制品并用 Xray 扫描",
+      "duration_min": 30,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "onboarding",
+          "adoption"
+        ],
+        "role": [
+          "developer",
+          "devsecops"
+        ],
+        "ecosystem": [
+          "npm"
+        ]
+      },
+      "tasks": [
+        {
+          "id": "ci-github-actions-T1",
+          "name_en": "Create Artifactory repositories for GitHub Actions builds",
+          "name_zh": "为 GitHub Actions 构建创建 Artifactory 仓库",
+          "points": 10
+        },
+        {
+          "id": "ci-github-actions-T2",
+          "name_en": "Configure JFrog CLI in GitHub Actions workflow",
+          "name_zh": "在 GitHub Actions Workflow 中配置 JFrog CLI",
+          "points": 20
+        },
+        {
+          "id": "ci-github-actions-T3",
+          "name_en": "Run workflow and publish artifacts to Artifactory",
+          "name_zh": "运行 Workflow 并发布制品到 Artifactory",
+          "points": 20
+        },
+        {
+          "id": "ci-github-actions-T4",
+          "name_en": "Publish Build Info from GitHub Actions to Artifactory",
+          "name_zh": "从 GitHub Actions 发布 Build Info 到 Artifactory",
+          "points": 20
+        },
+        {
+          "id": "ci-github-actions-T5",
+          "name_en": "Trigger Xray scan on the GitHub Actions build",
+          "name_zh": "对 GitHub Actions 构建触发 Xray 扫描",
+          "points": 20
+        }
+      ],
+      "product_line": "ci"
+    },
+    {
+      "id": "ci-jenkins",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "ci-jenkins",
+      "title_zh": "ci-jenkins",
+      "desc_en": "Integrate JFrog CLI into Jenkins pipelines: build, publish artifacts, and trigger Xray scans in CI",
+      "desc_zh": "在 Jenkins 流水线中集成 JFrog CLI：CI 中构建、发布制品并触发 Xray 扫描",
+      "duration_min": 30,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "onboarding",
+          "adoption"
+        ],
+        "role": [
+          "developer",
+          "devsecops"
+        ],
+        "ecosystem": []
+      },
+      "tasks": [
+        {
+          "id": "ci-jenkins-T1",
+          "name_en": "Connect Jenkins to JFrog Artifactory",
+          "name_zh": "将 Jenkins 连接到 JFrog Artifactory",
+          "points": 10
+        },
+        {
+          "id": "ci-jenkins-T2",
+          "name_en": "Create Artifactory repositories for Jenkins builds",
+          "name_zh": "为 Jenkins 构建创建 Artifactory 仓库",
+          "points": 10
+        },
+        {
+          "id": "ci-jenkins-T3",
+          "name_en": "Run a Jenkins pipeline that builds and publishes to Artifactory",
+          "name_zh": "运行 Jenkins 流水线，构建并发布制品到 Artifactory",
+          "points": 20
+        },
+        {
+          "id": "ci-jenkins-T4",
+          "name_en": "Publish Build Info from Jenkins to Artifactory",
+          "name_zh": "从 Jenkins 发布 Build Info 到 Artifactory",
+          "points": 20
+        },
+        {
+          "id": "ci-jenkins-T5",
+          "name_en": "Trigger Xray scan on the Jenkins build",
+          "name_zh": "对 Jenkins 构建触发 Xray 扫描",
+          "points": 20
+        }
+      ],
+      "product_line": "ci"
+    },
+    {
+      "id": "best-practices",
+      "type": "module",
+      "status": "available",
+      "source": "workshop",
+      "title_en": "best-practices",
+      "title_zh": "best-practices",
+      "desc_en": "JFrog platform best practices: repository naming conventions, RBAC design, permission targets, and governance planning",
+      "desc_zh": "JFrog 平台最佳实践：仓库命名规划、RBAC 设计、权限范围配置与治理规范",
+      "duration_min": 30,
+      "content_lang": "both",
+      "url": null,
+      "tags": {
+        "scenario": [
+          "workshop",
+          "onboarding",
+          "adoption"
+        ],
+        "role": [
+          "admin",
+          "devsecops"
+        ],
+        "ecosystem": []
+      },
+      "tasks": [
+        {
+          "id": "best-practices-T1",
+          "name_en": "Create repositories following JFrog naming conventions",
+          "name_zh": "按 JFrog 命名规范创建仓库",
+          "points": 10
+        },
+        {
+          "id": "best-practices-T2",
+          "name_en": "Create a Group for team access control",
+          "name_zh": "创建 Group 实现团队访问控制",
+          "points": 20
+        },
+        {
+          "id": "best-practices-T3",
+          "name_en": "Create a Permission Target scoping access to your repositories",
+          "name_zh": "创建 Permission Target 为仓库设置访问范围",
+          "points": 20
+        },
+        {
+          "id": "best-practices-T4",
+          "name_en": "Create a JFrog Project for environment isolation",
+          "name_zh": "创建 JFrog Project 实现环境隔离",
+          "points": 20
+        },
+        {
+          "id": "best-practices-T5",
+          "name_en": "Review your governance setup in JFrog UI",
+          "name_zh": "在 JFrog UI 中回顾你的治理架构",
+          "points": 20
+        }
+      ],
+      "product_line": "platform"
+    }
+  ]
+}

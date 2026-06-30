@@ -1,0 +1,34 @@
+[
+  {
+    "id": "artifactory-docker-T1",
+    "name": "Create personal Docker repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 Docker 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/artifactory-docker/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/artifactory-docker/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "artifactory-docker-T2",
+    "name": "Pull a Docker image through Artifactory",
+    "name_cn": "通过 Artifactory 拉取 Docker 镜像",
+    "points": 20,
+    "hint": "Configure Docker to use your Artifactory virtual repo, then run: docker pull <JFROG_DOMAIN>/<NICKNAME>-docker-virtual/alpine:3.18",
+    "hint_cn": "配置 Docker 使用你的 Artifactory 虚拟仓库，然后运行：docker pull <JFROG_DOMAIN>/<NICKNAME>-docker-virtual/alpine:3.18"
+  },
+  {
+    "id": "artifactory-docker-T3",
+    "name": "Build and push a Docker image to Artifactory",
+    "name_cn": "构建 Docker 镜像并推送到 Artifactory",
+    "points": 20,
+    "hint": "cd modules/artifactory-docker/sample-project, then: jf docker build -t <JFROG_DOMAIN>/<NICKNAME>-docker-local/workshop-app:1.0 . && jf docker push <JFROG_DOMAIN>/<NICKNAME>-docker-local/workshop-app:1.0 --build-name=<NICKNAME>-docker-build --build-number=1",
+    "hint_cn": "进入 modules/artifactory-docker/sample-project，然后：jf docker build -t <JFROG_DOMAIN>/<NICKNAME>-docker-local/workshop-app:1.0 . && jf docker push <JFROG_DOMAIN>/<NICKNAME>-docker-local/workshop-app:1.0 --build-name=<NICKNAME>-docker-build --build-number=1"
+  },
+  {
+    "id": "artifactory-docker-T4",
+    "name": "Publish Docker Build Info to Artifactory",
+    "name_cn": "发布 Docker Build Info 到 Artifactory",
+    "points": 20,
+    "hint": "Run: jf rt build-publish <NICKNAME>-docker-build 1",
+    "hint_cn": "运行：jf rt build-publish <NICKNAME>-docker-build 1"
+  }
+]

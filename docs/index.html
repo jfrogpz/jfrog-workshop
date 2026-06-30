@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JFrog Workshop — Module Catalog</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.29.0/tabler-icons.min.css">
+<style>
+:root {
+  --bg:        #0D0221;
+  --surface:   #130a2e;
+  --surface-2: #1a1040;
+  --text:      #e8deff;
+  --text-2:    #7a6a9a;
+  --text-3:    #3d2e5e;
+  --border:    rgba(252,225,56,.06);
+  --border-2:  rgba(252,225,56,.14);
+  --accent:    #FCE138;
+  --accent-dim:#c9a800;
+  --accent-bg: rgba(252,225,56,.06);
+  --accent-border: rgba(252,225,56,.4);
+  --accent-text:   #FCE138;
+  --cyan:      #00D4FF;
+  --cyan-bg:   rgba(0,212,255,.07);
+  --cyan-border: rgba(0,212,255,.3);
+  --magenta:   #FF2D6B;
+  --magenta-bg: rgba(255,45,107,.07);
+  --magenta-border: rgba(255,45,107,.35);
+  --src-jf-bg: rgba(252,225,56,.07);
+  --src-jf-text: #FCE138;
+  --src-jf-border: rgba(252,225,56,.3);
+  --src-jfcn-bg: rgba(0,212,255,.08);
+  --src-jfcn-text: #00D4FF;
+  --src-jfcn-border: rgba(0,212,255,.3);
+  --src-yt-bg: rgba(255,45,107,.09);
+  --src-yt-text: #FF2D6B;
+  --src-yt-border: rgba(255,45,107,.3);
+  --src-gh-bg: rgba(252,225,56,.06);
+  --src-gh-text: #c9a800;
+  --src-gh-border: rgba(252,225,56,.2);
+  --success-bg: rgba(252,225,56,.07);
+  --success-text: #FCE138;
+  --glow-sm: 0 0 14px rgba(252,225,56,.15);
+  --glow-md: 0 0 28px rgba(252,225,56,.22);
+  --glow-mg: 0 0 14px rgba(255,45,107,.18);
+  --radius: 4px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono: 'SF Mono','JetBrains Mono','Fira Code','Consolas',monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── hero header ─────────────────────────── */
+.site-header{
+  background: #080014;
+  background-image:
+    linear-gradient(rgba(252,225,56,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(252,225,56,.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  border-bottom: 0.5px solid rgba(252,225,56,.2);
+  position: relative;
+  overflow: hidden;
+}
+.site-header::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 50% 70% at 20% 50%, rgba(255,45,107,.06), transparent),
+    radial-gradient(ellipse 50% 70% at 80% 50%, rgba(0,212,255,.05), transparent),
+    radial-gradient(ellipse 40% 60% at 50% -10%, rgba(252,225,56,.08), transparent);
+  pointer-events:none;
+}
+.site-header-inner{
+  max-width:1080px;margin:0 auto;
+  padding:2rem 1.5rem 1.5rem;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  position:relative;
+}
+.site-brand{display:flex;align-items:flex-start;gap:16px}
+.jfrog-logo{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;
+  padding:4px 10px;border-radius:3px;
+  background:rgba(252,225,56,.12);color:var(--accent);
+  border:0.5px solid var(--accent-border);
+  flex-shrink:0;margin-top:4px;
+  text-shadow: 0 0 10px rgba(252,225,56,.6);
+}
+.site-brand-title{
+  font-family:var(--mono);font-size:22px;font-weight:700;
+  color:#f0e8ff;letter-spacing:-.01em;line-height:1.2;
+  text-shadow: 0 0 30px rgba(255,45,107,.2), 0 0 60px rgba(252,225,56,.1);
+}
+.site-brand-title .accent{color:var(--accent);text-shadow:0 0 16px rgba(252,225,56,.6)}
+.site-brand-desc{
+  font-size:12px;color:var(--text-2);margin-top:6px;line-height:1.6;
+  font-family:var(--mono);
+}
+.site-brand-desc::before{content:'> ';color:var(--magenta);opacity:.8}
+.site-header-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0}
+.lang-toggle{
+  display:flex;border:0.5px solid rgba(0,200,255,.2);border-radius:3px;overflow:hidden;
+}
+.lang-toggle button{
+  padding:5px 14px;font-size:11px;font-family:var(--mono);border:none;cursor:pointer;
+  background:transparent;color:var(--text-2);transition:all .15s;
+}
+.lang-toggle button.on{background:rgba(252,225,56,.15);color:var(--accent);font-weight:700}
+.codespace-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-family:var(--mono);padding:6px 14px;border-radius:3px;
+  background:rgba(252,225,56,.1);color:var(--accent);
+  border:0.5px solid var(--accent-border);text-decoration:none;
+  transition:all .2s;white-space:nowrap;
+}
+.codespace-btn:hover{background:rgba(252,225,56,.18);box-shadow:var(--glow-sm)}
+
+/* ── stats bar ───────────────────────────── */
+.stats-bar{
+  max-width:1080px;margin:0 auto;
+  padding:.75rem 1.5rem 1.25rem;
+  display:flex;align-items:center;gap:0;
+  position:relative;
+  border-top:0.5px solid rgba(0,200,255,.06);
+}
+.stat-item{
+  display:flex;align-items:baseline;gap:6px;
+  font-size:11px;color:var(--text-2);
+  padding-right:24px;margin-right:24px;
+  border-right:0.5px solid rgba(0,200,255,.1);
+  font-family:var(--mono);
+}
+.stat-item:last-child{border-right:none}
+.stat-num{
+  font-size:22px;font-weight:700;color:var(--accent);
+  font-family:var(--mono);line-height:1;
+  text-shadow:0 0 16px rgba(252,225,56,.5);
+}
+.stat-eco{display:flex;gap:5px;flex-wrap:wrap}
+.eco-pill{
+  font-size:9px;font-family:var(--mono);font-weight:600;
+  padding:2px 7px;border-radius:2px;
+  background:rgba(0,200,255,.08);color:var(--cyan);
+  border:0.5px solid rgba(0,200,255,.2);
+}
+
+/* ── page layout ─────────────────────────── */
+.page{max-width:1080px;margin:0 auto;padding:1.5rem 1.5rem 5rem}
+.page-header{margin-bottom:.25rem}
+
+/* ── filters ─────────────────────────────── */
+.filters{display:flex;flex-direction:column;gap:5px;margin-bottom:1.5rem}
+.filter-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.filter-label{font-size:10px;font-family:var(--mono);color:var(--text-3);min-width:52px;flex-shrink:0;letter-spacing:.05em;text-transform:uppercase}
+.chip{
+  font-size:10px;font-family:var(--mono);
+  padding:3px 10px;border-radius:2px;
+  border:0.5px solid var(--border-2);
+  background:var(--surface);color:var(--text-2);
+  cursor:pointer;user-select:none;
+  transition:all .15s;letter-spacing:.02em;
+}
+.chip:hover{border-color:rgba(252,225,56,.35);color:var(--accent);background:rgba(252,225,56,.05)}
+.chip.on{
+  background:rgba(252,225,56,.12);
+  border-color:var(--accent-border);
+  color:#0D0221;font-weight:700;
+  background:var(--accent);
+  box-shadow:0 0 10px rgba(252,225,56,.3);
+}
+
+/* ── selection panel ─────────────────────── */
+.sel-panel{
+  background:var(--surface);
+  border:0.5px solid rgba(252,225,56,.25);
+  border-radius:4px;
+  padding:12px 16px;margin-bottom:1.5rem;
+  display:flex;flex-direction:column;gap:10px;
+  box-shadow:0 0 24px rgba(252,225,56,.08), 0 0 48px rgba(255,45,107,.05);
+}
+.sel-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sel-left{flex:1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+.sel-count{font-size:11px;font-family:var(--mono);color:var(--text-2);flex-shrink:0;white-space:nowrap}
+.sel-chips{display:flex;gap:5px;flex-wrap:wrap}
+.dur-pill{
+  font-size:10px;font-family:var(--mono);
+  padding:2px 8px;border-radius:2px;
+  background:rgba(0,200,255,.07);border:0.5px solid var(--cyan-border);
+  color:var(--cyan);flex-shrink:0;
+}
+.sel-actions{display:flex;gap:5px;flex-shrink:0}
+.sel-btn{
+  font-size:10px;font-family:var(--mono);
+  padding:4px 10px;border-radius:2px;
+  border:0.5px solid var(--border-2);background:var(--bg);color:var(--text-2);
+  cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s;
+}
+.sel-btn:hover{border-color:var(--border-2);background:var(--surface-2);color:var(--text)}
+.sel-chip{
+  font-size:10px;font-family:var(--mono);
+  padding:2px 8px;border-radius:2px;
+  background:rgba(0,232,122,.08);color:var(--accent);
+  border:0.5px solid var(--accent-border);
+  display:flex;align-items:center;gap:4px;max-width:200px;
+}
+.sel-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sel-chip button{background:none;border:none;cursor:pointer;color:var(--accent);font-size:14px;line-height:1;padding:0;flex-shrink:0}
+.tasklist-box{
+  background:var(--bg);border:0.5px solid var(--border-2);border-radius:2px;
+  padding:6px 2px;max-height:300px;overflow-y:auto;
+}
+.tl-table{width:100%;border-collapse:collapse;font-size:11px;color:var(--text-2)}
+.tl-table th{text-align:left;padding:4px 10px;border-bottom:1px solid var(--border-2);color:var(--text-3);font-weight:600;white-space:nowrap;background:var(--bg-2)}
+.tl-table td{padding:3px 10px;border-bottom:0.5px solid var(--border-2);vertical-align:middle}
+.tl-table .tl-mod-name{font-family:var(--mono);font-size:11px;color:var(--accent);white-space:nowrap;vertical-align:top;padding-top:5px}
+.tl-table .tl-dur{color:var(--text-3);white-space:nowrap;font-size:10px;vertical-align:top;padding-top:6px}
+.tl-table .tl-tnum{color:var(--cyan);font-family:var(--mono);font-size:10px;white-space:nowrap;width:2.5em}
+.tl-table .tl-tname{color:var(--text-1)}
+.tl-table .tl-pts{text-align:right;white-space:nowrap;color:var(--text-3);font-family:var(--mono);font-size:10px;width:4em}
+.tl-table .tl-sub-row td{background:var(--bg-2);border-bottom:1px solid var(--border-2)}
+.tl-table .tl-sub-lbl{text-align:right;font-style:italic;font-size:10px;color:var(--text-3)}
+.tl-table .tl-sub-pts{color:var(--accent-dim);font-weight:600}
+.tl-table .tl-total-row td{border-top:1px solid var(--border-2);padding:6px 10px;color:var(--text-1);font-weight:600;font-size:11px;background:var(--bg-2)}
+.tl-table .tl-coming{color:var(--text-3);font-style:italic;font-size:10px}
+.tl-table a{color:var(--cyan);text-decoration:none}
+.tl-table a:hover{text-decoration:underline}
+.cmd-row{display:flex;gap:8px;align-items:center}
+.cmd-text{
+  flex:1;font-size:11px;font-family:var(--mono);
+  background:var(--bg);border:0.5px solid var(--border-2);border-radius:2px;
+  padding:7px 10px;color:var(--cyan);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0;
+}
+.cmd-text::before{content:'$ ';color:var(--accent-dim);opacity:.7}
+.copy-btn{
+  font-size:10px;font-family:var(--mono);
+  padding:7px 16px;border-radius:2px;
+  border:0.5px solid var(--accent-border);
+  background:rgba(252,225,56,.1);color:var(--accent);
+  cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;
+  transition:all .2s;font-weight:600;
+}
+.copy-btn:hover{background:var(--accent);color:#0D0221;box-shadow:var(--glow-sm)}
+
+/* ── section heading ─────────────────────── */
+.section{margin-top:2rem}
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.section-label{
+  font-size:10px;font-family:var(--mono);font-weight:600;
+  color:var(--text-3);letter-spacing:.1em;text-transform:uppercase;
+}
+.section-line{flex:1;height:0.5px;background:linear-gradient(to right, var(--border-2), transparent)}
+.section-count{font-size:10px;font-family:var(--mono);color:var(--text-3)}
+
+/* ── grid ─────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.empty{grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-3);font-size:12px;font-family:var(--mono)}
+
+/* ── module card ─────────────────────────── */
+.card{
+  background:var(--surface);
+  border:0.5px solid var(--border-2);
+  border-radius:var(--radius);
+  padding:14px;
+  display:flex;flex-direction:column;gap:10px;
+  cursor:pointer;
+  transition:border-color .2s,box-shadow .2s,background .2s,opacity .2s;
+  position:relative;overflow:hidden;
+}
+.card::before,.card::after{content:'';position:absolute;width:10px;height:10px}
+.card::before{top:-1px;left:-1px;border-top:1.5px solid rgba(252,225,56,.35);border-left:1.5px solid rgba(252,225,56,.35)}
+.card::after{bottom:-1px;right:-1px;border-bottom:1.5px solid rgba(252,225,56,.35);border-right:1.5px solid rgba(252,225,56,.35)}
+.card:hover{border-color:rgba(252,225,56,.4);box-shadow:0 0 16px rgba(252,225,56,.1)}
+.card:hover::before{border-top-color:var(--accent);border-left-color:var(--accent)}
+.card:hover::after{border-bottom-color:var(--accent);border-right-color:var(--accent)}
+.card.sel{border-color:var(--accent-border);background:rgba(252,225,56,.05);box-shadow:var(--glow-sm)}
+.card.sel::before{border-top-color:var(--accent);border-left-color:var(--accent)}
+.card.sel::after{border-bottom-color:var(--accent);border-right-color:var(--accent)}
+.card.coming{opacity:.55;cursor:not-allowed}
+.card.coming:hover{opacity:.7}
+.card.faded{opacity:.22;cursor:default;pointer-events:none;filter:saturate(.3)}
+
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card-title{
+  font-family:var(--mono);font-size:13px;font-weight:600;
+  color:#f0e8ff;line-height:1.3;word-break:break-word;overflow-wrap:anywhere;
+  letter-spacing:-.01em;
+}
+.badge{
+  font-family:var(--mono);font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:2px;white-space:nowrap;flex-shrink:0;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.badge-avail{background:var(--accent);color:#0D0221;border:0.5px solid var(--accent);font-weight:800;text-shadow:none}
+.badge-soon{background:var(--magenta-bg);color:var(--magenta);border:0.5px solid var(--magenta-border)}
+
+.card-desc{font-size:11px;color:#b4a4d0;line-height:1.6;flex:1}
+.card-tags{display:flex;flex-wrap:wrap;gap:3px}
+.card-tag{
+  font-size:9px;font-family:var(--mono);
+  padding:1px 6px;border-radius:2px;
+  background:var(--surface-2);color:var(--text-2);
+  border:0.5px solid var(--border-2);
+}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.card-dur{
+  font-size:10px;font-family:var(--mono);color:var(--text-3);
+  display:flex;align-items:center;gap:4px;
+}
+.card-actions{display:flex;align-items:center;gap:6px}
+.task-btn{
+  background:none;border:0.5px solid var(--border-2);border-radius:2px;
+  padding:2px 7px;cursor:pointer;color:var(--text-3);
+  font-size:9px;font-family:var(--mono);
+  display:flex;align-items:center;gap:2px;transition:all .15s;
+  letter-spacing:.04em;
+}
+.task-btn:hover,.task-btn.on{border-color:rgba(252,225,56,.3);color:var(--accent)}
+.check-circle{
+  width:16px;height:16px;border-radius:50%;
+  border:1px solid var(--border-2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .2s;
+}
+.card.sel .check-circle{
+  background:var(--accent);border-color:var(--accent);color:#0D0221;
+  box-shadow:0 0 10px rgba(252,225,56,.6);
+}
+
+/* ── source / lang badges ────────────────── */
+.src-badge{
+  display:flex;align-items:center;gap:3px;
+  font-size:9px;font-family:var(--mono);font-weight:600;
+  padding:2px 8px;border-radius:2px;flex-shrink:0;white-space:nowrap;
+  letter-spacing:.04em;text-transform:uppercase;
+}
+.src-jf-badge{background:var(--src-jf-bg);color:var(--src-jf-text);border:0.5px solid var(--src-jf-border)}
+.src-jfcn-badge{background:var(--src-jfcn-bg);color:var(--src-jfcn-text);border:0.5px solid var(--src-jfcn-border)}
+.src-yt-badge{background:var(--src-yt-bg);color:var(--src-yt-text);border:0.5px solid var(--src-yt-border)}
+.src-gh-badge{background:var(--src-gh-bg);color:var(--src-gh-text);border:0.5px solid var(--src-gh-border)}
+.src-ws-badge{background:rgba(252,225,56,.08);color:var(--accent);border:0.5px solid var(--accent-border)}
+.lang-badge{
+  font-size:9px;font-family:var(--mono);font-weight:700;
+  padding:1px 6px;border-radius:2px;
+  background:rgba(0,200,255,.07);color:var(--cyan);border:0.5px solid rgba(0,200,255,.2);
+}
+
+/* ── resource card ───────────────────────── */
+.open-btn{
+  font-size:9px;font-family:var(--mono);font-weight:600;letter-spacing:.04em;
+  color:var(--accent);
+  display:flex;align-items:center;gap:2px;cursor:pointer;
+  background:none;border:0.5px solid var(--accent-border);padding:2px 9px;border-radius:2px;
+  transition:all .15s;white-space:nowrap;
+}
+.open-btn:hover{background:var(--accent);color:#0D0221;box-shadow:0 0 8px rgba(252,225,56,.3)}
+
+/* ── detail panel ────────────────────────── */
+.detail-panel{
+  margin-top:10px;background:var(--surface);
+  border:0.5px solid rgba(0,200,255,.18);border-radius:4px;overflow:hidden;
+}
+.detail-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-bottom:0.5px solid var(--border);
+}
+.detail-title{font-size:12px;font-family:var(--mono);font-weight:600;color:var(--accent)}
+.detail-close{background:none;border:none;cursor:pointer;color:var(--text-3);padding:2px;display:flex;align-items:center;transition:color .15s}
+.detail-close:hover{color:var(--text)}
+.detail-body{padding:4px 0 8px}
+.task-row{display:flex;align-items:center;padding:6px 14px;gap:10px;font-size:11px}
+.task-row:hover{background:var(--surface-2)}
+.task-id{font-family:var(--mono);font-size:10px;color:var(--accent-dim);min-width:22px}
+.task-name{flex:1;color:var(--text-2)}
+.task-pts{font-family:var(--mono);font-size:10px;color:var(--text-3)}
+.detail-foot{
+  display:flex;justify-content:flex-end;
+  padding:6px 14px 4px;border-top:0.5px solid var(--border);
+  font-size:10px;font-family:var(--mono);color:var(--accent-dim);
+}
+
+/* ── scanline on card hover ──────────────── */
+.card-scan{position:absolute;top:-60%;left:0;right:0;height:50%;background:linear-gradient(to bottom,transparent,rgba(252,225,56,.04),transparent);pointer-events:none}
+.card:hover .card-scan{animation:scan-anim .7s ease-out forwards}
+@keyframes scan-anim{0%{top:-60%}100%{top:110%}}
+
+/* ── pulse dot for LIVE badge ────────────── */
+.badge-avail{display:inline-flex;align-items:center;gap:4px}
+.pulse-dot{width:5px;height:5px;border-radius:50%;background:#0D0221;flex-shrink:0;animation:pulse-blink 1.5s ease-in-out infinite}
+@keyframes pulse-blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ── ticker bar ──────────────────────────── */
+.ticker-bar{overflow:hidden;background:rgba(252,225,56,.05);border-bottom:1px solid rgba(252,225,56,.1);padding:5px 0}
+.ticker-inner{display:inline-block;white-space:nowrap;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--accent);animation:ticker-run 32s linear infinite}
+@keyframes ticker-run{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* ── module layout: grid + right panel ───── */
+.mod-layout{display:flex;align-items:flex-start;gap:0}
+.mod-layout .grid{flex:1;min-width:0}
+.mod-rpanel{width:0;overflow:hidden;flex-shrink:0;transition:width .3s ease}
+.mod-rpanel.open{width:360px;border-left:1px solid rgba(252,225,56,.15)}
+.mod-rpanel-inner{width:360px;padding:18px;opacity:0;transition:opacity .2s ease .1s}
+.mod-rpanel.open .mod-rpanel-inner{opacity:1}
+.rp-tag{font-size:10px;font-family:var(--mono);color:var(--accent);letter-spacing:.2em;margin-bottom:5px}
+.rp-title{font-size:16px;font-weight:700;color:var(--text);font-family:var(--mono);letter-spacing:.04em;text-shadow:0 0 18px rgba(252,225,56,.2)}
+.rp-desc{font-size:11px;color:#b4a4d0;line-height:1.6;margin:6px 0 12px}
+.rp-sec{font-size:9px;font-family:var(--mono);color:var(--accent);letter-spacing:.18em;padding-bottom:4px;border-bottom:0.5px solid rgba(252,225,56,.1);margin:12px 0 6px}
+.rp-task{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid rgba(255,255,255,.04)}
+.rp-tnum{font-size:9px;font-family:var(--mono);color:var(--accent);min-width:24px}
+.rp-tname{flex:1;font-size:11px;color:var(--text)}
+.rp-tpts{font-size:9px;font-family:var(--mono);color:var(--cyan)}
+.rp-foot{display:flex;justify-content:space-between;font-size:10px;font-family:var(--mono);padding-top:10px;margin-top:6px;border-top:0.5px solid rgba(252,225,56,.08)}
+.rp-close{background:none;border:none;cursor:pointer;color:var(--text-2);font-size:16px;padding:2px 4px;line-height:1;transition:color .15s}
+.rp-close:hover{color:var(--accent)}
+.rp-guide-btn{display:block;margin-top:10px;padding:8px 14px;background:rgba(252,225,56,.07);border:0.5px solid rgba(252,225,56,.3);color:var(--accent);font-size:10px;font-family:var(--mono);letter-spacing:.1em;text-decoration:none;text-align:center;transition:background .15s,border-color .15s}
+.rp-guide-btn:hover{background:rgba(252,225,56,.14);border-color:rgba(252,225,56,.6)}
+
+/* ── loading / error ─────────────────────── */
+.state-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;color:var(--text-3)}
+.state-screen p{font-size:12px;font-family:var(--mono)}
+
+/* ── filter hint ──────────────────────────── */
+#filter-hint{margin:6px 0 0;padding:7px 14px;border-left:2px solid var(--accent);background:rgba(0,229,255,0.04);border-radius:0 2px 2px 0;font-size:11px;font-family:var(--mono);color:var(--text-2);line-height:1.9}
+.fhint-key{color:var(--accent);margin-right:5px}
+.fhint-sep{color:var(--text-3);margin:0 8px;opacity:.5}
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="site-brand">
+      <span class="jfrog-logo">JFrog</span>
+      <div>
+        <div class="site-brand-title" id="hero-title"></div>
+        <div class="site-brand-desc" id="hero-desc"></div>
+      </div>
+    </div>
+    <div class="site-header-right">
+      <div class="lang-toggle">
+        <button id="ui-zh" class="on">中</button>
+        <button id="ui-en">EN</button>
+      </div>
+      <a class="codespace-btn" href="https://codespaces.new/jfrogpz/jfrog-workshop" target="_blank" rel="noopener">
+        <i class="ti ti-brand-github" style="font-size:12px" aria-hidden="true"></i>
+        <span id="cs-lbl"></span>
+      </a>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num" id="stat-mod-num">—</span>
+      <span id="stat-mod-lbl"></span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="stat-res-num">—</span>
+      <span id="stat-res-lbl"></span>
+    </div>
+    <div class="stat-item">
+      <span id="stat-eco-lbl"></span>
+      <div class="stat-eco" id="stat-eco-pills"></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker-bar" aria-hidden="true">
+  <span class="ticker-inner">SYS://JFROG_PLATFORM_ONLINE &nbsp;▶&nbsp; ARTIFACTORY READY &nbsp;▶&nbsp; XRAY ACTIVE &nbsp;▶&nbsp; CURATION ENGINE: ARMED &nbsp;▶&nbsp; BUILD_INFO: ENABLED &nbsp;▶&nbsp; ACCESS GRANTED &nbsp;▶&nbsp; SELECT A MODULE TO BEGIN &nbsp;▶&nbsp; SYS://JFROG_PLATFORM_ONLINE &nbsp;▶&nbsp; ARTIFACTORY READY &nbsp;▶&nbsp; XRAY ACTIVE &nbsp;▶&nbsp; CURATION ENGINE: ARMED &nbsp;▶&nbsp; BUILD_INFO: ENABLED &nbsp;▶&nbsp; ACCESS GRANTED &nbsp;▶&nbsp; SELECT A MODULE TO BEGIN</span>
+</div>
+
+<div class="page">
+
+  <div class="filters" id="filters">
+    <div class="filter-row">
+      <span class="filter-label" id="fl-scenario"></span>
+      <span class="chip on" data-f="scenario" data-v="all" id="c-sc-all"></span>
+      <span class="chip" data-f="scenario" data-v="workshop">Workshop</span>
+      <span class="chip" data-f="scenario" data-v="poc">POC</span>
+      <span class="chip" data-f="scenario" data-v="onboarding">Onboarding</span>
+      <span class="chip" data-f="scenario" data-v="adoption">Adoption</span>
+      <span class="chip" data-f="scenario" data-v="feature-demo">Feature Demo</span>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label" id="fl-role"></span>
+      <span class="chip on" data-f="role" data-v="all" id="c-ro-all"></span>
+      <span class="chip" data-f="role" data-v="developer" id="c-dev"></span>
+      <span class="chip" data-f="role" data-v="security" id="c-sec"></span>
+      <span class="chip" data-f="role" data-v="devsecops">DevSecOps</span>
+      <span class="chip" data-f="role" data-v="admin" id="c-admin"></span>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label" id="fl-product"></span>
+      <span class="chip on" data-f="product" data-v="all" id="c-pl-all"></span>
+      <span class="chip" data-f="product" data-v="artifactory">Artifactory</span>
+      <span class="chip" data-f="product" data-v="curation">Curation</span>
+      <span class="chip" data-f="product" data-v="xray">Xray</span>
+      <span class="chip" data-f="product" data-v="jas">JAS</span>
+      <span class="chip" data-f="product" data-v="ci">CI/CD</span>
+      <span class="chip" data-f="product" data-v="platform" id="c-pl-platform"></span>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label" id="fl-eco"></span>
+      <span class="chip on" data-f="ecosystem" data-v="all" id="c-eco-all"></span>
+      <span class="chip" data-f="ecosystem" data-v="npm">npm</span>
+      <span class="chip" data-f="ecosystem" data-v="maven">Maven</span>
+      <span class="chip" data-f="ecosystem" data-v="docker">Docker</span>
+    </div>
+  </div>
+  <div id="filter-hint" style="display:none"></div>
+
+  <!-- selection panel -->
+  <div class="sel-panel" id="sel-panel" style="display:none">
+    <div class="sel-row">
+      <div class="sel-left">
+        <span class="sel-count" id="sel-count"></span>
+        <div class="sel-chips" id="sel-chips"></div>
+        <span class="dur-pill" id="sel-dur" style="display:none"></span>
+      </div>
+      <div class="sel-actions">
+        <button class="sel-btn" id="tl-toggle">
+          <i class="ti ti-list" aria-hidden="true"></i><span id="tl-lbl"></span>
+        </button>
+        <button class="sel-btn" id="tl-copy-btn">
+          <i class="ti ti-copy" aria-hidden="true"></i><span id="tl-copy-lbl"></span>
+        </button>
+        <button class="sel-btn" id="tl-copy-tsv-btn">
+          <i class="ti ti-table" aria-hidden="true"></i><span id="tl-copy-tsv-lbl"></span>
+        </button>
+        <button class="sel-btn" id="clear-btn">
+          <i class="ti ti-x" aria-hidden="true"></i><span id="clear-lbl"></span>
+        </button>
+      </div>
+    </div>
+    <div class="tasklist-box" id="tasklist-box" style="display:none"></div>
+    <div class="cmd-row" id="cmd-row" style="display:none">
+      <div class="cmd-text" id="cmd-text"></div>
+      <button class="copy-btn" id="copy-cmd-btn">
+        <i class="ti ti-terminal" aria-hidden="true"></i><span id="copy-cmd-lbl"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- modules -->
+  <div id="mod-section" class="section">
+    <div class="section-head">
+      <span class="section-label" id="sec-mod-lbl"></span>
+      <span class="section-count" id="sec-mod-cnt"></span>
+      <div class="section-line"></div>
+    </div>
+    <div class="mod-layout">
+      <div class="grid" id="mod-grid"></div>
+      <div class="mod-rpanel" id="mod-rpanel">
+        <div class="mod-rpanel-inner" id="detail-panel"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- resources -->
+  <div id="res-section" class="section">
+    <div class="section-head">
+      <span class="section-label" id="sec-res-lbl"></span>
+      <span class="section-count" id="sec-res-cnt"></span>
+      <div class="section-line"></div>
+    </div>
+    <div class="grid" id="res-grid"></div>
+  </div>
+</div>
+
+<script>
+const TT = {
+  zh: {
+    "hero-title": "软件供应链安全 Workshop",
+    "hero-desc":  "动手实践 JFrog 平台：制品管理、安全扫描与供应链防护",
+    "cs-lbl": "在 Codespace 中打开",
+    "stat-mod": "动手模块", "stat-res": "学习资源", "stat-eco": "生态：",
+    "fl-scenario": "场景", "fl-role": "角色", "fl-product": "产品线", "fl-ecosystem": "生态",
+    "pl-platform": "平台治理",
+    all: "全部", "r-dev": "开发者", "r-sec": "安全合规", "r-admin": "平台管理员",
+    "sec-mod": "动手模块", "sec-res": "学习资源",
+    "badge-avail": "LIVE", "badge-soon": "PENDING",
+    "btn-tasks": "任务", "btn-open": "打开 →", "btn-guide": "AI 指引",
+    "tl-show": "显示列表", "tl-hide": "隐藏列表",
+    "copy-list": "复制列表", "copy-tsv": "复制表格", clear: "清空", "copy-cmd": "复制 Workshop 命令",
+    "tsv-col-type": "类型", "tsv-col-name": "名称", "tsv-col-dur": "时长",
+    "tsv-col-task": "任务编号", "tsv-col-taskname": "任务名称", "tsv-col-pts": "分值", "tsv-col-url": "URL",
+    "tsv-module": "模块", "tsv-resource": "资源",
+    "coming-soon-note": "即将推出",
+    "no-mod": "— 无匹配模块 —", "no-res": "— 无匹配资源 —",
+    loading: "initializing...", error: "load failed · please refresh"
+  },
+  en: {
+    "hero-title": "Supply Chain Security Workshop",
+    "hero-desc":  "Hands-on JFrog Platform: artifact management, security scanning & supply chain protection",
+    "cs-lbl": "Open in Codespace",
+    "stat-mod": "modules", "stat-res": "resources", "stat-eco": "ecosystems:",
+    "fl-scenario": "Scenario", "fl-role": "Role", "fl-product": "Product", "fl-ecosystem": "Ecosystem",
+    "pl-platform": "Platform",
+    all: "ALL", "r-dev": "Developer", "r-sec": "Security", "r-admin": "Admin",
+    "sec-mod": "Hands-on modules", "sec-res": "Learning resources",
+    "badge-avail": "LIVE", "badge-soon": "PENDING",
+    "btn-tasks": "tasks", "btn-open": "Open →", "btn-guide": "AI Guide",
+    "tl-show": "Show list", "tl-hide": "Hide list",
+    "copy-list": "Copy list", "copy-tsv": "Copy as table", clear: "Clear", "copy-cmd": "Copy workshop command",
+    "tsv-col-type": "Type", "tsv-col-name": "Name", "tsv-col-dur": "Duration",
+    "tsv-col-task": "Task ID", "tsv-col-taskname": "Task name", "tsv-col-pts": "Points", "tsv-col-url": "URL",
+    "tsv-module": "Module", "tsv-resource": "Resource",
+    "coming-soon-note": "coming soon",
+    "no-mod": "— no modules match —", "no-res": "— no resources match —",
+    loading: "initializing...", error: "load failed · please refresh"
+  }
+};
+
+const IMAP = {
+  "hero-title":  () => t("hero-title"),
+  "hero-desc":   () => t("hero-desc"),
+  "cs-lbl":      () => t("cs-lbl"),
+  "stat-mod-lbl":() => t("stat-mod"),
+  "stat-res-lbl":() => t("stat-res"),
+  "stat-eco-lbl":() => t("stat-eco"),
+  "fl-scenario": () => t("fl-scenario"),
+  "fl-role":     () => t("fl-role"),
+  "fl-product":  () => t("fl-product"),
+  "fl-eco":      () => t("fl-ecosystem"),
+  "c-sc-all":    () => t("all"), "c-ro-all": () => t("all"),
+  "c-pl-all":    () => t("all"),
+  "c-eco-all":   () => t("all"),
+  "c-pl-platform": () => t("pl-platform"),
+  "c-dev":       () => t("r-dev"), "c-sec": () => t("r-sec"), "c-admin": () => t("r-admin"),
+  "sec-mod-lbl": () => t("sec-mod"), "sec-res-lbl": () => t("sec-res"),
+  "tl-lbl":      () => showTL ? t("tl-hide") : t("tl-show"),
+  "tl-copy-lbl":     () => t("copy-list"),
+  "tl-copy-tsv-lbl": () => t("copy-tsv"),
+  "clear-lbl":   () => t("clear"),
+  "copy-cmd-lbl":() => t("copy-cmd"),
+};
+
+let uilang = "zh", showTL = false, activeDet = null;
+const selMods = new Set(), selRes = new Set();
+const F = { scenario:"all", role:"all", product:"all", ecosystem:"all" };
+let DATA = [];
+
+const t = k => TT[uilang][k] || k;
+
+function applyI18n() {
+  Object.entries(IMAP).forEach(([id, fn]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = fn();
+  });
+}
+
+function updateStats() {
+  if (!DATA.length) return;
+  const mods = DATA.filter(d => d.type === "module");
+  const ress = DATA.filter(d => d.type === "resource");
+  const ecos = [...new Set(DATA.flatMap(d => d.tags.ecosystem))].filter(Boolean);
+  document.getElementById("stat-mod-num").textContent = mods.length;
+  document.getElementById("stat-res-num").textContent = ress.length;
+  document.getElementById("stat-eco-pills").innerHTML = ecos
+    .map(e => `<span class="eco-pill">${e}</span>`).join("");
+}
+
+function fmtDur(min) {
+  if (!min) return "";
+  return min >= 60 ? Math.floor(min/60)+"h"+(min%60?" "+(min%60)+"min":"") : min+"min";
+}
+
+const SRC_CFG = {
+  "workshop":   {cls:"src-ws-badge",   icon:"ti-tool",          label:()=>t("src-ws")},
+  "jfrog-docs": {cls:"src-jf-badge",   icon:"ti-article",       label:()=>t("src-jf")},
+  "jfrog-china":{cls:"src-jfcn-badge", icon:"ti-building",      label:()=>t("src-jfcn")},
+  "youtube":    {cls:"src-yt-badge",   icon:"ti-brand-youtube", label:()=>"YouTube"},
+  "github":     {cls:"src-gh-badge",   icon:"ti-brand-github",  label:()=>"GitHub"},
+};
+function srcBadge(src) {
+  const c = SRC_CFG[src]||SRC_CFG["github"];
+  return `<span class="src-badge ${c.cls}"><i class="ti ${c.icon}" style="font-size:10px" aria-hidden="true"></i>${c.label()}</span>`;
+}
+
+function buildCopyList() {
+  const mids = [...selMods], rids = [...selRes];
+  if (!mids.length && !rids.length) return "";
+  const lines = [], sep = n => "─".repeat(Math.max(2,40-n));
+  let totalPts=0, totalMin=0;
+  mids.forEach(mid => {
+    const m = DATA.find(d=>d.id===mid&&d.type==="module"); if(!m) return;
+    totalMin += m.duration_min;
+    const title = uilang==="zh"?m.title_zh:m.title_en;
+    const dur = m.duration_min?` (${fmtDur(m.duration_min)})`:"";
+    lines.push(`── ${title}${dur} ${sep(title.length+dur.length)}`);
+    if (m.tasks.length) {
+      const mp = m.tasks.reduce((a,tk)=>a+tk.points,0); totalPts+=mp;
+      m.tasks.forEach(tk=>{const nm=uilang==="zh"?tk.name_zh:tk.name_en; lines.push(`  ${tk.id.slice(-2).padEnd(4)}${nm.padEnd(36)}${tk.points} pts`);});
+      lines.push(`  ${"Subtotal:".padEnd(40)}${mp} pts`);
+    } else { lines.push(`  (${t("coming-soon-note")})`); }
+    lines.push("");
+  });
+  rids.forEach(rid => {
+    const r = DATA.find(d=>d.id===rid&&d.type==="resource"); if(!r) return;
+    const title = uilang==="zh"?r.title_zh:r.title_en;
+    lines.push(`── ${title} ${sep(title.length)}`);
+    lines.push(`  ${uilang==="zh"?"来源":"Source"}: ${SRC_CFG[r.source]?.label()||r.source} · ${r.content_lang.toUpperCase()}`);
+    lines.push(`  URL:    ${r.url}`); lines.push("");
+  });
+  lines.push("━".repeat(42));
+  const parts=[];
+  if(mids.length) parts.push(uilang==="zh"?`${mids.length} 个模块  ${fmtDur(totalMin)}  ${totalPts} pts`:`${mids.length} module(s)  ${fmtDur(totalMin)}  ${totalPts} pts`);
+  if(rids.length) parts.push(uilang==="zh"?`${rids.length} 个资源`:`${rids.length} resource(s)`);
+  lines.push("  "+parts.join("    "));
+  return lines.join("\n");
+}
+
+function buildTsvList() {
+  const mids = [...selMods], rids = [...selRes];
+  if (!mids.length && !rids.length) return "";
+  const rows = [];
+  const h = k => t("tsv-col-"+k);
+  // header
+  rows.push([h("type"), h("name"), h("dur"), h("task"), h("taskname"), h("pts"), h("url")].join("\t"));
+
+  mids.forEach(mid => {
+    const m = DATA.find(d => d.id === mid && d.type === "module");
+    if (!m) return;
+    const name  = uilang === "zh" ? m.title_zh : m.title_en;
+    const dur   = fmtDur(m.duration_min) || "—";
+    const mtype = t("tsv-module");
+    if (m.tasks.length) {
+      m.tasks.forEach(tk => {
+        const tname = uilang === "zh" ? tk.name_zh : tk.name_en;
+        rows.push([mtype, name, dur, tk.id.slice(-2), tname, tk.points, ""].join("\t"));
+      });
+    } else {
+      rows.push([mtype, name, dur, "—", "—", "—", ""].join("\t"));
+    }
+  });
+
+  rids.forEach(rid => {
+    const r = DATA.find(d => d.id === rid && d.type === "resource");
+    if (!r) return;
+    const name  = uilang === "zh" ? r.title_zh : r.title_en;
+    const src   = SRC_CFG[r.source]?.label() || r.source;
+    rows.push([t("tsv-resource"), name, r.content_lang.toUpperCase(), "—", "—", "—", r.url].join("\t"));
+  });
+
+  return rows.join("\n");
+}
+
+function buildHtmlTable() {
+  const mids = [...selMods], rids = [...selRes];
+  if (!mids.length && !rids.length) return "";
+  const zh = uilang === "zh";
+  const hd = (zh ? ["模块","时长","#","任务","分值"] : ["Module","Duration","#","Task","Points"])
+    .map(h => `<th>${h}</th>`).join("");
+  let body = "", totalPts = 0, totalMin = 0;
+  mids.forEach(mid => {
+    const m = DATA.find(d => d.id === mid && d.type === "module"); if (!m) return;
+    const name = zh ? m.title_zh : m.title_en;
+    const dur = fmtDur(m.duration_min) || "—";
+    totalMin += m.duration_min || 0;
+    if (m.tasks.length) {
+      const mp = m.tasks.reduce((a,tk) => a + tk.points, 0); totalPts += mp;
+      const rs = m.tasks.length + 1;
+      m.tasks.forEach((tk, i) => {
+        const tname = zh ? tk.name_zh : tk.name_en;
+        const tnum = tk.id.match(/T\d+$/)?.[0] || tk.id.slice(-2);
+        const prefix = i === 0
+          ? `<td class="tl-mod-name" rowspan="${rs}">${name}</td><td class="tl-dur" rowspan="${rs}">${dur}</td>`
+          : "";
+        body += `<tr>${prefix}<td class="tl-tnum">${tnum}</td><td class="tl-tname">${tname}</td><td class="tl-pts">${tk.points}</td></tr>`;
+      });
+      const sub = zh ? "小计" : "Subtotal";
+      body += `<tr class="tl-sub-row"><td colspan="2" class="tl-sub-lbl">${sub}</td><td class="tl-pts tl-sub-pts">${mp} pts</td></tr>`;
+    } else {
+      const note = zh ? "开发中" : "coming soon";
+      body += `<tr><td class="tl-mod-name">${name}</td><td class="tl-dur">${dur}</td><td colspan="2" class="tl-coming">${note}</td><td class="tl-pts">—</td></tr>`;
+    }
+  });
+  rids.forEach(rid => {
+    const r = DATA.find(d => d.id === rid && d.type === "resource"); if (!r) return;
+    const name = zh ? r.title_zh : r.title_en;
+    const src = SRC_CFG[r.source]?.label() || r.source;
+    const link = r.url ? `<a href="${r.url}" target="_blank">${src}</a>` : src;
+    body += `<tr><td class="tl-mod-name">${name}</td><td class="tl-dur">${r.content_lang.toUpperCase()}</td><td colspan="2" class="tl-tname">${link}</td><td class="tl-pts">—</td></tr>`;
+  });
+  const parts = [];
+  if (mids.length) parts.push(zh ? `${mids.length} 个模块 · ${fmtDur(totalMin)} · ${totalPts} pts` : `${mids.length} module(s) · ${fmtDur(totalMin)} · ${totalPts} pts`);
+  if (rids.length) parts.push(zh ? `${rids.length} 个资源` : `${rids.length} resource(s)`);
+  const foot = `<tfoot><tr class="tl-total-row"><td colspan="5">${parts.join("  ·  ")}</td></tr></tfoot>`;
+  return `<table class="tl-table"><thead><tr>${hd}</tr></thead><tbody>${body}</tbody>${foot}</table>`;
+}
+
+const FDESC = {
+  zh: {
+    scenario: {
+      workshop: "动手实验室 — 按步骤完成任务，适合培训和 Workshop 活动",
+      poc: "POC 演示 — 展示 JFrog 安全特性，适合向决策者说明产品价值",
+      onboarding: "新用户入门 — 从零开始配置，难度低，无需先修知识",
+      adoption: "深化使用 — 扩展 Xray、Curation、JAS 等高级功能",
+      "feature-demo": "新功能演示 — 展示特定新发布特性的独立演示模块",
+    },
+    role: {
+      developer: "开发者 — 日常构建、发布与包管理器配置任务",
+      security: "安全工程师 — 漏洞策略配置、CVE 分析与安全合规",
+      devsecops: "DevSecOps — CI/CD 集成、Build Info 溯源与跨团队安全协作",
+      admin: "平台管理员 — 仓库规划、RBAC 设计与权限范围配置",
+    },
+    product: {
+      artifactory: "Artifactory — 制品代理与仓库管理，支持 npm / Maven / Docker 等多生态",
+      curation: "Curation — 供应链防护，在包下载时自动拦截风险依赖",
+      xray: "Xray — 深度扫描已入库制品，识别 CVE 漏洞与许可证风险",
+      jas: "JFrog Advanced Security — SAST 静态分析、密钥检测与上下文 CVE 分析",
+      ci: "CI/CD 集成 — 在 GitHub Actions、Jenkins 等流水线中集成 JFrog CLI",
+      platform: "平台治理 — 仓库命名规范、RBAC 设计与 JFrog 平台最佳实践",
+    },
+    ecosystem: {
+      npm: "npm / Node.js — JavaScript 包管理生态系统",
+      maven: "Maven / Java — Java 生态 JAR 包依赖管理",
+      docker: "Docker — 容器镜像构建、推送与仓库管理",
+    },
+  },
+  en: {
+    scenario: {
+      workshop: "Workshop — Hands-on lab with step-by-step tasks, ideal for training events",
+      poc: "POC — Showcases JFrog security features to help justify product adoption",
+      onboarding: "Onboarding — Start from scratch, low barrier, no prior knowledge needed",
+      adoption: "Adoption — Expand into Xray, Curation, JAS and other advanced capabilities",
+      "feature-demo": "Feature Demo — Standalone module highlighting a specific newly-released capability",
+    },
+    role: {
+      developer: "Developer — Build, publish, and configure package managers day-to-day",
+      security: "Security Engineer — Configure Xray policies, triage CVEs, ensure compliance",
+      devsecops: "DevSecOps — CI/CD pipeline integration, Build Info traceability, cross-team security",
+      admin: "Platform Admin — Repository naming, RBAC design, and platform-level configuration",
+    },
+    product: {
+      artifactory: "Artifactory — Artifact proxy and repository management for npm, Maven, Docker, and more",
+      curation: "Curation — Supply chain protection: block risky packages automatically at download time",
+      xray: "Xray — Deep scan artifacts in repositories to detect CVEs and license violations",
+      jas: "JFrog Advanced Security — SAST, secrets detection, and contextual CVE analysis",
+      ci: "CI/CD Integration — Integrate JFrog CLI into GitHub Actions, Jenkins, and other pipelines",
+      platform: "Platform Governance — Repository naming conventions, RBAC design, and best practices",
+    },
+    ecosystem: {
+      npm: "npm / Node.js — JavaScript package management ecosystem",
+      maven: "Maven / Java — Java ecosystem dependency management",
+      docker: "Docker — Container image build, push, and registry management",
+    },
+  },
+};
+
+const FDESC_LABELS = {
+  zh: { scenario: "场景", role: "角色", product: "产品线", ecosystem: "生态" },
+  en: { scenario: "Scenario", role: "Role", product: "Product", ecosystem: "Ecosystem" },
+};
+
+function renderFilterHint() {
+  const hint = document.getElementById("filter-hint");
+  const dims = ["scenario", "role", "product", "ecosystem"];
+  const active = dims.filter(d => F[d] !== "all");
+  if (!active.length) { hint.style.display = "none"; return; }
+  hint.innerHTML = active.map((d, i) => {
+    const desc = FDESC[uilang][d]?.[F[d]] || F[d];
+    const key = FDESC_LABELS[uilang][d];
+    return (i > 0 ? `<span class="fhint-sep">·</span>` : "") +
+      `<span><span class="fhint-key">${key}:</span>${desc}</span>`;
+  }).join("");
+  hint.style.display = "";
+}
+
+function itemOk(item) {
+  if (F.scenario!=="all"&&!item.tags.scenario.includes(F.scenario)) return false;
+  if (F.role!=="all"&&!item.tags.role.includes(F.role)) return false;
+  if (F.product!=="all"&&item.product_line!==F.product) return false;
+  if (F.ecosystem!=="all"&&item.tags.ecosystem.length&&!item.tags.ecosystem.includes(F.ecosystem)) return false;
+  return true;
+}
+
+function renderMods() {
+  const grid = document.getElementById("mod-grid");
+  const sec = document.getElementById("mod-section");
+  sec.style.display = "";
+  const mods = DATA.filter(d=>d.type==="module");
+  const matchCount = mods.filter(m=>itemOk(m)).length;
+  const hasFilter = Object.values(F).some(v=>v!=="all");
+  document.getElementById("sec-mod-cnt").textContent = mods.length?(hasFilter?`(${matchCount}/${mods.length})`:`(${mods.length})`):"";
+  grid.innerHTML = "";
+  if (!mods.length) { grid.innerHTML=`<div class="empty">${t("no-mod")}</div>`; return; }
+  mods.forEach(m => {
+    const isSel=selMods.has(m.id), isDet=activeDet===m.id, isAvail=m.status==="available";
+    const isMatch=itemOk(m), isFaded=!isMatch&&!isSel;
+    const title=uilang==="zh"?m.title_zh:m.title_en;
+    const desc=uilang==="zh"?m.desc_zh:m.desc_en;
+    const tagHtml=[...m.tags.role.slice(0,2),...m.tags.ecosystem].map(v=>`<span class="card-tag">${v}</span>`).join("");
+    const hasTasks=m.tasks.length>0;
+    const el=document.createElement("div");
+    el.className="card"+(m.status==="coming-soon"?" coming":"")+(isSel?" sel":"")+(isFaded?" faded":"");
+    el.innerHTML=
+      `<div class="card-scan"></div>`+
+      `<div class="card-top"><span class="badge ${isAvail?"badge-avail":"badge-soon"}">${isAvail?`<span class="pulse-dot"></span>${t("badge-avail")}`:t("badge-soon")}</span></div>`+
+      `<div class="card-title">${title}</div>`+
+      `<p class="card-desc">${desc}</p>`+
+      `<div class="card-tags">${tagHtml}</div>`+
+      `<div class="card-foot">`+
+        `<span class="card-dur"><i class="ti ti-clock" style="font-size:10px" aria-hidden="true"></i>${fmtDur(m.duration_min)}</span>`+
+        `<div class="card-actions">`+
+          (hasTasks?`<button class="task-btn${isDet?" on":""}" data-id="${m.id}"><i class="ti ti-list" aria-hidden="true"></i>${t("btn-tasks")}</button>`:"")+
+          (isAvail?`<span class="check-circle">${isSel?'<i class="ti ti-check" style="font-size:10px;color:#06080e" aria-hidden="true"></i>':""}</span>`:"")+
+        `</div>`+
+      `</div>`;
+    el.addEventListener("click",e=>{if(e.target.closest(".task-btn"))return;if(!isAvail)return;selMods.has(m.id)?selMods.delete(m.id):selMods.add(m.id);render();});
+    const tb=el.querySelector(".task-btn");
+    if(tb) tb.addEventListener("click",e=>{e.stopPropagation();activeDet=activeDet===m.id?null:m.id;render();});
+    grid.appendChild(el);
+  });
+}
+
+function renderDetail() {
+  const rpanel=document.getElementById("mod-rpanel");
+  const el=document.getElementById("detail-panel");
+  if(!activeDet){rpanel.classList.remove("open");el.innerHTML="";return;}
+  const m=DATA.find(d=>d.id===activeDet&&d.type==="module");
+  if(!m||!m.tasks.length){rpanel.classList.remove("open");el.innerHTML="";return;}
+  const totalPts=m.tasks.reduce((a,tk)=>a+tk.points,0);
+  const title=uilang==="zh"?m.title_zh:m.title_en;
+  const desc=uilang==="zh"?m.desc_zh:m.desc_en;
+  const isAvail=m.status==="available";
+  el.innerHTML=
+    `<div class="rp-tag">// MODULE_BRIEF</div>`+
+    `<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">`+
+      `<div class="rp-title">${title}</div>`+
+      `<button class="rp-close" id="det-close" aria-label="close">✕</button>`+
+    `</div>`+
+    `<div class="rp-desc">${desc}</div>`+
+    (isAvail
+      ? `<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(252,225,56,.09);border:0.5px solid rgba(252,225,56,.35);padding:3px 10px;font-size:9px;font-family:var(--mono);letter-spacing:.12em;color:var(--accent)"><span class="pulse-dot"></span>AVAILABLE NOW</div>`
+      : `<div style="display:inline-flex;align-items:center;border:0.5px solid var(--magenta-border);padding:3px 10px;font-size:9px;font-family:var(--mono);letter-spacing:.12em;color:var(--magenta)">COMING SOON</div>`)+
+    `<div class="rp-sec">// TASKS</div>`+
+    m.tasks.map(tk=>{const nm=uilang==="zh"?tk.name_zh:tk.name_en;return`<div class="rp-task"><span class="rp-tnum">${tk.id.slice(-2)}</span><span class="rp-tname">${nm}</span><span class="rp-tpts">${tk.points}pt</span></div>`;}).join("")+
+    `<div class="rp-foot"><span style="color:var(--text-2)">TOTAL</span><span style="color:var(--accent);font-weight:700">${totalPts} PT</span></div>`+
+    `<a class="rp-guide-btn" href="https://github.com/jfrogpz/jfrog-workshop/blob/main/.github/instructions/${m.id}.instructions${uilang==='en'?'-en':''}.md" target="_blank" rel="noopener">${t('btn-guide')} ↗</a>`;
+  rpanel.classList.add("open");
+  document.getElementById("det-close").addEventListener("click",()=>{activeDet=null;render();});
+}
+
+function renderRes() {
+  const sec=document.getElementById("res-section");
+  sec.style.display="";
+  const grid=document.getElementById("res-grid");
+  const ress=DATA.filter(d=>d.type==="resource"&&itemOk(d));
+  document.getElementById("sec-res-cnt").textContent=ress.length?`(${ress.length})`:"";
+  grid.innerHTML="";
+  if(!ress.length){grid.innerHTML=`<div class="empty">${t("no-res")}</div>`;return;}
+  ress.forEach(r=>{
+    const isSel=selRes.has(r.id);
+    const title=uilang==="zh"?r.title_zh:r.title_en;
+    const desc=uilang==="zh"?r.desc_zh:r.desc_en;
+    const tagHtml=[...r.tags.role.slice(0,2),...r.tags.ecosystem].map(v=>`<span class="card-tag">${v}</span>`).join("");
+    const el=document.createElement("div");
+    el.className="card"+(isSel?" sel":"");
+    el.innerHTML=
+      `<div class="card-top">${srcBadge(r.source)}<span class="lang-badge">${r.content_lang.toUpperCase()}</span></div>`+
+      `<p class="card-title" style="font-size:12px">${title}</p>`+
+      `<p class="card-desc">${desc}</p>`+
+      `<div class="card-tags">${tagHtml}</div>`+
+      `<div class="card-foot"><div style="flex:1"></div><div class="card-actions">`+
+        `<button class="open-btn"><i class="ti ti-external-link" style="font-size:9px" aria-hidden="true"></i>${t("btn-open")}</button>`+
+        `<span class="check-circle">${isSel?'<i class="ti ti-check" style="font-size:10px;color:#06080e" aria-hidden="true"></i>':""}</span>`+
+      `</div></div>`;
+    el.addEventListener("click",e=>{if(e.target.closest(".open-btn"))return;selRes.has(r.id)?selRes.delete(r.id):selRes.add(r.id);render();});
+    el.querySelector(".open-btn").addEventListener("click",e=>{e.stopPropagation();window.open(r.url,"_blank","noopener");});
+    grid.appendChild(el);
+  });
+}
+
+function renderSelPanel() {
+  const panel=document.getElementById("sel-panel");
+  const hasMods=selMods.size>0, hasRes=selRes.size>0;
+  if(!hasMods&&!hasRes){panel.style.display="none";return;}
+  panel.style.display="flex";
+  const mids=[...selMods], rids=[...selRes];
+  const totalMin=mids.reduce((a,id)=>{const m=DATA.find(d=>d.id===id);return a+(m?m.duration_min:0);},0);
+  const parts=[];
+  if(hasMods) parts.push(uilang==="zh"?`${mids.length} 个模块`:`${mids.length} module${mids.length>1?"s":""}`);
+  if(hasRes)  parts.push(uilang==="zh"?`${rids.length} 个资源`:`${rids.length} resource${rids.length>1?"s":""}`);
+  document.getElementById("sel-count").textContent=parts.join(" · ");
+  document.getElementById("sel-chips").innerHTML=[...mids,...rids].map(id=>{
+    const item=DATA.find(d=>d.id===id);
+    const label=item?(uilang==="zh"?item.title_zh:item.title_en):id;
+    const short=label.length>22?label.slice(0,20)+"…":label;
+    const icon=item&&item.type==="resource"?'<i class="ti ti-link" style="font-size:9px" aria-hidden="true"></i>':"";
+    return `<span class="sel-chip">${icon}<span>${short}</span><button onclick="removeItem('${id}')" aria-label="remove">×</button></span>`;
+  }).join("");
+  const durEl=document.getElementById("sel-dur");
+  if(hasMods&&totalMin>0){durEl.style.display="";durEl.textContent=fmtDur(totalMin);}
+  else{durEl.style.display="none";}
+  const cmdRow=document.getElementById("cmd-row");
+  if(hasMods){
+    cmdRow.style.display="flex";
+    document.getElementById("cmd-text").textContent=`automation/organizer/setup-event.sh "event-id" "Event Name" --modules ${mids.join(",")}`;
+  } else { cmdRow.style.display="none"; }
+  document.getElementById("tasklist-box").innerHTML=buildHtmlTable();
+}
+
+window.removeItem=id=>{selMods.delete(id);selRes.delete(id);render();};
+
+function render(){applyI18n();updateStats();renderFilterHint();renderMods();renderDetail();renderRes();renderSelPanel();}
+
+document.getElementById("ui-zh").addEventListener("click",()=>{uilang="zh";document.getElementById("ui-zh").classList.add("on");document.getElementById("ui-en").classList.remove("on");render();});
+document.getElementById("ui-en").addEventListener("click",()=>{uilang="en";document.getElementById("ui-en").classList.add("on");document.getElementById("ui-zh").classList.remove("on");render();});
+
+function bindPageListeners() {
+  document.querySelectorAll(".chip[data-f]").forEach(chip=>{
+    chip.addEventListener("click",()=>{
+      const f=chip.dataset.f,v=chip.dataset.v;
+      F[f]=v;
+      document.querySelectorAll(`.chip[data-f="${f}"]`).forEach(c=>c.classList.remove("on"));
+      chip.classList.add("on");render();
+    });
+  });
+  document.getElementById("tl-toggle").addEventListener("click",()=>{showTL=!showTL;document.getElementById("tasklist-box").style.display=showTL?"block":"none";document.getElementById("tl-lbl").textContent=showTL?t("tl-hide"):t("tl-show");});
+  document.getElementById("clear-btn").addEventListener("click",()=>{selMods.clear();selRes.clear();activeDet=null;render();});
+  document.getElementById("tl-copy-btn").addEventListener("click",function(){copyText(buildCopyList(),this);});
+  document.getElementById("tl-copy-tsv-btn").addEventListener("click",function(){copyText(buildTsvList(),this);});
+  document.getElementById("copy-cmd-btn").addEventListener("click",function(){copyText(document.getElementById("cmd-text").textContent,this);});
+}
+
+function copyText(text,btn){
+  const orig=btn.innerHTML;
+  navigator.clipboard.writeText(text).then(()=>{btn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> ok';setTimeout(()=>{btn.innerHTML=orig;},1800);})
+  .catch(()=>{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);btn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> ok';setTimeout(()=>{btn.innerHTML=orig;},1800);});
+}
+
+applyI18n();
+
+(function init(){
+  fetch("./module-catalog.json")
+    .then(r=>{if(!r.ok)throw new Error(r.status);return r.json();})
+    .then(catalog=>{
+      DATA=catalog.items||[];
+      bindPageListeners();
+      render();
+    })
+    .catch(()=>{
+      document.querySelector(".page").innerHTML=`<div class="state-screen"><i class="ti ti-alert-circle" style="font-size:32px;color:var(--text-3)"></i><p>${TT[uilang].error}</p></div>`;
+    });
+})();
+</script>
+
+</body>
+</html>

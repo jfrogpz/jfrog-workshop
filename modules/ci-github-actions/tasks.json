@@ -1,0 +1,42 @@
+[
+  {
+    "id": "ci-github-actions-T1",
+    "name": "Create Artifactory repositories for GitHub Actions builds",
+    "name_cn": "为 GitHub Actions 构建创建 Artifactory 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/ci-github-actions/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/ci-github-actions/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "ci-github-actions-T2",
+    "name": "Configure JFrog CLI in GitHub Actions workflow",
+    "name_cn": "在 GitHub Actions Workflow 中配置 JFrog CLI",
+    "points": 20,
+    "hint": "Add the setup-jfrog-cli action to your workflow: uses: jfrog/setup-jfrog-cli@v4, configure JFROG_URL and JFROG_ACCESS_TOKEN secrets",
+    "hint_cn": "在 workflow 中添加 jfrog/setup-jfrog-cli@v4，配置 JFROG_URL 和 JFROG_ACCESS_TOKEN secrets"
+  },
+  {
+    "id": "ci-github-actions-T3",
+    "name": "Run a GitHub Actions workflow that builds and publishes to Artifactory",
+    "name_cn": "运行 GitHub Actions Workflow，构建并发布制品到 Artifactory",
+    "points": 20,
+    "hint": "Fork the sample project, add your secrets, trigger the workflow, and verify artifacts appear in Artifactory",
+    "hint_cn": "Fork 示例项目，添加 secrets，触发 workflow，在 Artifactory 中确认制品已上传"
+  },
+  {
+    "id": "ci-github-actions-T4",
+    "name": "Publish Build Info from GitHub Actions to Artifactory",
+    "name_cn": "从 GitHub Actions 发布 Build Info 到 Artifactory",
+    "points": 20,
+    "hint": "Add jf rt build-publish step to the workflow and verify Build Info appears in Artifactory UI",
+    "hint_cn": "在 workflow 中添加 jf rt build-publish 步骤，在 Artifactory UI 中验证 Build Info"
+  },
+  {
+    "id": "ci-github-actions-T5",
+    "name": "Trigger Xray scan on the GitHub Actions build",
+    "name_cn": "对 GitHub Actions 构建触发 Xray 扫描",
+    "points": 20,
+    "hint": "Add jf rt build-scan to the workflow and verify scan results in Artifactory → Builds",
+    "hint_cn": "在 workflow 中添加 jf rt build-scan 步骤，在 Artifactory → Builds 中查看扫描结果"
+  }
+]

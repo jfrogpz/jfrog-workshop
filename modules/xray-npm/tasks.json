@@ -1,0 +1,43 @@
+[
+  {
+    "id": "xray-npm-T1",
+    "name": "Create personal npm repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 npm 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/xray-npm/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/xray-npm/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "xray-npm-T2",
+    "name": "Complete npm build and publish Build Info",
+    "name_cn": "完成 npm 构建并发布 Build Info",
+    "points": 20,
+    "hint": "cd modules/xray-npm/sample-project, configure npm to use your virtual repo, run: jf npm install --build-name=<NICKNAME>-xray-npm-build --build-number=1, then: jf rt build-publish <NICKNAME>-xray-npm-build 1",
+    "hint_cn": "进入 modules/xray-npm/sample-project，配置 npm 指向虚拟仓库，运行构建命令后发布 Build Info"
+  },
+  {
+    "id": "xray-npm-T3",
+    "name": "Create an Xray Security Policy",
+    "name_cn": "创建 Xray 安全策略",
+    "points": 20,
+    "hint": "In JFrog UI: Xray → Policies → New Policy (type: Security, name must contain your nickname, add a rule for High/Critical CVEs)",
+    "hint_cn": "在 JFrog UI 中：Xray → Policies → New Policy（类型选 Security，名称必须包含昵称，添加高危/严重 CVE 规则）"
+  },
+  {
+    "id": "xray-npm-T4",
+    "name": "Create an Xray Watch targeting your build",
+    "name_cn": "创建 Xray Watch 监控你的构建",
+    "points": 20,
+    "hint": "In JFrog UI: Xray → Watches → New Watch (name must contain your nickname, add your npm repos or build as resource, attach your policy)",
+    "hint_cn": "在 JFrog UI 中：Xray → Watches → New Watch（名称必须包含昵称，添加 npm 仓库或构建为资源，关联你的策略）"
+  },
+  {
+    "id": "xray-npm-T5",
+    "name": "Trigger Xray scan and explore CVE results",
+    "name_cn": "触发 Xray 扫描并查看 CVE 结果",
+    "points": 20,
+    "verify": false,
+    "hint": "In JFrog UI: Xray → Scans List or Artifactory → Builds → <NICKNAME>-xray-npm-build → click the build to view Xray violations and CVE details",
+    "hint_cn": "在 JFrog UI 中：Xray → Scans List 或 Artifactory → Builds → 点击构建查看 Xray 安全违规与 CVE 详情"
+  }
+]

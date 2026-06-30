@@ -1,0 +1,43 @@
+[
+  {
+    "id": "curation-ai-T1",
+    "name": "Create a Curated PyPI repository for AI packages",
+    "name_cn": "创建 Curated PyPI 仓库用于 AI 包管理",
+    "points": 10,
+    "hint": "Run: bash modules/curation-ai/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/curation-ai/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "curation-ai-T2",
+    "name": "Install AI packages through Artifactory Curation",
+    "name_cn": "通过 Artifactory Curation 安装 AI 依赖包",
+    "points": 20,
+    "hint": "cd modules/curation-ai/sample-project, configure pip to use your virtual repo, then run: pip install -r requirements.txt -i <JFROG_URL>/artifactory/api/pypi/<NICKNAME>-pypi-ai-virtual/simple",
+    "hint_cn": "进入 modules/curation-ai/sample-project，配置 pip 指向虚拟仓库后安装依赖"
+  },
+  {
+    "id": "curation-ai-T3",
+    "name": "Create a Curation Policy for AI packages",
+    "name_cn": "为 AI 包创建 Curation 策略",
+    "points": 20,
+    "hint": "In JFrog UI: Curation → Policies → New Policy (name must contain your nickname, apply to your PyPI remote repo)",
+    "hint_cn": "在 JFrog UI 中：Curation → Policies → New Policy（名称必须含昵称，应用到你的 PyPI remote 仓库）"
+  },
+  {
+    "id": "curation-ai-T4",
+    "name": "Block a vulnerable AI package version",
+    "name_cn": "阻断一个存在漏洞的 AI 包版本",
+    "points": 20,
+    "hint": "Configure a Curation rule to block packages with High/Critical CVEs, then attempt to install a vulnerable version like: pip install torch==1.12.0 -i ...",
+    "hint_cn": "配置阻断高危 CVE 的规则后，尝试安装含漏洞的旧版包，验证 Curation 阻断生效"
+  },
+  {
+    "id": "curation-ai-T5",
+    "name": "Review AI package governance in Curation Audit",
+    "name_cn": "在 Curation Audit 中查看 AI 包治理记录",
+    "points": 20,
+    "verify": false,
+    "hint": "In JFrog UI: Curation → Audit, explore the audit trail for your AI package install and block attempts",
+    "hint_cn": "在 JFrog UI 中：Curation → Audit，查看 AI 包安装和阻断的完整审计记录"
+  }
+]

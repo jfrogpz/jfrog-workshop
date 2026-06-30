@@ -1,0 +1,57 @@
+**/.jfrog/
+**/.gradle/
+**/.idea/
+**/target/
+**/.DS_Store
+**/bin/
+**/obj/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+vulnerable-go-project
+**/node_modules/
+**/package-lock.json
+*.xlsx
+*.whl
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+*.tgz
+.gradle/
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+gradle-sample/.gradle/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+/public.pem
+*.pem
+python/dist/
+dotnet-sample/obj/
+
+### Office temp/lock files ###
+.~*.ppt
+.~*.pptx
+**/.~lock.*#
+
+### Claude Code local/personal config (contains tokens, paths) ###
+.claude/settings.local.json
+.claude/launch.json

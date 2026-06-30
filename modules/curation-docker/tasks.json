@@ -1,0 +1,43 @@
+[
+  {
+    "id": "curation-docker-T1",
+    "name": "Create personal Docker repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 Docker 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/curation-docker/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/curation-docker/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "curation-docker-T2",
+    "name": "Pull a Docker image through Artifactory Curation",
+    "name_cn": "通过 Artifactory Curation 拉取 Docker 镜像",
+    "points": 20,
+    "hint": "Login to your virtual Docker registry, then: docker pull <JFROG_URL>/docker/<NICKNAME>-docker-curated-virtual/python:3.9-slim",
+    "hint_cn": "登录虚拟仓库，然后执行：docker pull <JFROG_URL>/docker/<NICKNAME>-docker-curated-virtual/python:3.9-slim"
+  },
+  {
+    "id": "curation-docker-T3",
+    "name": "Create a Docker Curation Policy",
+    "name_cn": "创建 Docker Curation 策略",
+    "points": 20,
+    "hint": "In JFrog UI: Curation → Policies → New Policy (name must contain your nickname, apply to your Docker remote repo, add a CVE or malicious package rule)",
+    "hint_cn": "在 JFrog UI 中：Curation → Policies → New Policy（名称必须含昵称，应用到你的 Docker remote 仓库，添加 CVE 或恶意包规则）"
+  },
+  {
+    "id": "curation-docker-T4",
+    "name": "Trigger Curation to block a non-compliant image",
+    "name_cn": "触发 Curation 阻断不合规镜像",
+    "points": 20,
+    "hint": "Try pulling an image with known CVEs: docker pull <JFROG_URL>/docker/<NICKNAME>-docker-curated-virtual/python:3.8 (older versions have known vulnerabilities)",
+    "hint_cn": "尝试拉取含已知漏洞的镜像：docker pull <JFROG_URL>/docker/<NICKNAME>-docker-curated-virtual/python:3.8"
+  },
+  {
+    "id": "curation-docker-T5",
+    "name": "View blocked image in Curation Audit",
+    "name_cn": "在 Curation Audit 中查看被阻断的镜像",
+    "points": 20,
+    "verify": false,
+    "hint": "In JFrog UI: Curation → Audit, find the blocked pull attempt and explore the violation details",
+    "hint_cn": "在 JFrog UI 中：Curation → Audit，查找被阻断的拉取记录并了解违规详情"
+  }
+]

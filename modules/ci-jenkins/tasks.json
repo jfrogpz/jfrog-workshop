@@ -1,0 +1,42 @@
+[
+  {
+    "id": "ci-jenkins-T1",
+    "name": "Connect Jenkins to JFrog Artifactory",
+    "name_cn": "将 Jenkins 连接到 JFrog Artifactory",
+    "points": 10,
+    "hint": "Install the JFrog plugin in Jenkins and configure Artifactory server credentials",
+    "hint_cn": "在 Jenkins 中安装 JFrog 插件，配置 Artifactory 服务器凭证"
+  },
+  {
+    "id": "ci-jenkins-T2",
+    "name": "Create Artifactory repositories for Jenkins builds",
+    "name_cn": "为 Jenkins 构建创建 Artifactory 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/ci-jenkins/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/ci-jenkins/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "ci-jenkins-T3",
+    "name": "Run a Jenkins pipeline that builds and publishes to Artifactory",
+    "name_cn": "运行 Jenkins 流水线，构建并发布制品到 Artifactory",
+    "points": 20,
+    "hint": "Create a pipeline job using the provided Jenkinsfile and trigger a build",
+    "hint_cn": "使用提供的 Jenkinsfile 创建流水线任务并触发构建"
+  },
+  {
+    "id": "ci-jenkins-T4",
+    "name": "Publish Build Info from Jenkins to Artifactory",
+    "name_cn": "从 Jenkins 发布 Build Info 到 Artifactory",
+    "points": 20,
+    "hint": "Ensure the pipeline includes jf rt build-publish step and verify in Artifactory UI",
+    "hint_cn": "确保流水线包含 jf rt build-publish 步骤，在 Artifactory UI 中验证"
+  },
+  {
+    "id": "ci-jenkins-T5",
+    "name": "Trigger Xray scan on the Jenkins build",
+    "name_cn": "对 Jenkins 构建触发 Xray 扫描",
+    "points": 20,
+    "hint": "Add jf rt build-scan to the pipeline and verify scan results in Artifactory",
+    "hint_cn": "在流水线中添加 jf rt build-scan，在 Artifactory 中查看扫描结果"
+  }
+]

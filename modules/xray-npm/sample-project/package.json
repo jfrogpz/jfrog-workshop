@@ -1,0 +1,14 @@
+{
+  "name": "jfrog-xray-npm-demo",
+  "version": "1.0.0",
+  "description": "npm project for JFrog Xray vulnerability scanning demo",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "lodash": "4.17.21",
+    "axios": "1.7.2",
+    "js-yaml": "3.14.1"
+  }
+}

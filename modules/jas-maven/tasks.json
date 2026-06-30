@@ -1,0 +1,43 @@
+[
+  {
+    "id": "jas-maven-T1",
+    "name": "Create personal Maven repositories in Artifactory",
+    "name_cn": "在 Artifactory 中创建个人 Maven 仓库",
+    "points": 10,
+    "hint": "Run: bash modules/jas-maven/create-repo.sh <NICKNAME>",
+    "hint_cn": "运行：bash modules/jas-maven/create-repo.sh <NICKNAME>"
+  },
+  {
+    "id": "jas-maven-T2",
+    "name": "Build Maven project through Artifactory and publish Build Info",
+    "name_cn": "通过 Artifactory 构建 Maven 项目并发布 Build Info",
+    "points": 20,
+    "hint": "cd modules/jas-maven/sample-project, configure jf mvn to resolve from your virtual repo, run: jf mvn install --build-name=<NICKNAME>-jas-maven-build --build-number=1, then: jf rt build-publish <NICKNAME>-jas-maven-build 1",
+    "hint_cn": "进入 modules/jas-maven/sample-project，配置 jf mvn 解析依赖后构建项目，最后发布 Build Info"
+  },
+  {
+    "id": "jas-maven-T3",
+    "name": "Run JFrog CLI audit to scan Maven CVEs",
+    "name_cn": "运行 JFrog CLI audit 扫描 Maven CVE",
+    "points": 20,
+    "hint": "cd modules/jas-maven/sample-project, run: jf audit --mvn — review the CVE report including Log4Shell (CVE-2021-44228)",
+    "hint_cn": "进入 modules/jas-maven/sample-project，运行：jf audit --mvn，查看包含 Log4Shell (CVE-2021-44228) 的 CVE 报告"
+  },
+  {
+    "id": "jas-maven-T4",
+    "name": "Detect hardcoded secrets with JAS",
+    "name_cn": "使用 JAS 检测硬编码密钥",
+    "points": 20,
+    "hint": "Run: jf audit --mvn --secrets — the sample project contains a hardcoded API key that JAS will detect in App.java",
+    "hint_cn": "运行：jf audit --mvn --secrets，示例项目 App.java 中包含硬编码的 API 密钥，JAS 会检测到"
+  },
+  {
+    "id": "jas-maven-T5",
+    "name": "View contextual analysis results in JFrog UI",
+    "name_cn": "在 JFrog UI 中查看上下文分析结果",
+    "points": 20,
+    "verify": false,
+    "hint": "In JFrog UI: Xray → Scans List → <NICKNAME>-jas-maven-build. Contextual analysis shows which CVEs are reachable vs. only-present — the WAR/JAR build provides code context for reachability analysis",
+    "hint_cn": "在 JFrog UI 中：Xray → Scans List → 你的构建。上下文分析显示哪些 CVE 在代码中实际可触达——Maven JAR 构建提供了代码上下文"
+  }
+]

@@ -1,0 +1,43 @@
+[
+  {
+    "id": "best-practices-T1",
+    "name": "Create repositories following JFrog naming conventions",
+    "name_cn": "按 JFrog 命名规范创建仓库",
+    "points": 10,
+    "hint": "Run: bash modules/best-practices/create-repo.sh <NICKNAME> — creates local/remote/virtual repos with standard naming: <nickname>-npm-bp-local, <nickname>-npm-bp-remote, <nickname>-npm-bp-virtual",
+    "hint_cn": "运行：bash modules/best-practices/create-repo.sh <NICKNAME>，按规范创建 local/remote/virtual 三层仓库"
+  },
+  {
+    "id": "best-practices-T2",
+    "name": "Create a Group for team access control",
+    "name_cn": "创建 Group 实现团队访问控制",
+    "points": 20,
+    "hint": "In JFrog UI: Administration → Identity and Access → Groups → New Group. Name it <NICKNAME>-team. Add yourself as a member.",
+    "hint_cn": "在 JFrog UI：Administration → Identity and Access → Groups → New Group。命名为 <NICKNAME>-team，将自己加为成员"
+  },
+  {
+    "id": "best-practices-T3",
+    "name": "Create a Permission Target scoping access to your repositories",
+    "name_cn": "创建 Permission Target 为仓库设置访问范围",
+    "points": 20,
+    "hint": "In JFrog UI: Administration → Identity and Access → Permissions → New Permission. Name it <NICKNAME>-perm. Add your npm repos as resources and assign <NICKNAME>-team with Read+Deploy permissions.",
+    "hint_cn": "在 JFrog UI：Administration → Identity and Access → Permissions → New Permission。命名为 <NICKNAME>-perm，添加你的 npm 仓库，为 <NICKNAME>-team 配置 Read+Deploy 权限"
+  },
+  {
+    "id": "best-practices-T4",
+    "name": "Create a JFrog Project for environment isolation",
+    "name_cn": "创建 JFrog Project 实现环境隔离",
+    "points": 20,
+    "hint": "In JFrog UI: Administration → Projects → New Project. Use your nickname as the project key (lowercase, no hyphens). Add your repos to the project.",
+    "hint_cn": "在 JFrog UI：Administration → Projects → New Project。项目 key 使用昵称（小写，无连字符）。将你的仓库加入项目"
+  },
+  {
+    "id": "best-practices-T5",
+    "name": "Review your governance setup in JFrog UI",
+    "name_cn": "在 JFrog UI 中回顾你的治理架构",
+    "points": 20,
+    "verify": false,
+    "hint": "Review: Artifactory → Repositories (naming), Administration → Groups (team), Administration → Permissions (access scope), Administration → Projects (environment isolation). Document your governance pattern.",
+    "hint_cn": "回顾：Artifactory → 仓库命名规范，Administration → Groups 团队访问，Administration → Permissions 权限范围，Administration → Projects 环境隔离"
+  }
+]
